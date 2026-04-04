@@ -75,3 +75,21 @@
 2. **No-plugin verification**: Check MOTD instead of requiring plugins
 3. **Rich snippets**: Star ratings + player counts in Google
 4. **Modern dark theme**: Unlike most dated Minecraft directory UIs
+5. **Subdomain SEO architecture**: minecraft.pvpserverlist.gg signals topical authority to Google — competitors don't do this
+
+## SEO Architecture (2026 Strategy)
+
+### Subdomain vs Subdirectory
+- Subdomains signal to Google: "this is a SEPARATE expert site for this topic"
+- minecraft.pvpserverlist.gg = Minecraft topical authority
+- Rust/ARK get their own subdomains later without diluting Minecraft ranking
+- Most competitors use subdirectories (/minecraft-servers) — weaker signal
+
+### Key Competitor Observations
+- Minecraft.buzz: Subdirectory, general "server list" branding
+- MinecraftServers.org: Root domain, cluttered
+- MinecraftServerList.co: Clean but no game-specific subdomain strategy
+- BattleMetrics: Multi-game but no SEO-first subdomain approach
+
+### Our Advantage
+The subdomain architecture we're building is NOT YET DOMINATED by any competitor. This is a 2026 SEO opportunity.
