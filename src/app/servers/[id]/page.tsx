@@ -35,6 +35,24 @@ interface ServerDetail {
 
 export const revalidate = 0;
 
+async function findServer(supabase: Awaited<ReturnType<typeof createClient>>, id: string, select: string) {
+  // Try by ID first
+  const { data } = await supabase
+    .from("servers")
+    .select(select)
+    .eq("id", id)
+    .maybeSingle();
+  if (data) return data;
+
+  // Fallback: try by IP (for old bookmarks)
+  const { data: byIp } = await supabase
+    .from("servers")
+    .select(select)
+    .eq("ip", id)
+    .maybeSingle();
+  return byIp;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -45,12 +63,7 @@ export async function generateMetadata({
   let server: ServerDetail | null = null;
   try {
     const supabase = await createClient();
-    const { data } = await supabase
-      .from("servers")
-      .select(`name, description, version`)
-      .eq("id", id)
-      .maybeSingle();
-    server = data as ServerDetail | null;
+    server = await findServer(supabase, id, `name, description, version, ip, port`) as ServerDetail | null;
   } catch (err) {
     console.error("Supabase error:", err);
   }
@@ -75,16 +88,11 @@ export default async function ServerPage({
   let server: ServerDetail | null = null;
   try {
     const supabase = await createClient();
-    const { data } = await supabase
-      .from("servers")
-      .select(`
-        id, ip, port, name, description, version, tags, verified, vote_count,
-        icon, banner,
-        server_status (status, latency_ms, player_count, max_players, motd, last_checked)
-      `)
-      .eq("id", id)
-      .maybeSingle();
-    server = data as ServerDetail | null;
+    server = await findServer(supabase, id, `
+      id, ip, port, name, description, version, tags, verified, vote_count,
+      icon, banner,
+      server_status (status, latency_ms, player_count, max_players, motd, last_checked)
+    `) as ServerDetail | null;
   } catch (err) {
     console.error("Supabase error:", err);
   }
