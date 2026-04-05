@@ -46,12 +46,24 @@ export function ServerCard({ server, onVote }: ServerCardProps) {
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-colors">
       {server.banner && (
         <div className="w-full h-24 md:h-28 overflow-hidden bg-zinc-800">
-          <img
-            src={server.banner}
-            alt=""
-            className="w-full h-full object-cover"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-          />
+          {server.banner.endsWith('.mp4') ? (
+            <video
+              src={server.banner}
+              className="w-full h-full object-cover"
+              muted
+              autoPlay
+              loop
+              playsInline
+              onError={(e) => { (e.target as HTMLVideoElement).style.display = 'none'; }}
+            />
+          ) : (
+            <img
+              src={server.banner}
+              alt=""
+              className="w-full h-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+          )}
         </div>
       )}
       <div className="p-4">
