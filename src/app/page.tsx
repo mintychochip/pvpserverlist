@@ -41,27 +41,37 @@ export default async function HomePage({
   const limit = 20;
   const offset = (page - 1) * limit;
 
-  const supabase = await createClient();
+  let servers: ServerWithStatus[] = [];
+  let count = 0;
 
-  let query = supabase
-    .from("servers")
-    .select(`
-      id, ip, port, name, description, version, tags, verified, vote_count,
-      server_status (status, latency_ms, player_count, max_players, last_checked)
-    `, { count: "exact" });
+  try {
+    const supabase = await createClient();
 
-  if (tag) query = query.contains("tags", [tag]);
-  if (version) query = query.eq("version", version);
-  if (search) query = query.ilike("name", `%${search}%`);
+    let query = supabase
+      .from("servers")
+      .select(`
+        id, ip, port, name, description, version, tags, verified, vote_count,
+        server_status (status, latency_ms, player_count, max_players, last_checked)
+      `, { count: "exact" });
 
-  if (sort === "votes") query = query.order("vote_count", { ascending: false });
-  else if (sort === "players") query = query.order("player_count", { ascending: false });
-  else if (sort === "latency") query = query.order("latency_ms", { ascending: true, nullsFirst: false });
-  else query = query.order("created_at", { ascending: false });
+    if (tag) query = query.contains("tags", [tag]);
+    if (version) query = query.eq("version", version);
+    if (search) query = query.ilike("name", `%${search}%`);
 
-  query = query.range(offset, offset + limit - 1);
+    if (sort === "votes") query = query.order("vote_count", { ascending: false });
+    else if (sort === "players") query = query.order("player_count", { ascending: false });
+    else if (sort === "latency") query = query.order("latency_ms", { ascending: true, nullsFirst: false });
+    else query = query.order("created_at", { ascending: false });
 
-  const { data: servers, count } = await query;
+    query = query.range(offset, offset + limit - 1);
+
+    const { data, count: serverCount } = await query;
+    servers = (data ?? []) as unknown as ServerWithStatus[];
+    count = serverCount ?? 0;
+  } catch (err) {
+    // Supabase not configured — show empty list
+    console.error("Supabase error:", err);
+  }
   const totalPages = Math.ceil((count ?? 0) / limit);
 
   const serversListJsonLd = {
