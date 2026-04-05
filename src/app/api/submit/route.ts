@@ -14,6 +14,8 @@ export async function POST(req: NextRequest) {
 
   const supabase = createAdminClient();
 
+  const { data: { user } } = await supabase.auth.getUser();
+
   const { data: server, error } = await supabase
     .from("servers")
     .insert({
@@ -23,6 +25,7 @@ export async function POST(req: NextRequest) {
       description: description ?? null,
       version: version ?? null,
       tags: tags ?? [],
+      owner_id: user?.id ?? null,
     })
     .select("id")
     .single();

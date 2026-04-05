@@ -2,8 +2,9 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 const TAG_OPTIONS = [
   "crystal-pvp", "uhc-pvp", "sumo", "nodepuff", "lifesteal",
@@ -22,6 +23,14 @@ export function SubmitForm() {
     version: "",
     tags: [] as string[],
   });
+
+  useEffect(() => {
+    createClient().auth.getUser().then(({ data }) => {
+      if (!data.user) {
+        router.push("/login?redirect=/submit");
+      }
+    });
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

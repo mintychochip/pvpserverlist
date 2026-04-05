@@ -7,6 +7,7 @@ import { FilterBar } from "@/components/server/FilterBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { SidebarAds } from "@/components/ads/SidebarAds";
+import { Header } from "@/components/layout/Header";
 
 interface ServerWithStatus {
   id: string;
@@ -105,15 +106,7 @@ export default async function HomePage({
     <>
       <JsonLd data={serversListJsonLd} />
       <div className="min-h-screen">
-        <header className="border-b border-zinc-800 py-4">
-          <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-white">PvP Index</h1>
-            <nav className="flex gap-4">
-              <Link href="/top" className="text-sm text-zinc-400 hover:text-white transition-colors">Top Servers</Link>
-              <Link href="/submit" className="text-sm text-zinc-400 hover:text-white transition-colors">Submit</Link>
-            </nav>
-          </div>
-        </header>
+        <Header />
 
         <main className="max-w-6xl mx-auto px-4 py-8">
           <div className="mb-8">

@@ -1,7 +1,8 @@
 // src/app/submit/verify/[serverId]/page.tsx
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import { notFound } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { notFound, redirect } from "next/navigation";
 
 interface VerifyServer {
   id: string;
@@ -22,13 +23,20 @@ export default async function VerifyPage({
   params: Promise<{ serverId: string }>;
 }) {
   const { serverId } = await params;
-  const supabase = createAdminClient();
+
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    redirect("/login?redirect=/submit/verify/" + serverId);
+  }
+
+  const adminSupabase = createAdminClient();
 
   let server: VerifyServer | null = null;
   let token: VerifyToken | null = null;
 
   try {
-    const { data } = await supabase
+    const { data } = await adminSupabase
       .from("servers")
       .select("id, name, ip, port")
       .eq("id", serverId)
@@ -36,7 +44,7 @@ export default async function VerifyPage({
     server = data as VerifyServer | null;
 
     if (server) {
-      const { data: tokenData } = await supabase
+      const { data: tokenData } = await adminSupabase
         .from("verification_tokens")
         .select("token, expires_at, verified_at")
         .eq("server_id", serverId)
