@@ -190,16 +190,21 @@ export async function GET() {
 
         await Promise.all(
           results.map(({ server, result }) =>
-            upsertServerStatus(
-              supabase,
-              server.id,
-              result.status,
-              result.latency_ms,
-              result.player_count,
-              result.max_players,
-              result.motd,
-              result.version
-            ).then(async () => {
+            Promise.resolve().then(() => {
+              // Increment counters based on ping result, not DB write result
+              if (result.status) online++;
+              else offline++;
+              return upsertServerStatus(
+                supabase,
+                server.id,
+                result.status,
+                result.latency_ms,
+                result.player_count,
+                result.max_players,
+                result.motd,
+                result.version
+              );
+            }).then(async () => {
               // Sync server-reported version and last_online_at when online
               if (result.status) {
                 const update: Record<string, unknown> = {
@@ -212,10 +217,8 @@ export async function GET() {
                   .from("servers")
                   .update(update)
                   .eq("id", server.id);
-                online++;
                 console.log(`  ✓ ${server.name} (${server.ip}) — ${result.player_count}/${result.max_players} players, ${result.latency_ms}ms`);
               } else {
-                offline++;
                 console.log(`  ✗ ${server.name} (${server.ip}) — offline`);
               }
             }).catch((err) => {
