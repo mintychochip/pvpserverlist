@@ -2,6 +2,8 @@ import { OAuthButtons } from "@/components/auth/OAuthButtons";
 import { LoginForm } from "@/components/auth/LoginForm";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage({
   searchParams,
 }: {

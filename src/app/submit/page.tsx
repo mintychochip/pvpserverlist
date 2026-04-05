@@ -5,6 +5,8 @@ import { Metadata } from "next";
 import { SubmitForm } from "@/components/submit/SubmitForm";
 import { AdBanner } from "@/components/ads/AdBanner";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Submit Server — PvP Index",
   description: "Submit your Minecraft server to PvP Index.",
