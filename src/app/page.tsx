@@ -160,7 +160,7 @@ export default async function HomePage({
                 : "grid gap-4 grid-cols-1"
               }>
                 {servers?.map((server) => (
-                  <ServerCard key={server.id} server={server as unknown as ServerWithStatus} />
+                  <ServerCard key={server.id} server={server} />
                 ))}
 
                 {servers?.length === 0 && (
@@ -173,13 +173,22 @@ export default async function HomePage({
               {totalPages > 1 && (
                 <div className="flex justify-center gap-2 mt-8">
                   {(() => {
-                    const filterParams = maxOfflineHours > 0
-                      ? `&max_offline_hours=${maxOfflineHours}${showOffline ? "&show_offline=true" : ""}`
-                      : "";
+                    const buildPaginationParams = (pageNum: number) => {
+                      const paginationParams = new URLSearchParams();
+                      paginationParams.set("page", String(pageNum));
+                      paginationParams.set("sort", sort);
+                      if (tag) paginationParams.set("tag", tag);
+                      if (version) paginationParams.set("version", version);
+                      if (search) paginationParams.set("search", search);
+                      if (maxOfflineHours > 0) paginationParams.set("max_offline_hours", String(maxOfflineHours));
+                      if (showOffline) paginationParams.set("show_offline", "true");
+                      if (layout !== "grid") paginationParams.set("layout", layout);
+                      return paginationParams.toString();
+                    };
                     return (
                       <>
                         {page > 1 && (
-                          <Link href={`/?page=${page - 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}${layout !== "grid" ? `&layout=${layout}` : ""}${filterParams}`}
+                          <Link href={`/?${buildPaginationParams(page - 1)}`}
                              className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-sm">
                             Previous
                           </Link>
@@ -188,7 +197,7 @@ export default async function HomePage({
                           Page {page} of {totalPages}
                         </span>
                         {page < totalPages && (
-                          <Link href={`/?page=${page + 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}${layout !== "grid" ? `&layout=${layout}` : ""}${filterParams}`}
+                          <Link href={`/?${buildPaginationParams(page + 1)}`}
                              className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-sm">
                             Next
                           </Link>
