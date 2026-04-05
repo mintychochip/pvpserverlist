@@ -4,6 +4,7 @@
  * Run via: npm start
  */
 
+import "dotenv/config";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL!;
@@ -82,39 +83,47 @@ async function pingServer(ip: string, port: number): Promise<Omit<PingResult, "i
   const start = Date.now();
 
   return new Promise((resolve) => {
-    const udp = require("dgram").createClient();
+    const udp = require("dgram").createSocket("udp4");
+    let resolved = false;
     let timedOut = false;
 
+    const cleanup = () => {
+      if (!timedOut) { timedOut = true; }
+      try { udp.close(); } catch {}
+    };
+
+    const doResolve = (result: Omit<PingResult, "id">) => {
+      if (resolved) return;
+      resolved = true;
+      clearTimeout(timeout);
+      cleanup();
+      resolve(result);
+    };
+
     const timeout = setTimeout(() => {
-      timedOut = true;
-      udp.close();
-      resolve({ status: false, latency_ms: null, player_count: 0, max_players: 0, motd: "", version: "" });
+      doResolve({ status: false, latency_ms: null, player_count: 0, max_players: 0, motd: "", version: "" });
     }, TIMEOUT_MS);
 
-    udp.on("error", () => {
-      if (!timedOut) { clearTimeout(timeout); udp.close(); }
-      resolve({ status: false, latency_ms: null, player_count: 0, max_players: 0, motd: "", version: "" });
+    udp.on("error", (err: Error) => {
+      doResolve({ status: false, latency_ms: null, player_count: 0, max_players: 0, motd: "", version: "" });
     });
 
     udp.on("message", (buf: Buffer) => {
-      if (timedOut) return;
-      clearTimeout(timeout);
+      if (resolved || timedOut) return;
 
       const latency_ms = Date.now() - start;
 
       if (buf.length < 3 || buf[0] !== 0xff) {
-        udp.close();
-        resolve({ status: false, latency_ms: null, player_count: 0, max_players: 0, motd: "", version: "" });
+        doResolve({ status: false, latency_ms: null, player_count: 0, max_players: 0, motd: "", version: "" });
         return;
       }
 
       try {
-        // Skip 0xFF prefix, read big-endian string length (2 bytes), then JSON
         const jsonLen = buf.readUInt16BE(1);
         const jsonStr = buf.slice(3, 3 + jsonLen).toString("utf8");
         const data = JSON.parse(jsonStr);
 
-        resolve({
+        doResolve({
           status: true,
           latency_ms,
           player_count: data.players?.online ?? 0,
@@ -123,16 +132,13 @@ async function pingServer(ip: string, port: number): Promise<Omit<PingResult, "i
           version: data.version?.name ?? "",
         });
       } catch {
-        resolve({ status: false, latency_ms: null, player_count: 0, max_players: 0, motd: "", version: "" });
-      } finally {
-        udp.close();
+        doResolve({ status: false, latency_ms: null, player_count: 0, max_players: 0, motd: "", version: "" });
       }
     });
 
-    udp.send(buildHandshakePacket(PROTOCOL_VERSION, ip, port), () => {
-      udp.send(buildRequestPacket(), () => {
-        // Handshake + request sent
-      });
+    udp.send(buildHandshakePacket(PROTOCOL_VERSION, ip, port), port, ip, (err: Error | null) => {
+      if (err) { doResolve({ status: false, latency_ms: null, player_count: 0, max_players: 0, motd: "", version: "" }); return; }
+      udp.send(buildRequestPacket(), port, ip, () => {});
     });
   });
 }
