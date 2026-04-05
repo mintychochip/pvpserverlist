@@ -1,0 +1,113 @@
+<h2>Homepage Ad Placements</h2>
+<p class="subtitle">Proposed ads on the homepage — leaderboard + sidebar</p>
+
+<div class="mockup">
+  <div class="mockup-header">Homepage Layout</div>
+  <div class="mockup-body" style="padding: 0;">
+
+    <!-- Header -->
+    <div style="background: #18181b; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+      <span style="color: white; font-weight: 700; font-size: 1.25rem;">PvP Index</span>
+      <div style="display: flex; gap: 1rem;">
+        <span style="color: #71717a; font-size: 0.85rem;">Top Servers</span>
+        <span style="color: #71717a; font-size: 0.85rem;">Submit</span>
+      </div>
+    </div>
+
+    <!-- Leaderboard Banner -->
+    <div style="background: #1a2744; margin: 1rem 1.5rem; border-radius: 8px; padding: 1.25rem; display: flex; align-items: center; justify-content: center; min-height: 90px; border: 2px dashed #3b82f6;">
+      <div style="text-align: center;">
+        <div style="color: #93c5fd; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.25rem;">Advertisement</div>
+        <div style="color: white; font-weight: 600;">Leaderboard Banner — 728×90</div>
+      </div>
+    </div>
+
+    <!-- Main + Sidebar -->
+    <div style="display: grid; grid-template-columns: 1fr 280px; gap: 1.5rem; padding: 0 1.5rem 2rem;">
+
+      <!-- Server grid -->
+      <div>
+        <div style="color: white; font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">Best Minecraft PvP Servers</div>
+        <div style="color: #71717a; font-size: 0.9rem; margin-bottom: 1rem;">Real-time latency checks. Ranked by performance.</div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+          <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+            <div style="color: white; font-weight: 600; font-size: 0.85rem;">UltraPvP</div>
+            <div style="color: #a1a1aa; font-size: 0.75rem; margin-top: 0.25rem;">Java • 1.20.4</div>
+            <div style="color: #22c55e; font-size: 0.75rem; margin-top: 0.5rem;">● 47ms</div>
+          </div>
+          <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+            <div style="color: white; font-weight: 600; font-size: 0.85rem;">MineRage</div>
+            <div style="color: #a1a1aa; font-size: 0.75rem; margin-top: 0.25rem;">Java • 1.8</div>
+            <div style="color: #22c55e; font-size: 0.75rem; margin-top: 0.5rem;">● 89ms</div>
+          </div>
+          <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+            <div style="color: white; font-weight: 600; font-size: 0.85rem;">CraftBox</div>
+            <div style="color: #a1a1aa; font-size: 0.75rem; margin-top: 0.25rem;">Bedrock • 1.21</div>
+            <div style="color: #22c55e; font-size: 0.75rem; margin-top: 0.5rem;">● 112ms</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div>
+        <div style="background: #1a2744; border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px; border: 2px dashed #3b82f6; margin-bottom: 1rem;">
+          <div style="color: #93c5fd; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.5rem;">Ad</div>
+          <div style="color: white; font-weight: 600;">Rectangle 300×250</div>
+        </div>
+        <div style="background: #1a2744; border-radius: 8px; padding: 1rem; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; border: 2px dashed #3b82f6;">
+          <div style="color: #93c5fd; font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.5rem;">Ad</div>
+          <div style="color: white; font-weight: 600;">Skyscraper 160×600</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options" style="max-width: 600px;">
+  <div class="option" data-choice="top-fine" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Leaderboard at top is fine</h3>
+      <p>Standard placement, users expect it, brings decent revenue</p>
+    </div>
+  </div>
+  <div class="option" data-choice="top-remove" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Move leaderboard below the fold</h3>
+      <p>Less intrusive — show it after the first row of servers</p>
+    </div>
+  </div>
+  <div class="option" data-choice="sidebar-only" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Sidebar only on homepage</h3>
+      <p>Keep homepage clean, ads only on other pages</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top: 1.5rem;">
+  <p class="subtitle" style="margin-bottom: 0.5rem;">What about other pages — server detail, top, submit?</p>
+  <div class="options" data-multiselect>
+    <div class="option" data-choice="detail-page" onclick="toggleSelect(this)">
+      <div class="content">
+        <h3>Server Detail Page</h3>
+        <p>Leaderboard + sidebar ads</p>
+      </div>
+    </div>
+    <div class="option" data-choice="top-page" onclick="toggleSelect(this)">
+      <div class="content">
+        <h3>Top Servers Page</h3>
+        <p>Leaderboard + sidebar ads</p>
+      </div>
+    </div>
+    <div class="option" data-choice="submit-page" onclick="toggleSelect(this)">
+      <div class="content">
+        <h3>Submit / Verify Pages</h3>
+        <p>Interstitial or footer banner only (low user annoyance)</p>
+      </div>
+    </div>
+  </div>
+</div>

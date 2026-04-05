@@ -1,0 +1,94 @@
+<h2>Inline Ad Options</h2>
+<p class="subtitle">Ad mixed into the server grid — "sponsored" style</p>
+
+<div class="mockup">
+  <div class="mockup-header">Option A — Inline with server cards</div>
+  <div class="mockup-body" style="padding: 1rem; background: #09090b; font-family: monospace;">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 0.75rem;">
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+        <div style="color: #a1a1aa; font-size: 0.75rem;">Java • 1.20.4</div>
+      </div>
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+        <div style="color: #a1a1aa; font-size: 0.75rem;">Java • 1.20.4</div>
+      </div>
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 2px dashed #3b82f6;">
+        <div style="color: #93c5fd; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 0.5rem;">Sponsored</div>
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Ad Placement</div>
+        <div style="color: #71717a; font-size: 0.7rem;">160x600 Skyscraper</div>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+        <div style="color: #a1a1aa; font-size: 0.75rem;">Java • 1.20.4</div>
+      </div>
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+        <div style="color: #a1a1aa; font-size: 0.75rem;">Java • 1.20.4</div>
+      </div>
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+        <div style="color: #a1a1aa; font-size: 0.75rem;">Java • 1.20.4</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mockup">
+  <div class="mockup-header">Option B — Row between server cards</div>
+  <div class="mockup-body" style="padding: 1rem; background: #09090b; font-family: monospace;">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+      </div>
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+      </div>
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+      </div>
+    </div>
+    <div style="background: #1a2744; border-radius: 8px; padding: 0.75rem; border: 2px dashed #3b82f6; margin: 0.75rem 0; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+      <span style="color: #93c5fd; font-size: 0.65rem; text-transform: uppercase;">Advertisement</span>
+      <span style="color: white; font-size: 0.8rem;">|</span>
+      <span style="color: white; font-size: 0.8rem;">Leaderboard 728×90</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem;">
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+      </div>
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+      </div>
+      <div style="background: #27272a; border-radius: 8px; padding: 1rem; border: 1px solid #3f3f46;">
+        <div style="color: white; font-weight: 600; font-size: 0.85rem;">Server Name</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="options" style="max-width: 500px;">
+  <div class="option" data-choice="inline-card" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Inline card — skyscraper in grid</h3>
+      <p>Ad occupies a slot in the server card grid, looks like a sponsored server listing</p>
+    </div>
+  </div>
+  <div class="option" data-choice="inline-row" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Inline row — leaderboard between rows</h3>
+      <p>Breaks the grid every few rows with a horizontal leaderboard ad</p>
+    </div>
+  </div>
+  <div class="option" data-choice="inline-badge" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Badge-style inline — small banner</h3>
+      <p>A small inline banner between rows, not full-width leaderboard</p>
+    </div>
+  </div>
+</div>

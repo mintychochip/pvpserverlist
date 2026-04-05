@@ -1,0 +1,531 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - heading "PvP Index" [level=1] [ref=e5]
+        - navigation [ref=e6]:
+          - link "Top Servers" [ref=e7] [cursor=pointer]:
+            - /url: /top
+          - link "Submit" [ref=e8] [cursor=pointer]:
+            - /url: /submit
+    - main [ref=e11]:
+      - generic [ref=e12]:
+        - heading "Best Minecraft PvP Servers" [level=2] [ref=e13]
+        - paragraph [ref=e14]: Real-time latency checks. Ranked by performance. Updated daily.
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - generic [ref=e18]:
+            - img [ref=e19]
+            - textbox "Search servers..." [ref=e22]
+          - generic [ref=e23]:
+            - button "Grid view" [ref=e24] [cursor=pointer]:
+              - img [ref=e25]
+            - button "List view" [ref=e30] [cursor=pointer]:
+              - img [ref=e31]
+        - generic [ref=e32]:
+          - button "All" [ref=e33] [cursor=pointer]
+          - button "crystal-pvp" [ref=e34] [cursor=pointer]
+          - button "uhc-pvp" [ref=e35] [cursor=pointer]
+          - button "sumo" [ref=e36] [cursor=pointer]
+          - button "nodepuff" [ref=e37] [cursor=pointer]
+          - button "lifesteal" [ref=e38] [cursor=pointer]
+          - button "smp" [ref=e39] [cursor=pointer]
+          - button "practice" [ref=e40] [cursor=pointer]
+          - button "bridge" [ref=e41] [cursor=pointer]
+        - generic [ref=e42]:
+          - combobox [ref=e43]:
+            - option "All Versions" [selected]
+            - option "1.8"
+            - option "1.12"
+            - option "1.16"
+            - option "1.20.4"
+          - combobox [ref=e44]:
+            - option "Most Votes" [selected]
+            - option "Most Players"
+            - option "Lowest Ping"
+            - option "Newest"
+      - generic [ref=e47]: Ad placement
+      - generic [ref=e48]:
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - img "Hypixel" [ref=e54]
+              - generic [ref=e55]:
+                - heading "Hypixel" [level=3] [ref=e56]
+                - paragraph [ref=e57]: mc.hypixel.net:25565
+            - generic [ref=e58]: "-"
+          - paragraph [ref=e59]: Hypixel - Minigames / PvP / Bedwars.
+          - generic [ref=e60]:
+            - generic [ref=e61]: 1.8-1.21
+            - generic [ref=e62]: Minigames
+            - generic [ref=e63]: PvP
+            - generic [ref=e64]: Bedwars
+            - generic [ref=e65]: Skywars
+          - generic [ref=e66]:
+            - generic [ref=e67]: Offline
+            - generic [ref=e68]:
+              - generic [ref=e69]:
+                - img [ref=e70]
+                - text: "15420"
+              - button "Vote" [ref=e73] [cursor=pointer]
+        - generic [ref=e76]:
+          - generic [ref=e77]:
+            - generic [ref=e78]:
+              - img "2b2t" [ref=e79]
+              - generic [ref=e80]:
+                - heading "2b2t" [level=3] [ref=e81]
+                - paragraph [ref=e82]: 2b2t.org:25565
+            - generic [ref=e83]: "-"
+          - paragraph [ref=e84]: 2b2t - Anarchy / PvP / CrystalPvP.
+          - generic [ref=e85]:
+            - generic [ref=e86]: 1.12-1.21
+            - generic [ref=e87]: Anarchy
+            - generic [ref=e88]: PvP
+            - generic [ref=e89]: CrystalPvP
+            - generic [ref=e90]: Survival
+          - generic [ref=e91]:
+            - generic [ref=e92]: Offline
+            - generic [ref=e93]:
+              - generic [ref=e94]:
+                - img [ref=e95]
+                - text: "5200"
+              - button "Vote" [ref=e98] [cursor=pointer]
+        - generic [ref=e101]:
+          - generic [ref=e102]:
+            - generic [ref=e103]:
+              - img "Purple Prison" [ref=e104]
+              - generic [ref=e105]:
+                - heading "Purple Prison" [level=3] [ref=e106]
+                - paragraph [ref=e107]: purpleprison.net:25565
+            - generic [ref=e108]: "-"
+          - paragraph [ref=e109]: Purple Prison - Prison / PvP / OPPrison.
+          - generic [ref=e110]:
+            - generic [ref=e111]: 1.8-1.21
+            - generic [ref=e112]: Prison
+            - generic [ref=e113]: PvP
+            - generic [ref=e114]: OPPrison
+            - generic [ref=e115]: Ranks
+          - generic [ref=e116]:
+            - generic [ref=e117]: Offline
+            - generic [ref=e118]:
+              - generic [ref=e119]:
+                - img [ref=e120]
+                - text: "5200"
+              - button "Vote" [ref=e123] [cursor=pointer]
+        - generic [ref=e126]:
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - img "CubeCraft" [ref=e129]
+              - generic [ref=e130]:
+                - heading "CubeCraft" [level=3] [ref=e131]
+                - paragraph [ref=e132]: play.cubecraft.net:25565
+            - generic [ref=e133]: "-"
+          - paragraph [ref=e134]: CubeCraft - Minigames / PvP / Bedwars.
+          - generic [ref=e135]:
+            - generic [ref=e136]: 1.8-1.21
+            - generic [ref=e137]: Minigames
+            - generic [ref=e138]: PvP
+            - generic [ref=e139]: Bedwars
+            - generic [ref=e140]: Skywars
+          - generic [ref=e141]:
+            - generic [ref=e142]: Offline
+            - generic [ref=e143]:
+              - generic [ref=e144]:
+                - img [ref=e145]
+                - text: "4800"
+              - button "Vote" [ref=e148] [cursor=pointer]
+        - generic [ref=e151]:
+          - generic [ref=e152]:
+            - generic [ref=e153]:
+              - img "PikaNetwork" [ref=e154]
+              - generic [ref=e155]:
+                - heading "PikaNetwork" [level=3] [ref=e156]
+                - paragraph [ref=e157]: play.pika.network:25565
+            - generic [ref=e158]: "-"
+          - paragraph [ref=e159]: PikaNetwork - Practice / PvP / NoDebuff.
+          - generic [ref=e160]:
+            - generic [ref=e161]: 1.8-1.21
+            - generic [ref=e162]: Practice
+            - generic [ref=e163]: PvP
+            - generic [ref=e164]: NoDebuff
+            - generic [ref=e165]: KitPvP
+          - generic [ref=e166]:
+            - generic [ref=e167]: Offline
+            - generic [ref=e168]:
+              - generic [ref=e169]:
+                - img [ref=e170]
+                - text: "4200"
+              - button "Vote" [ref=e173] [cursor=pointer]
+        - generic [ref=e176]:
+          - generic [ref=e177]:
+            - generic [ref=e178]:
+              - img "SaicoPvP" [ref=e179]
+              - generic [ref=e180]:
+                - heading "SaicoPvP" [level=3] [ref=e181]
+                - paragraph [ref=e182]: saiocopvp.com:25565
+            - generic [ref=e183]: "-"
+          - paragraph [ref=e184]: SaicoPvP - PvP / Practice / KitPvP.
+          - generic [ref=e185]:
+            - generic [ref=e186]: "1.8"
+            - generic [ref=e187]: PvP
+            - generic [ref=e188]: Practice
+            - generic [ref=e189]: KitPvP
+            - generic [ref=e190]: FFA
+          - generic [ref=e191]:
+            - generic [ref=e192]: Offline
+            - generic [ref=e193]:
+              - generic [ref=e194]:
+                - img [ref=e195]
+                - text: "4100"
+              - button "Vote" [ref=e198] [cursor=pointer]
+        - generic [ref=e201]:
+          - generic [ref=e202]:
+            - generic [ref=e203]:
+              - img "Archon" [ref=e204]
+              - generic [ref=e205]:
+                - heading "Archon" [level=3] [ref=e206]
+                - paragraph [ref=e207]: mc.archonhq.com:25565
+            - generic [ref=e208]: "-"
+          - paragraph [ref=e209]: Archon - Factions / PvP / HCF.
+          - generic [ref=e210]:
+            - generic [ref=e211]: 1.8-1.21
+            - generic [ref=e212]: Factions
+            - generic [ref=e213]: PvP
+            - generic [ref=e214]: HCF
+            - generic [ref=e215]: KitPvP
+          - generic [ref=e216]:
+            - generic [ref=e217]: Offline
+            - generic [ref=e218]:
+              - generic [ref=e219]:
+                - img [ref=e220]
+                - text: "3800"
+              - button "Vote" [ref=e223] [cursor=pointer]
+        - generic [ref=e226]:
+          - generic [ref=e227]:
+            - generic [ref=e228]:
+              - img "JartexNetwork" [ref=e229]
+              - generic [ref=e230]:
+                - heading "JartexNetwork" [level=3] [ref=e231]
+                - paragraph [ref=e232]: play.jartex.network:25565
+            - generic [ref=e233]: "-"
+          - paragraph [ref=e234]: JartexNetwork - Practice / PvP / KitPvP.
+          - generic [ref=e235]:
+            - generic [ref=e236]: 1.8-1.21
+            - generic [ref=e237]: Practice
+            - generic [ref=e238]: PvP
+            - generic [ref=e239]: KitPvP
+            - generic [ref=e240]: Duels
+          - generic [ref=e241]:
+            - generic [ref=e242]: Offline
+            - generic [ref=e243]:
+              - generic [ref=e244]:
+                - img [ref=e245]
+                - text: "3600"
+              - button "Vote" [ref=e248] [cursor=pointer]
+        - generic [ref=e251]:
+          - generic [ref=e252]:
+            - generic [ref=e253]:
+              - img "CosmicPvP" [ref=e254]
+              - generic [ref=e255]:
+                - heading "CosmicPvP" [level=3] [ref=e256]
+                - paragraph [ref=e257]: cosmicpvp.com:25565
+            - generic [ref=e258]: "-"
+          - paragraph [ref=e259]: CosmicPvP - Factions / PvP / HCF.
+          - generic [ref=e260]:
+            - generic [ref=e261]: "1.8"
+            - generic [ref=e262]: Factions
+            - generic [ref=e263]: PvP
+            - generic [ref=e264]: HCF
+            - generic [ref=e265]: KitMap
+          - generic [ref=e266]:
+            - generic [ref=e267]: Offline
+            - generic [ref=e268]:
+              - generic [ref=e269]:
+                - img [ref=e270]
+                - text: "3500"
+              - button "Vote" [ref=e273] [cursor=pointer]
+        - generic [ref=e276]:
+          - generic [ref=e277]:
+            - generic [ref=e278]:
+              - img "ManaCube" [ref=e279]
+              - generic [ref=e280]:
+                - heading "ManaCube" [level=3] [ref=e281]
+                - paragraph [ref=e282]: play.manacube.com:25565
+            - generic [ref=e283]: "-"
+          - paragraph [ref=e284]: ManaCube - Minigames / PvP / Survival.
+          - generic [ref=e285]:
+            - generic [ref=e286]: 1.8-1.21
+            - generic [ref=e287]: Minigames
+            - generic [ref=e288]: PvP
+            - generic [ref=e289]: Survival
+            - generic [ref=e290]: Olympus
+          - generic [ref=e291]:
+            - generic [ref=e292]: Offline
+            - generic [ref=e293]:
+              - generic [ref=e294]:
+                - img [ref=e295]
+                - text: "3200"
+              - button "Vote" [ref=e298] [cursor=pointer]
+        - generic [ref=e301]:
+          - generic [ref=e302]:
+            - generic [ref=e303]:
+              - img "Complex Gaming" [ref=e304]
+              - generic [ref=e305]:
+                - heading "Complex Gaming" [level=3] [ref=e306]
+                - paragraph [ref=e307]: mc.complex.gg:25565
+            - generic [ref=e308]: "-"
+          - paragraph [ref=e309]: Complex Gaming - Skyblock / PvP / Factions.
+          - generic [ref=e310]:
+            - generic [ref=e311]: 1.8-1.21
+            - generic [ref=e312]: Skyblock
+            - generic [ref=e313]: PvP
+            - generic [ref=e314]: Factions
+            - generic [ref=e315]: Prison
+          - generic [ref=e316]:
+            - generic [ref=e317]: Offline
+            - generic [ref=e318]:
+              - generic [ref=e319]:
+                - img [ref=e320]
+                - text: "3200"
+              - button "Vote" [ref=e323] [cursor=pointer]
+        - generic [ref=e326]:
+          - generic [ref=e327]:
+            - generic [ref=e328]:
+              - img "FadeCloud" [ref=e329]
+              - generic [ref=e330]:
+                - heading "FadeCloud" [level=3] [ref=e331]
+                - paragraph [ref=e332]: play.fadecloud.com:25565
+            - generic [ref=e333]: "-"
+          - paragraph [ref=e334]: FadeCloud - HCF / PvP / Factions.
+          - generic [ref=e335]:
+            - generic [ref=e336]: "1.8"
+            - generic [ref=e337]: HCF
+            - generic [ref=e338]: PvP
+            - generic [ref=e339]: Factions
+            - generic [ref=e340]: Hardcore
+          - generic [ref=e341]:
+            - generic [ref=e342]: Offline
+            - generic [ref=e343]:
+              - generic [ref=e344]:
+                - img [ref=e345]
+                - text: "2800"
+              - button "Vote" [ref=e348] [cursor=pointer]
+        - generic [ref=e351]:
+          - generic [ref=e352]:
+            - generic [ref=e353]:
+              - img "ViperMC" [ref=e354]
+              - generic [ref=e355]:
+                - heading "ViperMC" [level=3] [ref=e356]
+                - paragraph [ref=e357]: play.vipermc.net:25565
+            - generic [ref=e358]: "-"
+          - paragraph [ref=e359]: ViperMC - HCF / PvP / Factions.
+          - generic [ref=e360]:
+            - generic [ref=e361]: "1.8"
+            - generic [ref=e362]: HCF
+            - generic [ref=e363]: PvP
+            - generic [ref=e364]: Factions
+            - generic [ref=e365]: KitMap
+          - generic [ref=e366]:
+            - generic [ref=e367]: Offline
+            - generic [ref=e368]:
+              - generic [ref=e369]:
+                - img [ref=e370]
+                - text: "2800"
+              - button "Vote" [ref=e373] [cursor=pointer]
+        - generic [ref=e376]:
+          - generic [ref=e377]:
+            - generic [ref=e378]:
+              - img "Mineplex" [ref=e379]
+              - generic [ref=e380]:
+                - heading "Mineplex" [level=3] [ref=e381]
+                - paragraph [ref=e382]: us.mineplex.com:25565
+            - generic [ref=e383]: "-"
+          - paragraph [ref=e384]: Mineplex - Minigames / PvP / SurvivalGames.
+          - generic [ref=e385]:
+            - generic [ref=e386]: 1.8-1.21
+            - generic [ref=e387]: Minigames
+            - generic [ref=e388]: PvP
+            - generic [ref=e389]: SurvivalGames
+            - generic [ref=e390]: Clans
+          - generic [ref=e391]:
+            - generic [ref=e392]: Offline
+            - generic [ref=e393]:
+              - generic [ref=e394]:
+                - img [ref=e395]
+                - text: "2800"
+              - button "Vote" [ref=e398] [cursor=pointer]
+        - generic [ref=e401]:
+          - generic [ref=e402]:
+            - generic [ref=e403]:
+              - img "OPBlocks" [ref=e404]
+              - generic [ref=e405]:
+                - heading "OPBlocks" [level=3] [ref=e406]
+                - paragraph [ref=e407]: play.opblocks.com:25565
+            - generic [ref=e408]: "-"
+          - paragraph [ref=e409]: OPBlocks - Prison / PvP / Skyblock.
+          - generic [ref=e410]:
+            - generic [ref=e411]: 1.8-1.21
+            - generic [ref=e412]: Prison
+            - generic [ref=e413]: PvP
+            - generic [ref=e414]: Skyblock
+          - generic [ref=e415]:
+            - generic [ref=e416]: Offline
+            - generic [ref=e417]:
+              - generic [ref=e418]:
+                - img [ref=e419]
+                - text: "2800"
+              - button "Vote" [ref=e422] [cursor=pointer]
+        - generic [ref=e425]:
+          - generic [ref=e426]:
+            - generic [ref=e427]:
+              - img "PokeFind" [ref=e428]
+              - generic [ref=e429]:
+                - heading "PokeFind" [level=3] [ref=e430]
+                - paragraph [ref=e431]: play.pokefind.co:25565
+            - generic [ref=e432]: "-"
+          - paragraph [ref=e433]: PokeFind - Pixelmon / PvP / Survival.
+          - generic [ref=e434]:
+            - generic [ref=e435]: 1.8-1.21
+            - generic [ref=e436]: Pixelmon
+            - generic [ref=e437]: PvP
+            - generic [ref=e438]: Survival
+            - generic [ref=e439]: Gym
+          - generic [ref=e440]:
+            - generic [ref=e441]: Offline
+            - generic [ref=e442]:
+              - generic [ref=e443]:
+                - img [ref=e444]
+                - text: "2500"
+              - button "Vote" [ref=e447] [cursor=pointer]
+        - generic [ref=e450]:
+          - generic [ref=e451]:
+            - generic [ref=e452]:
+              - img "Minemen Club" [ref=e453]
+              - generic [ref=e454]:
+                - heading "Minemen Club" [level=3] [ref=e455]
+                - paragraph [ref=e456]: minemen.club:25565
+            - generic [ref=e457]: "-"
+          - paragraph [ref=e458]: Minemen Club - PvP / Practice / KitPvP.
+          - generic [ref=e459]:
+            - generic [ref=e460]: "1.8"
+            - generic [ref=e461]: PvP
+            - generic [ref=e462]: Practice
+            - generic [ref=e463]: KitPvP
+            - generic [ref=e464]: Duels
+          - generic [ref=e465]:
+            - generic [ref=e466]: Offline
+            - generic [ref=e467]:
+              - generic [ref=e468]:
+                - img [ref=e469]
+                - text: "2200"
+              - button "Vote" [ref=e472] [cursor=pointer]
+        - generic [ref=e475]:
+          - generic [ref=e476]:
+            - generic [ref=e477]:
+              - img "Performium" [ref=e478]
+              - generic [ref=e479]:
+                - heading "Performium" [level=3] [ref=e480]
+                - paragraph [ref=e481]: play.performium.net:25565
+            - generic [ref=e482]: "-"
+          - paragraph [ref=e483]: Performium - PvP / Practice / KitPvP.
+          - generic [ref=e484]:
+            - generic [ref=e485]: 1.8-1.21
+            - generic [ref=e486]: PvP
+            - generic [ref=e487]: Practice
+            - generic [ref=e488]: KitPvP
+            - generic [ref=e489]: Duels
+          - generic [ref=e490]:
+            - generic [ref=e491]: Offline
+            - generic [ref=e492]:
+              - generic [ref=e493]:
+                - img [ref=e494]
+                - text: "2200"
+              - button "Vote" [ref=e497] [cursor=pointer]
+        - generic [ref=e500]:
+          - generic [ref=e501]:
+            - generic [ref=e502]:
+              - img "PvPLand" [ref=e503]
+              - generic [ref=e504]:
+                - heading "PvPLand" [level=3] [ref=e505]
+                - paragraph [ref=e506]: play.pvpland.com:25565
+            - generic [ref=e507]: "-"
+          - paragraph [ref=e508]: PvPLand - PvP / Practice / KitPvP.
+          - generic [ref=e509]:
+            - generic [ref=e510]: 1.8-1.21
+            - generic [ref=e511]: PvP
+            - generic [ref=e512]: Practice
+            - generic [ref=e513]: KitPvP
+            - generic [ref=e514]: Duels
+          - generic [ref=e515]:
+            - generic [ref=e516]: Offline
+            - generic [ref=e517]:
+              - generic [ref=e518]:
+                - img [ref=e519]
+                - text: "1800"
+              - button "Vote" [ref=e522] [cursor=pointer]
+        - generic [ref=e525]:
+          - generic [ref=e526]:
+            - generic [ref=e527]:
+              - img "EarthMC" [ref=e528]
+              - generic [ref=e529]:
+                - heading "EarthMC" [level=3] [ref=e530]
+                - paragraph [ref=e531]: play.earthmc.net:25565
+            - generic [ref=e532]: "-"
+          - paragraph [ref=e533]: EarthMC - Survival / PvP / SMP.
+          - generic [ref=e534]:
+            - generic [ref=e535]: "1.21"
+            - generic [ref=e536]: Survival
+            - generic [ref=e537]: PvP
+            - generic [ref=e538]: SMP
+            - generic [ref=e539]: Towny
+          - generic [ref=e540]:
+            - generic [ref=e541]: Offline
+            - generic [ref=e542]:
+              - generic [ref=e543]:
+                - img [ref=e544]
+                - text: "1800"
+              - button "Vote" [ref=e547] [cursor=pointer]
+      - generic [ref=e548]:
+        - generic [ref=e549]: Page 1 of 46
+        - link "Next" [ref=e550] [cursor=pointer]:
+          - /url: /?page=2&sort=votes
+    - contentinfo [ref=e551]:
+      - generic [ref=e552]:
+        - heading "Frequently Asked Questions" [level=2] [ref=e553]
+        - generic [ref=e554]:
+          - generic [ref=e555]:
+            - heading "What is PvP Index?" [level=3] [ref=e556]
+            - paragraph [ref=e557]: PvP Index is a Minecraft server list website created to help players find the best PvP servers. With multiple filters, ordered lists, categories, and real-time server status, finding your ideal server is easier than ever.
+          - generic [ref=e558]:
+            - heading "Who lists the servers?" [level=3] [ref=e559]
+            - paragraph [ref=e560]: Most servers are posted by their owners. We fill out and correct any missing or inaccurate info to ensure only quality servers are listed. A small selection have been posted by us to provide a wider array of options.
+          - generic [ref=e561]:
+            - heading "What are the requirements to list a server?" [level=3] [ref=e562]
+            - paragraph [ref=e563]: We allow all sorts of servers as long as they are of good quality and follow our TOS guidelines. We do not allow servers hosted on Aternos or Minehut.
+          - generic [ref=e564]:
+            - heading "Do you support Voting?" [level=3] [ref=e565]
+            - paragraph [ref=e566]: Absolutely! Voting and Votifier are 100% supported — though not all servers are Votifier-enabled. You can vote once every 24 hours and optionally leave a review. Voting through VPN or Proxy is not allowed. Votes over 15 days old are deleted to keep results fresh.
+          - generic [ref=e567]:
+            - heading "How can I contact you?" [level=3] [ref=e568]
+            - paragraph [ref=e569]:
+              - text: You can reach out via email at
+              - link "info@pvpserverlist.com" [ref=e570] [cursor=pointer]:
+                - /url: mailto:info@pvpserverlist.com
+              - text: ", or message us via Discord or Twitter. You can also use the contact form below."
+        - generic [ref=e571]:
+          - heading "Contact Us" [level=3] [ref=e572]
+          - generic [ref=e573]:
+            - textbox "Name" [ref=e575]
+            - textbox "Email" [ref=e577]
+            - textbox "Message" [ref=e579]
+            - generic [ref=e580]:
+              - text: reCAPTCHA placeholder — replace
+              - code [ref=e581]: RECAPTCHA_SITE_KEY
+              - text: with your actual key
+            - button "Send Message" [ref=e582] [cursor=pointer]
+        - generic [ref=e583]: PvP Index — Real-time Minecraft server status
+  - link "Add Your Server" [ref=e585] [cursor=pointer]:
+    - /url: /submit
+    - img [ref=e586]
+    - generic [ref=e587]: Add Your Server
+  - alert [ref=e588]
