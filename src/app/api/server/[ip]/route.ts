@@ -37,12 +37,12 @@ export async function GET(
   // If stale, trigger a refresh via Edge Function
   if (isStale && server.port) {
     try {
-      const edgeFunctionUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/slp-ping`;
+      const edgeFunctionUrl = `${process.env.SUPABASE_URL}/functions/v1/slp-ping`;
       const response = await fetch(edgeFunctionUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+          Authorization: `Bearer ${process.env.SECRET_KEY}`,
         },
         body: JSON.stringify({ ip: server.ip, port: server.port }),
       });

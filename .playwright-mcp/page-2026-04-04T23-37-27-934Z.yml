@@ -1,0 +1,727 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - link "Home" [ref=e6] [cursor=pointer]:
+            - /url: /
+          - link "My Servers" [ref=e7] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/register.php
+          - link "Sponsored" [ref=e8] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/register.php
+          - link "Blog" [ref=e9] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/blog/
+        - generic [ref=e10]:
+          - generic [ref=e11]:
+            - textbox "Search..." [ref=e12]
+            - button "🔍" [ref=e13] [cursor=pointer]
+          - link "Login" [ref=e14] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/login.php
+    - generic [ref=e15]:
+      - generic:
+        - link:
+          - /url: /
+      - heading "Minecraft Server List" [level=2] [ref=e16]
+      - separator [ref=e17]
+      - generic [ref=e19]:
+        - button "Previous" [disabled] [ref=e20]: ‹
+        - generic [ref=e22]:
+          - link "Minecraft Pixelmon Servers" [ref=e23] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/pixelmon
+          - link "Minecraft SMP Servers" [ref=e24] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/smp
+          - link "Minecraft LifeSteal Servers" [ref=e25] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/lifesteal
+          - link "Minecraft Skyblock Servers" [ref=e26] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/skyblock
+          - link "Minecraft Mini Games Servers" [ref=e27] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/minigames
+          - link "Minecraft Anarchy Servers" [ref=e28] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/anarchy
+          - link "Minecraft Creative Servers" [ref=e29] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/creative
+          - link "Minecraft Economy Servers" [ref=e30] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/economy
+          - link "Minecraft Factions Servers" [ref=e31] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/factions
+          - link "Minecraft FTB Servers" [ref=e32] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/ftb
+          - link "Minecraft Hardcore Servers" [ref=e33] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/hardcore
+          - link "Minecraft KitPvP Servers" [ref=e34] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/kitpvp
+          - link "Minecraft MCMMO Servers" [ref=e35] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/mcmmo
+          - link "Minecraft Parkour Servers" [ref=e36] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/parkour
+          - link "Minecraft Prison Servers" [ref=e37] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/prison
+          - link "Minecraft PvE Servers" [ref=e38] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/pve
+          - link "Minecraft PvP Servers" [ref=e39] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/pvp
+          - link "Minecraft Roleplay Servers" [ref=e40] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/roleplay
+          - link "Minecraft Skywars Servers" [ref=e41] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/skywars
+          - link "Minecraft Survival Servers" [ref=e42] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/survival
+          - link "Minecraft Towny Servers" [ref=e43] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/towny
+          - link "Minecraft Vanilla Servers" [ref=e44] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/vanilla
+          - link "Minecraft Tekkit Servers" [ref=e45] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/tekkit
+          - link "Minecraft Earth Servers" [ref=e46] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/earth
+          - link "Minecraft OneBlock Servers" [ref=e47] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/oneblock
+          - link "Minecraft Bedrock Servers" [ref=e48] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/bedrock
+          - link "Minecraft Crossplay Servers" [ref=e49] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/crossplay
+          - link "Minecraft Lifesteal Servers" [ref=e50] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/lifesteal
+          - link "Minecraft Bedwars Servers" [ref=e51] [cursor=pointer]:
+            - /url: https://minecraftserverlist.co/servers/bedwars
+        - button "Next" [ref=e52] [cursor=pointer]: ›
+      - separator [ref=e53]
+      - heading "View Minecraft Server List" [level=2] [ref=e54]
+      - link "SimpleGameHosting - Minecraft Server Hosting" [ref=e56] [cursor=pointer]:
+        - /url: https://billing.simplegamehosting.com/aff.php?aff=92
+        - img "SimpleGameHosting - Minecraft Server Hosting" [ref=e57]
+      - table [ref=e58]:
+        - rowgroup [ref=e59]:
+          - row " Rank  Name  Server  Players  IP" [ref=e60]:
+            - columnheader " Rank" [ref=e61]:
+              - generic [ref=e62]: 
+              - text: Rank
+            - columnheader " Name" [ref=e63]:
+              - generic [ref=e64]: 
+              - text: Name
+            - columnheader " Server" [ref=e65]:
+              - generic [ref=e66]: 
+              - text: Server
+            - columnheader " Players" [ref=e67]:
+              - generic [ref=e68]: 
+              - text: Players
+            - columnheader " IP" [ref=e69]:
+              - generic [ref=e70]: 
+              - text: IP
+        - rowgroup [ref=e71]:
+          - 'row "1 TalonMC TalonMC  play.talonmc.net copy There are hundreds of Minecraft Prison servers out there. But only one is built for the community, by the community, with a level of passion, quality, and nonstop content that sets it apart — and that’s TalonMC. Server store: https://store.talonmc.net/ server discord: https://discord.com/invite/talonserver 1642/2025  play.talonmc.net" [ref=e72]':
+            - cell "1" [ref=e73]:
+              - generic [ref=e74]: "1"
+            - cell "TalonMC" [ref=e75]:
+              - link "TalonMC" [ref=e76] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-talonmc.599
+                - heading "TalonMC" [level=3] [ref=e77]
+            - 'cell "TalonMC  play.talonmc.net copy There are hundreds of Minecraft Prison servers out there. But only one is built for the community, by the community, with a level of passion, quality, and nonstop content that sets it apart — and that’s TalonMC. Server store: https://store.talonmc.net/ server discord: https://discord.com/invite/talonserver" [ref=e78]':
+              - link "TalonMC" [ref=e79] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-talonmc.599
+                - img "TalonMC" [ref=e80]
+              - generic [ref=e81]:
+                - paragraph [ref=e82]:
+                  - generic [ref=e83]:
+                    - generic [ref=e84]: 
+                    - text: play.talonmc.net
+                - generic [ref=e85]:
+                  - button [ref=e86] [cursor=pointer]:
+                    - generic [ref=e87]: 
+                  - button "copy" [ref=e88] [cursor=pointer]:
+                    - generic [ref=e89]: 
+              - paragraph [ref=e90]: "There are hundreds of Minecraft Prison servers out there. But only one is built for the community, by the community, with a level of passion, quality, and nonstop content that sets it apart — and that’s TalonMC. Server store: https://store.talonmc.net/ server discord: https://discord.com/invite/talonserver"
+            - cell "1642/2025" [ref=e91]
+            - cell " play.talonmc.net" [ref=e92]:
+              - generic [ref=e93]:
+                - generic [ref=e94]: 
+                - generic [ref=e95]: play.talonmc.net
+          - row "2 OPLegends OPLegends  msl.oplegends.com copy [1.21 CROSSPLAY - BEDROCK / JAVA] Join the top-rated Survival, Skyblock, LifeSteal, Gens! Come see the best new features today instead of waiting 6 months for other servers to add them! We're always ahead of everyone else with the most unique and amazing features, and our servers never lag and can hold thousands 1895/10000  msl.oplegends.com" [ref=e96]:
+            - cell "2" [ref=e97]:
+              - generic [ref=e98]: "2"
+            - cell "OPLegends" [ref=e99]:
+              - link "OPLegends" [ref=e100] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-oplegends.506
+                - heading "OPLegends" [level=3] [ref=e101]
+            - cell "OPLegends  msl.oplegends.com copy [1.21 CROSSPLAY - BEDROCK / JAVA] Join the top-rated Survival, Skyblock, LifeSteal, Gens! Come see the best new features today instead of waiting 6 months for other servers to add them! We're always ahead of everyone else with the most unique and amazing features, and our servers never lag and can hold thousands" [ref=e102]:
+              - link "OPLegends" [ref=e103] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-oplegends.506
+                - img "OPLegends" [ref=e104]
+              - generic [ref=e105]:
+                - paragraph [ref=e106]:
+                  - generic [ref=e107]:
+                    - generic [ref=e108]: 
+                    - text: msl.oplegends.com
+                - generic [ref=e109]:
+                  - button [ref=e110] [cursor=pointer]:
+                    - generic [ref=e111]: 
+                  - button "copy" [ref=e112] [cursor=pointer]:
+                    - generic [ref=e113]: 
+              - paragraph [ref=e114]: "[1.21 CROSSPLAY - BEDROCK / JAVA] Join the top-rated Survival, Skyblock, LifeSteal, Gens! Come see the best new features today instead of waiting 6 months for other servers to add them! We're always ahead of everyone else with the most unique and amazing features, and our servers never lag and can hold thousands"
+            - cell "1895/10000" [ref=e115]
+            - cell " msl.oplegends.com" [ref=e116]:
+              - generic [ref=e117]:
+                - generic [ref=e118]: 
+                - generic [ref=e119]: msl.oplegends.com
+          - 'row "3 Complex Gaming Complex Gaming  bmc.mc-complex.com copy Welcome to Complex-Gaming! We currently offer a wide selection of servers ranging from Cobblemon, Pixelmon, Skyblock, Survival, Factions, Creative, Prison, Lifesteal and more! Please read below for more information. Cobblemon: (Latest Verison, 1.6.1): A brand new 1.21 pokemon in minecraft experience, now released on Complex Gaming. Join today with our modpack: https://www.curseforge.com/minecraft/modpacks/complex-cobblemon 1987/3000  bmc.mc-complex.com" [ref=e120]':
+            - cell "3" [ref=e121]:
+              - generic [ref=e122]: "3"
+            - cell "Complex Gaming" [ref=e123]:
+              - link "Complex Gaming" [ref=e124] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-mslc-mc-complex-com.565
+                - heading "Complex Gaming" [level=3] [ref=e125]
+            - 'cell "Complex Gaming  bmc.mc-complex.com copy Welcome to Complex-Gaming! We currently offer a wide selection of servers ranging from Cobblemon, Pixelmon, Skyblock, Survival, Factions, Creative, Prison, Lifesteal and more! Please read below for more information. Cobblemon: (Latest Verison, 1.6.1): A brand new 1.21 pokemon in minecraft experience, now released on Complex Gaming. Join today with our modpack: https://www.curseforge.com/minecraft/modpacks/complex-cobblemon" [ref=e126]':
+              - link "Complex Gaming" [ref=e127] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-mslc-mc-complex-com.565
+                - img "Complex Gaming" [ref=e128]
+              - generic [ref=e129]:
+                - paragraph [ref=e130]:
+                  - generic [ref=e131]:
+                    - generic [ref=e132]: 
+                    - text: bmc.mc-complex.com
+                - generic [ref=e133]:
+                  - button [ref=e134] [cursor=pointer]:
+                    - generic [ref=e135]: 
+                  - button "copy" [ref=e136] [cursor=pointer]:
+                    - generic [ref=e137]: 
+              - paragraph [ref=e138]: "Welcome to Complex-Gaming! We currently offer a wide selection of servers ranging from Cobblemon, Pixelmon, Skyblock, Survival, Factions, Creative, Prison, Lifesteal and more! Please read below for more information. Cobblemon: (Latest Verison, 1.6.1): A brand new 1.21 pokemon in minecraft experience, now released on Complex Gaming. Join today with our modpack: https://www.curseforge.com/minecraft/modpacks/complex-cobblemon"
+            - cell "1987/3000" [ref=e139]
+            - cell " bmc.mc-complex.com" [ref=e140]:
+              - generic [ref=e141]:
+                - generic [ref=e142]: 
+                - generic [ref=e143]: bmc.mc-complex.com
+          - 'row "4 Netherite Netherite  fun.netherite.gg copy Netherite is a unique Minecraft Network built around the most exciting and competitive game modes, including Lifesteal, Survival, Factions, Prison, and Skyblock. With a strong focus on quality and innovation, our network strives to excel in every corner of the Minecraft space. Whether you want the intensity of Lifesteal battles, the creativity of Survival, the strategy of Factions, or the progression of Prison and Skyblock, Netherite has something for everyone. Our mission is simple: to create the most enjoyable and engaging experience possible, supported by a thriving community and constant improvements to keep gameplay fresh. 103/2026  fun.netherite.gg" [ref=e144]':
+            - cell "4" [ref=e145]:
+              - generic [ref=e146]: "4"
+            - cell "Netherite" [ref=e147]:
+              - link "Netherite" [ref=e148] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-netherite.462
+                - heading "Netherite" [level=3] [ref=e149]
+            - 'cell "Netherite  fun.netherite.gg copy Netherite is a unique Minecraft Network built around the most exciting and competitive game modes, including Lifesteal, Survival, Factions, Prison, and Skyblock. With a strong focus on quality and innovation, our network strives to excel in every corner of the Minecraft space. Whether you want the intensity of Lifesteal battles, the creativity of Survival, the strategy of Factions, or the progression of Prison and Skyblock, Netherite has something for everyone. Our mission is simple: to create the most enjoyable and engaging experience possible, supported by a thriving community and constant improvements to keep gameplay fresh." [ref=e150]':
+              - link "Netherite" [ref=e151] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-netherite.462
+                - img "Netherite" [ref=e152]
+              - generic [ref=e153]:
+                - paragraph [ref=e154]:
+                  - generic [ref=e155]:
+                    - generic [ref=e156]: 
+                    - text: fun.netherite.gg
+                - generic [ref=e157]:
+                  - button [ref=e158] [cursor=pointer]:
+                    - generic [ref=e159]: 
+                  - button "copy" [ref=e160] [cursor=pointer]:
+                    - generic [ref=e161]: 
+              - paragraph [ref=e162]: "Netherite is a unique Minecraft Network built around the most exciting and competitive game modes, including Lifesteal, Survival, Factions, Prison, and Skyblock. With a strong focus on quality and innovation, our network strives to excel in every corner of the Minecraft space. Whether you want the intensity of Lifesteal battles, the creativity of Survival, the strategy of Factions, or the progression of Prison and Skyblock, Netherite has something for everyone. Our mission is simple: to create the most enjoyable and engaging experience possible, supported by a thriving community and constant improvements to keep gameplay fresh."
+            - cell "103/2026" [ref=e163]
+            - cell " fun.netherite.gg" [ref=e164]:
+              - generic [ref=e165]:
+                - generic [ref=e166]: 
+                - generic [ref=e167]: fun.netherite.gg
+          - row "5 Breeze SMP Breeze SMP  best.breezesmp.com copy Welcome to Breeze SMP, a brand-new community-driven Survival server offering a fun and fresh 1.21 experience for players of all backgrounds to enjoy. Whether you’re a builder, explorer, or adventurer, Breeze SMP is the perfect place to create, collaborate, and make lasting friendships. Our focus is on fostering a welcoming environment where players can come together, share ideas, and build incredible projects as a community. You’ll enjoy all the classic Minecraft survival gameplay you love, enhanced by a friendly atmosphere and the chance to earn Free Ranks just by playing and engaging with others. 1210/2000  best.breezesmp.com" [ref=e168]:
+            - cell "5" [ref=e169]:
+              - generic [ref=e170]: "5"
+            - cell "Breeze SMP" [ref=e171]:
+              - link "Breeze SMP" [ref=e172] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-breeze-smp.496
+                - heading "Breeze SMP" [level=3] [ref=e173]
+            - cell "Breeze SMP  best.breezesmp.com copy Welcome to Breeze SMP, a brand-new community-driven Survival server offering a fun and fresh 1.21 experience for players of all backgrounds to enjoy. Whether you’re a builder, explorer, or adventurer, Breeze SMP is the perfect place to create, collaborate, and make lasting friendships. Our focus is on fostering a welcoming environment where players can come together, share ideas, and build incredible projects as a community. You’ll enjoy all the classic Minecraft survival gameplay you love, enhanced by a friendly atmosphere and the chance to earn Free Ranks just by playing and engaging with others." [ref=e174]:
+              - link "Breeze SMP" [ref=e175] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-breeze-smp.496
+                - img "Breeze SMP" [ref=e176]
+              - generic [ref=e177]:
+                - paragraph [ref=e178]:
+                  - generic [ref=e179]:
+                    - generic [ref=e180]: 
+                    - text: best.breezesmp.com
+                - generic [ref=e181]:
+                  - button [ref=e182] [cursor=pointer]:
+                    - generic [ref=e183]: 
+                  - button "copy" [ref=e184] [cursor=pointer]:
+                    - generic [ref=e185]: 
+              - paragraph [ref=e186]: Welcome to Breeze SMP, a brand-new community-driven Survival server offering a fun and fresh 1.21 experience for players of all backgrounds to enjoy. Whether you’re a builder, explorer, or adventurer, Breeze SMP is the perfect place to create, collaborate, and make lasting friendships. Our focus is on fostering a welcoming environment where players can come together, share ideas, and build incredible projects as a community. You’ll enjoy all the classic Minecraft survival gameplay you love, enhanced by a friendly atmosphere and the chance to earn Free Ranks just by playing and engaging with others.
+            - cell "1210/2000" [ref=e187]
+            - cell " best.breezesmp.com" [ref=e188]:
+              - generic [ref=e189]:
+                - generic [ref=e190]: 
+                - generic [ref=e191]: best.breezesmp.com
+          - 'row "6 EnchantedMC EnchantedMC  best.enchantedmc.net copy [1.21 CROSSPLAY - JAVA/BEDROCK (19132)] Join the top-rated Skyblock, Prison, Survival, Gens, Dungeons & Factory gamemodes with friends on any device! Enjoy constant updates, rewarding progression & global events! Join the #1 Minecraft Network today and claim your FREE rewards at msl.enchantedmc.net. Join today! 20628/20629  best.enchantedmc.net" [ref=e192]':
+            - cell "6" [ref=e193]:
+              - generic [ref=e194]: "6"
+            - cell "EnchantedMC" [ref=e195]:
+              - link "EnchantedMC" [ref=e196] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-enchantedmc.587
+                - heading "EnchantedMC" [level=3] [ref=e197]
+            - 'cell "EnchantedMC  best.enchantedmc.net copy [1.21 CROSSPLAY - JAVA/BEDROCK (19132)] Join the top-rated Skyblock, Prison, Survival, Gens, Dungeons & Factory gamemodes with friends on any device! Enjoy constant updates, rewarding progression & global events! Join the #1 Minecraft Network today and claim your FREE rewards at msl.enchantedmc.net. Join today!" [ref=e198]':
+              - link "EnchantedMC" [ref=e199] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-enchantedmc.587
+                - img "EnchantedMC" [ref=e200]
+              - generic [ref=e201]:
+                - paragraph [ref=e202]:
+                  - generic [ref=e203]:
+                    - generic [ref=e204]: 
+                    - text: best.enchantedmc.net
+                - generic [ref=e205]:
+                  - button [ref=e206] [cursor=pointer]:
+                    - generic [ref=e207]: 
+                  - button "copy" [ref=e208] [cursor=pointer]:
+                    - generic [ref=e209]: 
+              - paragraph [ref=e210]: "[1.21 CROSSPLAY - JAVA/BEDROCK (19132)] Join the top-rated Skyblock, Prison, Survival, Gens, Dungeons & Factory gamemodes with friends on any device! Enjoy constant updates, rewarding progression & global events! Join the #1 Minecraft Network today and claim your FREE rewards at msl.enchantedmc.net. Join today!"
+            - cell "20628/20629" [ref=e211]
+            - cell " best.enchantedmc.net" [ref=e212]:
+              - generic [ref=e213]:
+                - generic [ref=e214]: 
+                - generic [ref=e215]: best.enchantedmc.net
+          - 'row "7 SunRealms SunRealms  best.sunrealms.net copy Welcome to Sunrealms [1.21] We have amazing gamemodes like SURVIVAL,SKYBLOCK,PRISON,GENERATORS,PIXELMON, & MORE. Join the #1 server today! We have a friendly community, great events, no lag, and a dedicated team. Copy our IP to join the ultimate adventure! Connect for amazing rewards and free ranks 18246/30000  best.sunrealms.net" [ref=e216]':
+            - cell "7" [ref=e217]:
+              - generic [ref=e218]: "7"
+            - cell "SunRealms" [ref=e219]:
+              - link "SunRealms" [ref=e220] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-sunrealms.613
+                - heading "SunRealms" [level=3] [ref=e221]
+            - 'cell "SunRealms  best.sunrealms.net copy Welcome to Sunrealms [1.21] We have amazing gamemodes like SURVIVAL,SKYBLOCK,PRISON,GENERATORS,PIXELMON, & MORE. Join the #1 server today! We have a friendly community, great events, no lag, and a dedicated team. Copy our IP to join the ultimate adventure! Connect for amazing rewards and free ranks" [ref=e222]':
+              - link "SunRealms" [ref=e223] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-sunrealms.613
+                - img "SunRealms" [ref=e224]
+              - generic [ref=e225]:
+                - paragraph [ref=e226]:
+                  - generic [ref=e227]:
+                    - generic [ref=e228]: 
+                    - text: best.sunrealms.net
+                - generic [ref=e229]:
+                  - button [ref=e230] [cursor=pointer]:
+                    - generic [ref=e231]: 
+                  - button "copy" [ref=e232] [cursor=pointer]:
+                    - generic [ref=e233]: 
+              - paragraph [ref=e234]: "Welcome to Sunrealms [1.21] We have amazing gamemodes like SURVIVAL,SKYBLOCK,PRISON,GENERATORS,PIXELMON, & MORE. Join the #1 server today! We have a friendly community, great events, no lag, and a dedicated team. Copy our IP to join the ultimate adventure! Connect for amazing rewards and free ranks"
+            - cell "18246/30000" [ref=e235]
+            - cell " best.sunrealms.net" [ref=e236]:
+              - generic [ref=e237]:
+                - generic [ref=e238]: 
+                - generic [ref=e239]: best.sunrealms.net
+          - row "8 BlossomCraft BlossomCraft  best.blossomcraft.org copy Welcome to 🌸 BlossomCraft 🌸, an excellent Minecraft server known for it’s amazing experiences. We are a laid-back, no grief, economy, SMP server where we value community above all else. The server is running 1.21+, and everyone is welcome as both Java and Bedrock players are free to join! The server offers a variety of plugins that enhance the player experience while also staying true to Minecraft’s roots such as keep-inv, player warps, grief prevention, and more! ✨ 480/600  best.blossomcraft.org" [ref=e240]:
+            - cell "8" [ref=e241]:
+              - generic [ref=e242]: "8"
+            - cell "BlossomCraft" [ref=e243]:
+              - link "BlossomCraft" [ref=e244] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-blossomcraft---java-bedrock.507
+                - heading "BlossomCraft" [level=3] [ref=e245]
+            - cell "BlossomCraft  best.blossomcraft.org copy Welcome to 🌸 BlossomCraft 🌸, an excellent Minecraft server known for it’s amazing experiences. We are a laid-back, no grief, economy, SMP server where we value community above all else. The server is running 1.21+, and everyone is welcome as both Java and Bedrock players are free to join! The server offers a variety of plugins that enhance the player experience while also staying true to Minecraft’s roots such as keep-inv, player warps, grief prevention, and more! ✨" [ref=e246]:
+              - link "BlossomCraft" [ref=e247] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-blossomcraft---java-bedrock.507
+                - img "BlossomCraft" [ref=e248]
+              - generic [ref=e249]:
+                - paragraph [ref=e250]:
+                  - generic [ref=e251]:
+                    - generic [ref=e252]: 
+                    - text: best.blossomcraft.org
+                - generic [ref=e253]:
+                  - button [ref=e254] [cursor=pointer]:
+                    - generic [ref=e255]: 
+                  - button "copy" [ref=e256] [cursor=pointer]:
+                    - generic [ref=e257]: 
+              - paragraph [ref=e258]: Welcome to 🌸 BlossomCraft 🌸, an excellent Minecraft server known for it’s amazing experiences. We are a laid-back, no grief, economy, SMP server where we value community above all else. The server is running 1.21+, and everyone is welcome as both Java and Bedrock players are free to join! The server offers a variety of plugins that enhance the player experience while also staying true to Minecraft’s roots such as keep-inv, player warps, grief prevention, and more! ✨
+            - cell "480/600" [ref=e259]
+            - cell " best.blossomcraft.org" [ref=e260]:
+              - generic [ref=e261]:
+                - generic [ref=e262]: 
+                - generic [ref=e263]: best.blossomcraft.org
+          - row "9 Mineflake Mineflake  best.mineflake.net copy Dive into the thrilling world of MineFlake's LifeSteal SMP, where every heart counts! Battle alongside friends, forge alliances, and compete to claim the ultimate title of supremacy in this heart-pounding, steampunk-inspired survival adventure. Will you rise to the top or lose it all? Join MineFlake now and carve your legend! 8985/500  best.mineflake.net" [ref=e264]:
+            - cell "9" [ref=e265]:
+              - generic [ref=e266]: "9"
+            - cell "Mineflake" [ref=e267]:
+              - link "Mineflake" [ref=e268] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-mineflake.515
+                - heading "Mineflake" [level=3] [ref=e269]
+            - cell "Mineflake  best.mineflake.net copy Dive into the thrilling world of MineFlake's LifeSteal SMP, where every heart counts! Battle alongside friends, forge alliances, and compete to claim the ultimate title of supremacy in this heart-pounding, steampunk-inspired survival adventure. Will you rise to the top or lose it all? Join MineFlake now and carve your legend!" [ref=e270]:
+              - link "Mineflake" [ref=e271] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-mineflake.515
+                - img "Mineflake" [ref=e272]
+              - generic [ref=e273]:
+                - paragraph [ref=e274]:
+                  - generic [ref=e275]:
+                    - generic [ref=e276]: 
+                    - text: best.mineflake.net
+                - generic [ref=e277]:
+                  - button [ref=e278] [cursor=pointer]:
+                    - generic [ref=e279]: 
+                  - button "copy" [ref=e280] [cursor=pointer]:
+                    - generic [ref=e281]: 
+              - paragraph [ref=e282]: Dive into the thrilling world of MineFlake's LifeSteal SMP, where every heart counts! Battle alongside friends, forge alliances, and compete to claim the ultimate title of supremacy in this heart-pounding, steampunk-inspired survival adventure. Will you rise to the top or lose it all? Join MineFlake now and carve your legend!
+            - cell "8985/500" [ref=e283]
+            - cell " best.mineflake.net" [ref=e284]:
+              - generic [ref=e285]:
+                - generic [ref=e286]: 
+                - generic [ref=e287]: best.mineflake.net
+          - 'row "10 AkumaMC AkumaMC  bmc.akumamc.net copy [BEDROCK/JAVA SUPPORT] [1.8-1.22] AkumaMC is considered the #1 server providing an amazing playing experience with gamemodes like ★ Survival ★ Prison ★ Skyblock ★ No Lag ★ Daily events & more. Connect today to find out why AkumaMC is the BEST Minecraft experience to play on. Join a growing community of dedicated players, friendly staff, and constant updates designed to keep gameplay fresh, balanced, and fun for everyone. Whether you’re a casual player or a competitive grinder, AkumaMC has something for you. 30381/151950  bmc.akumamc.net" [ref=e288]':
+            - cell "10" [ref=e289]:
+              - generic [ref=e290]: "10"
+            - cell "AkumaMC" [ref=e291]:
+              - link "AkumaMC" [ref=e292] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-akumamc.614
+                - heading "AkumaMC" [level=3] [ref=e293]
+            - 'cell "AkumaMC  bmc.akumamc.net copy [BEDROCK/JAVA SUPPORT] [1.8-1.22] AkumaMC is considered the #1 server providing an amazing playing experience with gamemodes like ★ Survival ★ Prison ★ Skyblock ★ No Lag ★ Daily events & more. Connect today to find out why AkumaMC is the BEST Minecraft experience to play on. Join a growing community of dedicated players, friendly staff, and constant updates designed to keep gameplay fresh, balanced, and fun for everyone. Whether you’re a casual player or a competitive grinder, AkumaMC has something for you." [ref=e294]':
+              - link "AkumaMC" [ref=e295] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-akumamc.614
+                - img "AkumaMC" [ref=e296]
+              - generic [ref=e297]:
+                - paragraph [ref=e298]:
+                  - generic [ref=e299]:
+                    - generic [ref=e300]: 
+                    - text: bmc.akumamc.net
+                - generic [ref=e301]:
+                  - button [ref=e302] [cursor=pointer]:
+                    - generic [ref=e303]: 
+                  - button "copy" [ref=e304] [cursor=pointer]:
+                    - generic [ref=e305]: 
+              - paragraph [ref=e306]: "[BEDROCK/JAVA SUPPORT] [1.8-1.22] AkumaMC is considered the #1 server providing an amazing playing experience with gamemodes like ★ Survival ★ Prison ★ Skyblock ★ No Lag ★ Daily events & more. Connect today to find out why AkumaMC is the BEST Minecraft experience to play on. Join a growing community of dedicated players, friendly staff, and constant updates designed to keep gameplay fresh, balanced, and fun for everyone. Whether you’re a casual player or a competitive grinder, AkumaMC has something for you."
+            - cell "30381/151950" [ref=e307]
+            - cell " bmc.akumamc.net" [ref=e308]:
+              - generic [ref=e309]:
+                - generic [ref=e310]: 
+                - generic [ref=e311]: bmc.akumamc.net
+          - row [ref=e312]:
+            - cell "11" [ref=e313]:
+              - generic [ref=e314]: "11"
+            - cell "Purple Prison" [ref=e315]:
+              - link "Purple Prison" [ref=e316] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-purple-prison.557
+                - heading "Purple Prison" [level=3] [ref=e317]
+            - cell [ref=e318]:
+              - link "Purple Prison" [ref=e319] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-purple-prison.557
+                - img "Purple Prison" [ref=e320]
+              - generic [ref=e321]:
+                - paragraph [ref=e322]:
+                  - generic [ref=e323]:
+                    - generic [ref=e324]: 
+                    - text: purpleprison.net
+                - generic [ref=e325]:
+                  - button [ref=e326] [cursor=pointer]:
+                    - generic [ref=e327]: 
+                  - button "copy" [ref=e328] [cursor=pointer]:
+                    - generic [ref=e329]: 
+              - paragraph [ref=e330]: "🟪 Purple Prison: The Ultimate Minecraft Prison Experience Since 2014! 🟪 Welcome to Purple Prison! Since our inception in 2014, we've set the standard for Minecraft prison servers. Here's why we stand out among the rest of the servers on this server list, and why joining us is your next great adventure: 🔒 Epic Prison Gameplay: Master our unique prison world, advancing through ranks with our rewarding Prestige System. Every block mined is a step towards greatness. 🛍️ Dynamic Marketplace & Thrilling PVP: Our central spawn buzzes with shops and daily rewards, surrounded by a fierce PVP battleground. Get ready for action! ⚔️ PVP at its Finest: Our server shines with a heavy focus on PVP. Equip, strategize, and dominate in fast-paced battles. 👥 Supportive Community: Our welcoming community is always ready to assist, making every player's journey enjoyable. Be part of a positive and engaging environment. 🎨 Creative Plots: Express yourself in your personal space. Build, create, and trade in your very own plot. 💥 Massive Discord Community: Connect with over 120,000 members on our Discord, one of the largest MC Discord servers worldwide! Join Purple Prison Today! Experience the Best in Minecraft Prison Servers! 🔗 Server IP: mcip.purpleprison.net 🔗 Discord: discord.gg/pp"
+            - cell "840/1000" [ref=e331]
+            - cell " purpleprison.net" [ref=e332]:
+              - generic [ref=e333]:
+                - generic [ref=e334]: 
+                - generic [ref=e335]: purpleprison.net
+          - row "12 RiverNetwork SMP RiverNetwork SMP  rivernetwork.net copy RiverNetwork SMP is a Minecraft SMP server, running on the latest version (1.21.8). Some of its best features include PvP duels and fishing. Of course, the server has lots of other features as well. It even supports Java and Bedrock crossplay! The server also has an online store where you can buy ranks, crate keys, and claim blocks. Get ready to experience one of the best SMP servers for Minecraft. Join RiverNetwork SMP today! 35/2026  rivernetwork.net" [ref=e336]:
+            - cell "12" [ref=e337]:
+              - generic [ref=e338]: "12"
+            - cell "RiverNetwork SMP" [ref=e339]:
+              - link "RiverNetwork SMP" [ref=e340] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-rivernetwork-smp.435
+                - heading "RiverNetwork SMP" [level=3] [ref=e341]
+            - cell "RiverNetwork SMP  rivernetwork.net copy RiverNetwork SMP is a Minecraft SMP server, running on the latest version (1.21.8). Some of its best features include PvP duels and fishing. Of course, the server has lots of other features as well. It even supports Java and Bedrock crossplay! The server also has an online store where you can buy ranks, crate keys, and claim blocks. Get ready to experience one of the best SMP servers for Minecraft. Join RiverNetwork SMP today!" [ref=e342]:
+              - link "RiverNetwork SMP" [ref=e343] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-rivernetwork-smp.435
+                - img "RiverNetwork SMP" [ref=e344]
+              - generic [ref=e345]:
+                - paragraph [ref=e346]:
+                  - generic [ref=e347]:
+                    - generic [ref=e348]: 
+                    - text: rivernetwork.net
+                - generic [ref=e349]:
+                  - button [ref=e350] [cursor=pointer]:
+                    - generic [ref=e351]: 
+                  - button "copy" [ref=e352] [cursor=pointer]:
+                    - generic [ref=e353]: 
+              - paragraph [ref=e354]: RiverNetwork SMP is a Minecraft SMP server, running on the latest version (1.21.8). Some of its best features include PvP duels and fishing. Of course, the server has lots of other features as well. It even supports Java and Bedrock crossplay! The server also has an online store where you can buy ranks, crate keys, and claim blocks. Get ready to experience one of the best SMP servers for Minecraft. Join RiverNetwork SMP today!
+            - cell "35/2026" [ref=e355]
+            - cell " rivernetwork.net" [ref=e356]:
+              - generic [ref=e357]:
+                - generic [ref=e358]: 
+                - generic [ref=e359]: rivernetwork.net
+          - row "13 GrandTheftBedrock GrandTheftBedrock  play.gtbe.online copy GrandTheftBedrock (GTBE) is a Minecraft Bedrock server bringing a GTA-style experience to Pocket, Console, and Windows players. Explore a custom city, complete jobs and missions, earn money in a player-driven economy, and use weapons, sports cars, planes, jet skis, and even tanks. More features coming soon. 0/0  play.gtbe.online" [ref=e360]:
+            - cell "13" [ref=e361]:
+              - generic [ref=e362]: "13"
+            - cell "GrandTheftBedrock" [ref=e363]:
+              - link "GrandTheftBedrock" [ref=e364] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-grandtheftbedrock.574
+                - heading "GrandTheftBedrock" [level=3] [ref=e365]
+            - cell "GrandTheftBedrock  play.gtbe.online copy GrandTheftBedrock (GTBE) is a Minecraft Bedrock server bringing a GTA-style experience to Pocket, Console, and Windows players. Explore a custom city, complete jobs and missions, earn money in a player-driven economy, and use weapons, sports cars, planes, jet skis, and even tanks. More features coming soon." [ref=e366]:
+              - link "GrandTheftBedrock" [ref=e367] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-grandtheftbedrock.574
+                - img "GrandTheftBedrock" [ref=e368]
+              - generic [ref=e369]:
+                - paragraph [ref=e370]:
+                  - generic [ref=e371]:
+                    - generic [ref=e372]: 
+                    - text: play.gtbe.online
+                - generic [ref=e373]:
+                  - button [ref=e374] [cursor=pointer]:
+                    - generic [ref=e375]: 
+                  - button "copy" [ref=e376] [cursor=pointer]:
+                    - generic [ref=e377]: 
+              - paragraph [ref=e378]: GrandTheftBedrock (GTBE) is a Minecraft Bedrock server bringing a GTA-style experience to Pocket, Console, and Windows players. Explore a custom city, complete jobs and missions, earn money in a player-driven economy, and use weapons, sports cars, planes, jet skis, and even tanks. More features coming soon.
+            - cell "0/0" [ref=e379]
+            - cell " play.gtbe.online" [ref=e380]:
+              - generic [ref=e381]:
+                - generic [ref=e382]: 
+                - generic [ref=e383]: play.gtbe.online
+          - 'row "14 Cobblemon Rivals Cobblemon Rivals  play.cobblemonrivals.com copy Welcome to Cobblemon Rivals! This Pokémon Minecraft server offers the highest quality and most extensive Cobblemon experience out there! :) Join the public server and dive into Minecraft survival with your very own Pokémon! Catch Pokémon, battle gyms, fight bosses, and so much more! Check out the Discord and IP below! Server Version: 1.6.1 136/5000  play.cobblemonrivals.com" [ref=e384]':
+            - cell "14" [ref=e385]:
+              - generic [ref=e386]: "14"
+            - cell "Cobblemon Rivals" [ref=e387]:
+              - link "Cobblemon Rivals" [ref=e388] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-cobblemon-rivals.444
+                - heading "Cobblemon Rivals" [level=3] [ref=e389]
+            - 'cell "Cobblemon Rivals  play.cobblemonrivals.com copy Welcome to Cobblemon Rivals! This Pokémon Minecraft server offers the highest quality and most extensive Cobblemon experience out there! :) Join the public server and dive into Minecraft survival with your very own Pokémon! Catch Pokémon, battle gyms, fight bosses, and so much more! Check out the Discord and IP below! Server Version: 1.6.1" [ref=e390]':
+              - link "Cobblemon Rivals" [ref=e391] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-cobblemon-rivals.444
+                - img "Cobblemon Rivals" [ref=e392]
+              - generic [ref=e393]:
+                - paragraph [ref=e394]:
+                  - generic [ref=e395]:
+                    - generic [ref=e396]: 
+                    - text: play.cobblemonrivals.com
+                - generic [ref=e397]:
+                  - button [ref=e398] [cursor=pointer]:
+                    - generic [ref=e399]: 
+                  - button "copy" [ref=e400] [cursor=pointer]:
+                    - generic [ref=e401]: 
+              - paragraph [ref=e402]: "Welcome to Cobblemon Rivals! This Pokémon Minecraft server offers the highest quality and most extensive Cobblemon experience out there! :) Join the public server and dive into Minecraft survival with your very own Pokémon! Catch Pokémon, battle gyms, fight bosses, and so much more! Check out the Discord and IP below! Server Version: 1.6.1"
+            - cell "136/5000" [ref=e403]
+            - cell " play.cobblemonrivals.com" [ref=e404]:
+              - generic [ref=e405]:
+                - generic [ref=e406]: 
+                - generic [ref=e407]: play.cobblemonrivals.com
+          - row "15 MineMalia Network MineMalia Network  play.minemalia.com copy SURVIVAL- PRISON - ONEBLOCK - SKYBLOCK - FACTIONS - CREATIVE - BEDWARS - SKYWARS - KITPVP - DUELS - ARCADE SURVIVAL- PRISON - ONEBLOCK - SKYBLOCK - FACTIONS - CREATIVE - BEDWARS - SKYWARS - KITPVP - DUELS - ARCADE SURVIVAL- PRISON - ONEBLOCK - SKYBLOCK - FACTIONS - CREATIVE - BEDWARS - SKYWARS - KIT 963/2000  play.minemalia.com" [ref=e408]:
+            - cell "15" [ref=e409]:
+              - generic [ref=e410]: "15"
+            - cell "MineMalia Network" [ref=e411]:
+              - link "MineMalia Network" [ref=e412] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-minemalia-network.522
+                - heading "MineMalia Network" [level=3] [ref=e413]
+            - cell "MineMalia Network  play.minemalia.com copy SURVIVAL- PRISON - ONEBLOCK - SKYBLOCK - FACTIONS - CREATIVE - BEDWARS - SKYWARS - KITPVP - DUELS - ARCADE SURVIVAL- PRISON - ONEBLOCK - SKYBLOCK - FACTIONS - CREATIVE - BEDWARS - SKYWARS - KITPVP - DUELS - ARCADE SURVIVAL- PRISON - ONEBLOCK - SKYBLOCK - FACTIONS - CREATIVE - BEDWARS - SKYWARS - KIT" [ref=e414]:
+              - link "MineMalia Network" [ref=e415] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-minemalia-network.522
+                - img "MineMalia Network" [ref=e416]
+              - generic [ref=e417]:
+                - paragraph [ref=e418]:
+                  - generic [ref=e419]:
+                    - generic [ref=e420]: 
+                    - text: play.minemalia.com
+                - generic [ref=e421]:
+                  - button [ref=e422] [cursor=pointer]:
+                    - generic [ref=e423]: 
+                  - button "copy" [ref=e424] [cursor=pointer]:
+                    - generic [ref=e425]: 
+              - paragraph [ref=e426]: SURVIVAL- PRISON - ONEBLOCK - SKYBLOCK - FACTIONS - CREATIVE - BEDWARS - SKYWARS - KITPVP - DUELS - ARCADE SURVIVAL- PRISON - ONEBLOCK - SKYBLOCK - FACTIONS - CREATIVE - BEDWARS - SKYWARS - KITPVP - DUELS - ARCADE SURVIVAL- PRISON - ONEBLOCK - SKYBLOCK - FACTIONS - CREATIVE - BEDWARS - SKYWARS - KIT
+            - cell "963/2000" [ref=e427]
+            - cell " play.minemalia.com" [ref=e428]:
+              - generic [ref=e429]:
+                - generic [ref=e430]: 
+                - generic [ref=e431]: play.minemalia.com
+          - 'row "16 MysticMC MysticMC  best.mysticmc.co copy Complex Gaming [1.21] - We offer a wide range of gamemodes including, ★ Skyblock ★ Factions ★ Survival ★ Pixelmon ★ Prison ★ Creative ★ and MUCH MORE. Join today to experience your #1 Minecraft Server experience, with a friendly and welcoming community for all ★ EVENTS ★ ZERO LAG ★ DEDICATED STAFF ★ 268/500  best.mysticmc.co" [ref=e432]':
+            - cell "16" [ref=e433]:
+              - generic [ref=e434]: "16"
+            - cell "MysticMC" [ref=e435]:
+              - link "MysticMC" [ref=e436] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-complex.439
+                - heading "MysticMC" [level=3] [ref=e437]
+            - 'cell "MysticMC  best.mysticmc.co copy Complex Gaming [1.21] - We offer a wide range of gamemodes including, ★ Skyblock ★ Factions ★ Survival ★ Pixelmon ★ Prison ★ Creative ★ and MUCH MORE. Join today to experience your #1 Minecraft Server experience, with a friendly and welcoming community for all ★ EVENTS ★ ZERO LAG ★ DEDICATED STAFF ★" [ref=e438]':
+              - link "MysticMC" [ref=e439] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-complex.439
+                - img "MysticMC" [ref=e440]
+              - generic [ref=e441]:
+                - paragraph [ref=e442]:
+                  - generic [ref=e443]:
+                    - generic [ref=e444]: 
+                    - text: best.mysticmc.co
+                - generic [ref=e445]:
+                  - button [ref=e446] [cursor=pointer]:
+                    - generic [ref=e447]: 
+                  - button "copy" [ref=e448] [cursor=pointer]:
+                    - generic [ref=e449]: 
+              - paragraph [ref=e450]: "Complex Gaming [1.21] - We offer a wide range of gamemodes including, ★ Skyblock ★ Factions ★ Survival ★ Pixelmon ★ Prison ★ Creative ★ and MUCH MORE. Join today to experience your #1 Minecraft Server experience, with a friendly and welcoming community for all ★ EVENTS ★ ZERO LAG ★ DEDICATED STAFF ★"
+            - cell "268/500" [ref=e451]
+            - cell " best.mysticmc.co" [ref=e452]:
+              - generic [ref=e453]:
+                - generic [ref=e454]: 
+                - generic [ref=e455]: best.mysticmc.co
+          - row "17 SunnySMP SunnySMP  sunnysmp.net copy Welcome to SunnySMP — your cozy corner of Minecraft survival! If you want a chill, friendly, conflict-free server, this is the place for you. Explore vibrant biomes, create your dream base, and play at your own pace. With a peaceful, welcoming community, SunnySMP is the perfect spot to relax and thrive. 99/1000  sunnysmp.net" [ref=e456]:
+            - cell "17" [ref=e457]:
+              - generic [ref=e458]: "17"
+            - cell "SunnySMP" [ref=e459]:
+              - link "SunnySMP" [ref=e460] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-sunnysmp.449
+                - heading "SunnySMP" [level=3] [ref=e461]
+            - cell "SunnySMP  sunnysmp.net copy Welcome to SunnySMP — your cozy corner of Minecraft survival! If you want a chill, friendly, conflict-free server, this is the place for you. Explore vibrant biomes, create your dream base, and play at your own pace. With a peaceful, welcoming community, SunnySMP is the perfect spot to relax and thrive." [ref=e462]:
+              - link "SunnySMP" [ref=e463] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-sunnysmp.449
+                - img "SunnySMP" [ref=e464]
+              - generic [ref=e465]:
+                - paragraph [ref=e466]:
+                  - generic [ref=e467]:
+                    - generic [ref=e468]: 
+                    - text: sunnysmp.net
+                - generic [ref=e469]:
+                  - button [ref=e470] [cursor=pointer]:
+                    - generic [ref=e471]: 
+                  - button "copy" [ref=e472] [cursor=pointer]:
+                    - generic [ref=e473]: 
+              - paragraph [ref=e474]: Welcome to SunnySMP — your cozy corner of Minecraft survival! If you want a chill, friendly, conflict-free server, this is the place for you. Explore vibrant biomes, create your dream base, and play at your own pace. With a peaceful, welcoming community, SunnySMP is the perfect spot to relax and thrive.
+            - cell "99/1000" [ref=e475]
+            - cell " sunnysmp.net" [ref=e476]:
+              - generic [ref=e477]:
+                - generic [ref=e478]: 
+                - generic [ref=e479]: sunnysmp.net
+          - 'row "18 Twerion Twerion  hey.twerion.net copy ⚔️ BedWars Team PvP meets base defense! Protect your bed and destroy the opponents’. Fast-paced action, creative strategies and thrilling clutch moments. 🚀 FastBuilders Speed is key! Show off your quick building skills and master parkour-style placements in competitive time-based build duels. 🛡️ Practice Perfect your skills in professional training modes: 475/500  hey.twerion.net" [ref=e480]':
+            - cell "18" [ref=e481]:
+              - generic [ref=e482]: "18"
+            - cell "Twerion" [ref=e483]:
+              - link "Twerion" [ref=e484] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-twerion.467
+                - heading "Twerion" [level=3] [ref=e485]
+            - cell "Twerion  hey.twerion.net copy ⚔️ BedWars Team PvP meets base defense! Protect your bed and destroy the opponents’. Fast-paced action, creative strategies and thrilling clutch moments. 🚀 FastBuilders Speed is key! Show off your quick building skills and master parkour-style placements in competitive time-based build duels. 🛡️ Practice Perfect your skills in professional training modes:" [ref=e486]:
+              - link "Twerion" [ref=e487] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-twerion.467
+                - img "Twerion" [ref=e488]
+              - generic [ref=e489]:
+                - paragraph [ref=e490]:
+                  - generic [ref=e491]:
+                    - generic [ref=e492]: 
+                    - text: hey.twerion.net
+                - generic [ref=e493]:
+                  - button [ref=e494] [cursor=pointer]:
+                    - generic [ref=e495]: 
+                  - button "copy" [ref=e496] [cursor=pointer]:
+                    - generic [ref=e497]: 
+              - paragraph [ref=e498]: "⚔️ BedWars Team PvP meets base defense! Protect your bed and destroy the opponents’. Fast-paced action, creative strategies and thrilling clutch moments. 🚀 FastBuilders Speed is key! Show off your quick building skills and master parkour-style placements in competitive time-based build duels. 🛡️ Practice Perfect your skills in professional training modes:"
+            - cell "475/500" [ref=e499]
+            - cell " hey.twerion.net" [ref=e500]:
+              - generic [ref=e501]:
+                - generic [ref=e502]: 
+                - generic [ref=e503]: hey.twerion.net
+          - row "19 BoxMC BoxMC  boxmc.net copy BoxMC.net is the true BoxSMP Challenge experience, with exclusive and super fun powers for Java and Bedrock players. Join our thriving, cross-platform community and discover what a true box server feels like. We are determined to make the best crosslay server for minecraft bedrock and minecraft java edition! 89/300  boxmc.net" [ref=e504]:
+            - cell "19" [ref=e505]:
+              - generic [ref=e506]: "19"
+            - cell "BoxMC" [ref=e507]:
+              - link "BoxMC" [ref=e508] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-boxmc.440
+                - heading "BoxMC" [level=3] [ref=e509]
+            - cell "BoxMC  boxmc.net copy BoxMC.net is the true BoxSMP Challenge experience, with exclusive and super fun powers for Java and Bedrock players. Join our thriving, cross-platform community and discover what a true box server feels like. We are determined to make the best crosslay server for minecraft bedrock and minecraft java edition!" [ref=e510]:
+              - link "BoxMC" [ref=e511] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-boxmc.440
+                - img "BoxMC" [ref=e512]
+              - generic [ref=e513]:
+                - paragraph [ref=e514]:
+                  - generic [ref=e515]:
+                    - generic [ref=e516]: 
+                    - text: boxmc.net
+                - generic [ref=e517]:
+                  - button [ref=e518] [cursor=pointer]:
+                    - generic [ref=e519]: 
+                  - button "copy" [ref=e520] [cursor=pointer]:
+                    - generic [ref=e521]: 
+              - paragraph [ref=e522]: BoxMC.net is the true BoxSMP Challenge experience, with exclusive and super fun powers for Java and Bedrock players. Join our thriving, cross-platform community and discover what a true box server feels like. We are determined to make the best crosslay server for minecraft bedrock and minecraft java edition!
+            - cell "89/300" [ref=e523]
+            - cell " boxmc.net" [ref=e524]:
+              - generic [ref=e525]:
+                - generic [ref=e526]: 
+                - generic [ref=e527]: boxmc.net
+          - row "20 VanillaPlus VanillaPlus  play.vanillaplus.net copy Vanilla+ is the ultimate Crystal PvP and Hardcore SMP experience, thriving since 2021! Battle rivals in explosive Crystal PvP, raid enemy bases, and prove your skills in the most intense combat. Build an empire, conquer foes, and rise to dominance while enjoying a true hardcore survival challenge every day! 179/500  play.vanillaplus.net" [ref=e528]:
+            - cell "20" [ref=e529]:
+              - generic [ref=e530]: "20"
+            - cell "VanillaPlus" [ref=e531]:
+              - link "VanillaPlus" [ref=e532] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-vanillaplus.448
+                - heading "VanillaPlus" [level=3] [ref=e533]
+            - cell "VanillaPlus  play.vanillaplus.net copy Vanilla+ is the ultimate Crystal PvP and Hardcore SMP experience, thriving since 2021! Battle rivals in explosive Crystal PvP, raid enemy bases, and prove your skills in the most intense combat. Build an empire, conquer foes, and rise to dominance while enjoying a true hardcore survival challenge every day!" [ref=e534]:
+              - link "VanillaPlus" [ref=e535] [cursor=pointer]:
+                - /url: https://minecraftserverlist.co/server-vanillaplus.448
+                - img "VanillaPlus" [ref=e536]
+              - generic [ref=e537]:
+                - paragraph [ref=e538]:
+                  - generic [ref=e539]:
+                    - generic [ref=e540]: 
+                    - text: play.vanillaplus.net
+                - generic [ref=e541]:
+                  - button [ref=e542] [cursor=pointer]:
+                    - generic [ref=e543]: 
+                  - button "copy" [ref=e544] [cursor=pointer]:
+                    - generic [ref=e545]: 
+              - paragraph [ref=e546]: Vanilla+ is the ultimate Crystal PvP and Hardcore SMP experience, thriving since 2021! Battle rivals in explosive Crystal PvP, raid enemy bases, and prove your skills in the most intense combat. Build an empire, conquer foes, and rise to dominance while enjoying a true hardcore survival challenge every day!
+            - cell "179/500" [ref=e547]
+            - cell " play.vanillaplus.net" [ref=e548]:
+              - generic [ref=e549]:
+                - generic [ref=e550]: 
+                - generic [ref=e551]: play.vanillaplus.net
+        - rowgroup [ref=e552]:
+          - row "1 2 3 4 5 ... 12" [ref=e553]:
+            - columnheader "1 2 3 4 5 ... 12" [ref=e554]:
+              - generic [ref=e555]:
+                - generic [ref=e556]: "1"
+                - link "2" [ref=e557] [cursor=pointer]:
+                  - /url: https://minecraftserverlist.co/pg.2
+                - link "3" [ref=e558] [cursor=pointer]:
+                  - /url: https://minecraftserverlist.co/pg.3
+                - link "4" [ref=e559] [cursor=pointer]:
+                  - /url: https://minecraftserverlist.co/pg.4
+                - link "5" [ref=e560] [cursor=pointer]:
+                  - /url: https://minecraftserverlist.co/pg.5
+                - generic [ref=e561]: ...
+                - link "12" [ref=e562] [cursor=pointer]:
+                  - /url: https://minecraftserverlist.co/pg.12
+      - generic:
+        - insertion [ref=e565]
+        - insertion [ref=e568]
+      - text: ✕      
+  - generic [ref=e569]:
+    - insertion:
+      - generic:
+        - iframe
+  - contentinfo [ref=e570]:
+    - generic [ref=e571]:
+      - generic [ref=e572]:
+        - generic [ref=e573]:
+          - heading "Minecraft Server List" [level=4] [ref=e574]
+          - paragraph [ref=e575]: Discover the best Minecraft servers and join amazing communities.
+        - generic [ref=e576]:
+          - heading "Quick Links" [level=4] [ref=e577]
+          - list [ref=e578]:
+            - listitem [ref=e579]:
+              - link "Home" [ref=e580] [cursor=pointer]:
+                - /url: /
+            - listitem [ref=e581]:
+              - link "My Servers" [ref=e582] [cursor=pointer]:
+                - /url: /register.php
+            - listitem [ref=e583]:
+              - link "Sponsored" [ref=e584] [cursor=pointer]:
+                - /url: /register.php
+            - listitem [ref=e585]:
+              - link "Blog" [ref=e586] [cursor=pointer]:
+                - /url: /blog/
+        - generic [ref=e587]:
+          - heading "Legal & Info" [level=4] [ref=e588]
+          - list [ref=e589]:
+            - listitem [ref=e590]:
+              - link "Terms of Service" [ref=e591] [cursor=pointer]:
+                - /url: /termsofservice.php
+            - listitem [ref=e592]:
+              - link "Privacy Policy" [ref=e593] [cursor=pointer]:
+                - /url: /privacypolicy.php
+            - listitem [ref=e594]:
+              - link "About Us" [ref=e595] [cursor=pointer]:
+                - /url: /about-us.php
+            - listitem [ref=e596]:
+              - link "FAQ" [ref=e597] [cursor=pointer]:
+                - /url: /faq.php
+        - generic [ref=e598]:
+          - heading "Community" [level=4] [ref=e599]
+          - list [ref=e600]:
+            - listitem [ref=e601]:
+              - link "Join Us" [ref=e602] [cursor=pointer]:
+                - /url: /register.php
+            - listitem [ref=e603]:
+              - link "Login" [ref=e604] [cursor=pointer]:
+                - /url: /login.php
+            - listitem [ref=e605]:
+              - link "Support" [ref=e606] [cursor=pointer]:
+                - /url: /contact.php
+            - listitem [ref=e607]:
+              - link "Contact" [ref=e608] [cursor=pointer]:
+                - /url: /contact.php
+      - paragraph [ref=e610]: © 2026 Best Minecraft Servers. All rights reserved.

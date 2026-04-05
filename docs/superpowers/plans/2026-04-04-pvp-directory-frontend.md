@@ -10,6 +10,144 @@
 
 ---
 
+## Chunk 7: Programmatic SEO Pages (Long-Tail)
+
+### Task 10: Programmatic SEO — Version/Tag/Region Pages
+
+**Files:**
+- Create: `src/app/minecraft/version/[version]/[tag]/[region]/page.tsx`
+- Create: `src/app/minecraft/tag/[tag]/[variant]/page.tsx`
+- Modify: `src/app/api/servers/route.ts` (add region filter)
+
+These are the "long-tail net" pages that auto-generate for every combination of version + tag + region, capturing AI-driven search traffic.
+
+- [ ] **Step 1: Add region filter to server list API**
+
+Add `region` query param to `src/app/api/servers/route.ts`:
+```typescript
+if (region) {
+  query = query.eq("region", region);
+}
+```
+
+- [ ] **Step 2: Write version/tag/region page**
+
+```typescript
+// src/app/minecraft/version/[version]/[tag]/[region]/page.tsx
+
+import { createClient } from "@/lib/supabase/server";
+import { ServerCard } from "@/components/server/ServerCard";
+import { Metadata } from "next";
+
+const VERSION_LABELS: Record<string, string> = {
+  "1.21.1": "Minecraft 1.21.1",
+  "1.21": "Minecraft 1.21",
+  "1.20.4": "Minecraft 1.20.4",
+  "1.16": "Minecraft 1.16",
+  "1.12": "Minecraft 1.12",
+  "1.8": "Minecraft 1.8",
+};
+
+const TAG_LABELS: Record<string, string> = {
+  "crystal-pvp": "Crystal PvP",
+  "uhc-pvp": "UHC PvP",
+  "sumo": "Sumo",
+  "nodepuff": "NoDebuff",
+  "lifesteal": "Lifesteal",
+  "smp": "SMP",
+  "practice": "Practice",
+  "bridge": "Bridge",
+  "hunger-games": "Hunger Games",
+  "prison": "Prison",
+};
+
+const REGION_LABELS: Record<string, string> = {
+  "north-america": "North America",
+  "europe": "Europe",
+  "asia": "Asia",
+  "oceania": "Oceania",
+  "south-america": "South America",
+};
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ version: string; tag: string; region: string }>;
+}): Promise<Metadata> {
+  const { version, tag, region } = await params;
+  const versionLabel = VERSION_LABELS[version] ?? version;
+  const tagLabel = TAG_LABELS[tag] ?? tag;
+  const regionLabel = REGION_LABELS[region] ?? region;
+  return {
+    title: `${versionLabel} ${tagLabel} Servers (${regionLabel}) | PvP Index`,
+    description: `Find the best ${versionLabel} ${tagLabel} servers hosted in ${regionLabel}. Real-time latency, player counts, and verified rankings.`,
+  };
+}
+
+export default async function VersionTagRegionPage({
+  params,
+}: {
+  params: Promise<{ version: string; tag: string; region: string }>;
+}) {
+  const { version, tag, region } = await params;
+  const supabase = await createClient();
+
+  const { data: servers } = await supabase
+    .from("servers")
+    .select(`
+      id, ip, port, name, description, version, tags, verified, vote_count,
+      server_status (status, latency_ms, player_count, max_players)
+    `)
+    .eq("version", version)
+    .contains("tags", [tag])
+    .eq("region", region)
+    .order("vote_count", { ascending: false })
+    .limit(50);
+
+  return (
+    <div className="min-h-screen">
+      <header className="border-b border-zinc-800 py-4">
+        <div className="max-w-6xl mx-auto px-4">
+          <a href="/minecraft" className="text-sm text-zinc-500 hover:text-white transition-colors">← Back</a>
+        </div>
+      </header>
+
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-white mb-2">
+          {VERSION_LABELS[version] ?? version} {TAG_LABELS[tag] ?? tag} — {REGION_LABELS[region] ?? region}
+        </h1>
+        <p className="text-zinc-400 mb-6">
+          {servers?.length ?? 0} servers found
+        </p>
+
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+          {servers?.map((server) => (
+            <ServerCard key={server.id} server={server as any} />
+          ))}
+        </div>
+      </main>
+    </div>
+  );
+}
+```
+
+- [ ] **Step 3: Write tag/variant page**
+
+```typescript
+// src/app/minecraft/tag/[tag]/[variant]/page.tsx
+// Similar structure — variant could be "low-ping", "no-p2w", "seasonal"
+// Falls back to tag-only page if variant not provided
+```
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add src/app/minecraft/version/[version]/[tag]/[region]/page.tsx src/app/minecraft/tag/[tag]/[variant]/page.tsx
+git commit -m "feat: add programmatic SEO pages for version/tag/region combinations"
+```
+
+---
+
 ## Chunk 1: Core UI Components
 
 ### Task 1: Server Card Component

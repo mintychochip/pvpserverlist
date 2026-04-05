@@ -1,0 +1,591 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "Minecraft Server List" [ref=e5] [cursor=pointer]:
+          - /url: https://minecraft.buzz/
+          - img "Minecraft Server List" [ref=e6]
+        - button "Toggle Dark Mode" [ref=e7] [cursor=pointer]:
+          - generic [ref=e8]: 
+        - list [ref=e10]:
+          - listitem [ref=e11]:
+            - button "Minecraft Servers" [ref=e12] [cursor=pointer]
+          - listitem [ref=e13]:
+            - link "Realms" [ref=e14] [cursor=pointer]:
+              - /url: realms
+          - listitem [ref=e15]:
+            - link "Events" [ref=e16] [cursor=pointer]:
+              - /url: events
+          - listitem [ref=e17]:
+            - button "Server Owners" [ref=e18] [cursor=pointer]
+          - listitem [ref=e19]:
+            - link "Contact" [ref=e20] [cursor=pointer]:
+              - /url: contact
+          - listitem [ref=e21]:
+            - link "About" [ref=e22] [cursor=pointer]:
+              - /url: about
+          - listitem [ref=e23]:
+            - link "Blog" [ref=e24] [cursor=pointer]:
+              - /url: https://blog.minecraft.buzz
+          - listitem [ref=e25]:
+            - link "Search" [ref=e26] [cursor=pointer]:
+              - /url: search
+  - generic [ref=e30]:
+    - generic [ref=e31]:
+      - 'heading "Minecraft Server List: The Best Minecraft Servers" [level=1] [ref=e32]'
+      - paragraph [ref=e33]: "Here's a list of the best Minecraft servers in 2026:"
+      - table [ref=e34]:
+        - rowgroup [ref=e35]:
+          - row "Rank Name Server About Players Status" [ref=e36]:
+            - columnheader "Rank" [ref=e37]
+            - columnheader "Name" [ref=e38]
+            - columnheader "Server" [ref=e39]
+            - columnheader "About" [ref=e40]
+            - columnheader "Players" [ref=e41]
+            - columnheader "Status" [ref=e42]
+        - rowgroup [ref=e43]:
+          - row "1 LemonCloud LemonCloud Featured Server buzz.lemoncloud.org  Version 1.7 to 26.1  Survival Server  Cross Platform 498/598 Online  Welcome to the LemonCloud Minecraft multiplayer network! We offer a wide variety of game modes for players of all interests and skill levels, including Skyblock, Survival, Prison, Factions, Creative, and PvP. Our network is known for its friendly and welcoming community, where players..." [ref=e44]:
+            - cell "1" [ref=e45]:
+              - generic [ref=e46]: "1"
+            - cell "LemonCloud LemonCloud" [ref=e47]:
+              - generic [ref=e48]:
+                - link "LemonCloud" [ref=e49] [cursor=pointer]:
+                  - /url: server/3096
+                  - img "LemonCloud" [ref=e50]
+                - heading "LemonCloud" [level=3] [ref=e51]
+            - cell "Featured Server buzz.lemoncloud.org" [ref=e52]:
+              - generic [ref=e53]:
+                - link [ref=e54] [cursor=pointer]:
+                  - /url: server/3096
+                - generic [ref=e56]:
+                  - tooltip "Featured Server" [ref=e57]: 
+                  - text: buzz.lemoncloud.org
+            - cell " Version 1.7 to 26.1  Survival Server  Cross Platform" [ref=e58]:
+              - generic [ref=e59]:
+                - generic [ref=e60]:
+                  - generic [ref=e61]: 
+                  - text: Version 1.7 to 26.1
+                - link " Survival Server" [ref=e62] [cursor=pointer]:
+                  - /url: category/survival
+                  - generic [ref=e63]:
+                    - generic [ref=e64]: 
+                    - text: Survival Server
+                - generic [ref=e65]:
+                  - generic [ref=e66]: 
+                  - text: Cross Platform
+            - cell "498/598" [ref=e67]
+            - cell "Online " [ref=e68]:
+              - link "Online " [ref=e69] [cursor=pointer]:
+                - /url: server/3096
+                - generic [ref=e70]:
+                  - text: Online
+                  - generic [ref=e71]: 
+            - cell "Welcome to the LemonCloud Minecraft multiplayer network! We offer a wide variety of game modes for players of all interests and skill levels, including Skyblock, Survival, Prison, Factions, Creative, and PvP. Our network is known for its friendly and welcoming community, where players..." [ref=e72]:
+              - paragraph [ref=e73]: Welcome to the LemonCloud Minecraft multiplayer network! We offer a wide variety of game modes for players of all interests and skill levels, including Skyblock, Survival, Prison, Factions, Creative, and PvP. Our network is known for its friendly and welcoming community, where players...
+          - 'row "2 Complex Gaming Complex Gaming Featured Server bee.mc-complex.com  Version 1.7 to 26.1  Survival Server  Cross Platform 7071/7121 Online  Welcome to Complex-Gaming! We currently offer a wide selection of servers ranging from Cobblemon, Pixelmon, Skyblock, Survival, Factions, Creative, Prison, Lifesteal and more! Please read below for more information. Cobblemon: (Latest Verison, 1.7.1): A brand new 1.21 pokemon in..." [ref=e74]':
+            - cell "2" [ref=e75]:
+              - generic [ref=e76]: "2"
+            - cell "Complex Gaming Complex Gaming" [ref=e77]:
+              - generic [ref=e78]:
+                - link "Complex Gaming" [ref=e79] [cursor=pointer]:
+                  - /url: server/4223
+                  - img "Complex Gaming" [ref=e80]
+                - heading "Complex Gaming" [level=3] [ref=e81]
+            - cell "Featured Server bee.mc-complex.com" [ref=e82]:
+              - generic [ref=e83]:
+                - link [ref=e84] [cursor=pointer]:
+                  - /url: server/4223
+                - generic [ref=e86]:
+                  - tooltip "Featured Server" [ref=e87]: 
+                  - text: bee.mc-complex.com
+            - cell " Version 1.7 to 26.1  Survival Server  Cross Platform" [ref=e88]:
+              - generic [ref=e89]:
+                - generic [ref=e90]:
+                  - generic [ref=e91]: 
+                  - text: Version 1.7 to 26.1
+                - link " Survival Server" [ref=e92] [cursor=pointer]:
+                  - /url: category/survival
+                  - generic [ref=e93]:
+                    - generic [ref=e94]: 
+                    - text: Survival Server
+                - generic [ref=e95]:
+                  - generic [ref=e96]: 
+                  - text: Cross Platform
+            - cell "7071/7121" [ref=e97]
+            - cell "Online " [ref=e98]:
+              - link "Online " [ref=e99] [cursor=pointer]:
+                - /url: server/4223
+                - generic [ref=e100]:
+                  - text: Online
+                  - generic [ref=e101]: 
+            - 'cell "Welcome to Complex-Gaming! We currently offer a wide selection of servers ranging from Cobblemon, Pixelmon, Skyblock, Survival, Factions, Creative, Prison, Lifesteal and more! Please read below for more information. Cobblemon: (Latest Verison, 1.7.1): A brand new 1.21 pokemon in..." [ref=e102]':
+              - paragraph [ref=e103]: "Welcome to Complex-Gaming! We currently offer a wide selection of servers ranging from Cobblemon, Pixelmon, Skyblock, Survival, Factions, Creative, Prison, Lifesteal and more! Please read below for more information. Cobblemon: (Latest Verison, 1.7.1): A brand new 1.21 pokemon in..."
+          - 'row "3 OPBlocks Network OPBlocks Network Featured Server buzz.opblocks.com  Version 1.7 to 1.21  Skyblock Server  Cross Platform 4212/4500 Online  OPBlocks is a high-quality Minecraft Cobblemon, Prison, Survival, and Skyblock server featuring unique content and an amazing community, friendly staff, and awesome players like you! BEDROCK SUPPORTED JAVA IP: buzz.opblocks.com BEDROCK IP: bedrock.opblocks.com (Port 19132) 1.8 ->..." [ref=e104]':
+            - cell "3" [ref=e105]:
+              - generic [ref=e106]: "3"
+            - cell "OPBlocks Network OPBlocks Network" [ref=e107]:
+              - generic [ref=e108]:
+                - link "OPBlocks Network" [ref=e109] [cursor=pointer]:
+                  - /url: server/5482
+                  - img "OPBlocks Network" [ref=e110]
+                - heading "OPBlocks Network" [level=3] [ref=e111]
+            - cell "Featured Server buzz.opblocks.com" [ref=e112]:
+              - generic [ref=e113]:
+                - link [ref=e114] [cursor=pointer]:
+                  - /url: server/5482
+                - generic [ref=e116]:
+                  - tooltip "Featured Server" [ref=e117]: 
+                  - text: buzz.opblocks.com
+            - cell " Version 1.7 to 1.21  Skyblock Server  Cross Platform" [ref=e118]:
+              - generic [ref=e119]:
+                - generic [ref=e120]:
+                  - generic [ref=e121]: 
+                  - text: Version 1.7 to 1.21
+                - link " Skyblock Server" [ref=e122] [cursor=pointer]:
+                  - /url: category/skyblock
+                  - generic [ref=e123]:
+                    - generic [ref=e124]: 
+                    - text: Skyblock Server
+                - generic [ref=e125]:
+                  - generic [ref=e126]: 
+                  - text: Cross Platform
+            - cell "4212/4500" [ref=e127]
+            - cell "Online " [ref=e128]:
+              - link "Online " [ref=e129] [cursor=pointer]:
+                - /url: server/5482
+                - generic [ref=e130]:
+                  - text: Online
+                  - generic [ref=e131]: 
+            - 'cell "OPBlocks is a high-quality Minecraft Cobblemon, Prison, Survival, and Skyblock server featuring unique content and an amazing community, friendly staff, and awesome players like you! BEDROCK SUPPORTED JAVA IP: buzz.opblocks.com BEDROCK IP: bedrock.opblocks.com (Port 19132) 1.8 ->..." [ref=e132]':
+              - paragraph [ref=e133]: "OPBlocks is a high-quality Minecraft Cobblemon, Prison, Survival, and Skyblock server featuring unique content and an amazing community, friendly staff, and awesome players like you! BEDROCK SUPPORTED JAVA IP: buzz.opblocks.com BEDROCK IP: bedrock.opblocks.com (Port 19132) 1.8 ->..."
+          - row "4 Netherite Netherite Featured Server join.netherite.gg  Version 1.7 to 26.1  Survival Server  Cross Platform 176/2026 Online  **BEST TRADING SERVER** Netherite is a unique Minecraft Network focused on the game modes Lifesteal, Survival, Factions, Prison and Skyblock. The network strives towards prospering in every area of the Minecraft space. Our objective is to deliver the most enjoyable gaming..." [ref=e134]:
+            - cell "4" [ref=e135]:
+              - generic [ref=e136]: "4"
+            - cell "Netherite Netherite" [ref=e137]:
+              - generic [ref=e138]:
+                - link "Netherite" [ref=e139] [cursor=pointer]:
+                  - /url: server/5416
+                  - img "Netherite" [ref=e140]
+                - heading "Netherite" [level=3] [ref=e141]
+            - cell "Featured Server join.netherite.gg" [ref=e142]:
+              - generic [ref=e143]:
+                - link [ref=e144] [cursor=pointer]:
+                  - /url: server/5416
+                - generic [ref=e146]:
+                  - tooltip "Featured Server" [ref=e147]: 
+                  - text: join.netherite.gg
+            - cell " Version 1.7 to 26.1  Survival Server  Cross Platform" [ref=e148]:
+              - generic [ref=e149]:
+                - generic [ref=e150]:
+                  - generic [ref=e151]: 
+                  - text: Version 1.7 to 26.1
+                - link " Survival Server" [ref=e152] [cursor=pointer]:
+                  - /url: category/survival
+                  - generic [ref=e153]:
+                    - generic [ref=e154]: 
+                    - text: Survival Server
+                - generic [ref=e155]:
+                  - generic [ref=e156]: 
+                  - text: Cross Platform
+            - cell "176/2026" [ref=e157]
+            - cell "Online " [ref=e158]:
+              - link "Online " [ref=e159] [cursor=pointer]:
+                - /url: server/5416
+                - generic [ref=e160]:
+                  - text: Online
+                  - generic [ref=e161]: 
+            - cell "**BEST TRADING SERVER** Netherite is a unique Minecraft Network focused on the game modes Lifesteal, Survival, Factions, Prison and Skyblock. The network strives towards prospering in every area of the Minecraft space. Our objective is to deliver the most enjoyable gaming..." [ref=e162]:
+              - paragraph [ref=e163]: "**BEST TRADING SERVER** Netherite is a unique Minecraft Network focused on the game modes Lifesteal, Survival, Factions, Prison and Skyblock. The network strives towards prospering in every area of the Minecraft space. Our objective is to deliver the most enjoyable gaming..."
+          - 'row "5 ManaCube ManaCube Featured Server buzz.manacube.com  Version 1.8 to 1.21  Survival Server  Cross Platform 1356/3500 Online  IP: BUZZ.MANACUBE.COM Over the past 12 years, 6 million players have enjoyed our unique game modes: Parkour, Skyblock, SMP, KitPvP, Lifesteal, Prison, Earth Towny and Creative! Parkour: Over 2500 unique maps. Olympus: A Greek mythology RPG. Grow as demi-gods through quests, mining,..." [ref=e164]':
+            - cell "5" [ref=e165]:
+              - generic [ref=e166]: "5"
+            - cell "ManaCube ManaCube" [ref=e167]:
+              - generic [ref=e168]:
+                - link "ManaCube" [ref=e169] [cursor=pointer]:
+                  - /url: server/4306
+                  - img "ManaCube" [ref=e170]
+                - heading "ManaCube" [level=3] [ref=e171]
+            - cell "Featured Server buzz.manacube.com" [ref=e172]:
+              - generic [ref=e173]:
+                - link [ref=e174] [cursor=pointer]:
+                  - /url: server/4306
+                - generic [ref=e176]:
+                  - tooltip "Featured Server" [ref=e177]: 
+                  - text: buzz.manacube.com
+            - cell " Version 1.8 to 1.21  Survival Server  Cross Platform" [ref=e178]:
+              - generic [ref=e179]:
+                - generic [ref=e180]:
+                  - generic [ref=e181]: 
+                  - text: Version 1.8 to 1.21
+                - link " Survival Server" [ref=e182] [cursor=pointer]:
+                  - /url: category/survival
+                  - generic [ref=e183]:
+                    - generic [ref=e184]: 
+                    - text: Survival Server
+                - generic [ref=e185]:
+                  - generic [ref=e186]: 
+                  - text: Cross Platform
+            - cell "1356/3500" [ref=e187]
+            - cell "Online " [ref=e188]:
+              - link "Online " [ref=e189] [cursor=pointer]:
+                - /url: server/4306
+                - generic [ref=e190]:
+                  - text: Online
+                  - generic [ref=e191]: 
+            - 'cell "IP: BUZZ.MANACUBE.COM Over the past 12 years, 6 million players have enjoyed our unique game modes: Parkour, Skyblock, SMP, KitPvP, Lifesteal, Prison, Earth Towny and Creative! Parkour: Over 2500 unique maps. Olympus: A Greek mythology RPG. Grow as demi-gods through quests, mining,..." [ref=e192]':
+              - paragraph [ref=e193]: "IP: BUZZ.MANACUBE.COM Over the past 12 years, 6 million players have enjoyed our unique game modes: Parkour, Skyblock, SMP, KitPvP, Lifesteal, Prison, Earth Towny and Creative! Parkour: Over 2500 unique maps. Olympus: A Greek mythology RPG. Grow as demi-gods through quests, mining,..."
+          - 'row "6 WildWood WildWood Featured Server join.wildwoodsmp.com  Version 1.7 to 1.21  Survival Server  Cross Platform 3260/5000 Online  WildWood SMP is a brand new SMP-based server! We plan on becoming a one-stop network for all and any SMP gameplay desires! Here''s what we''ve got so far: • Lifesteal SMP - Build your base, kill players and collect their hearts! But don''t run out of hearts, or you''ll be..." [ref=e194]':
+            - cell "6" [ref=e195]:
+              - generic [ref=e196]: "6"
+            - cell "WildWood WildWood" [ref=e197]:
+              - generic [ref=e198]:
+                - link "WildWood" [ref=e199] [cursor=pointer]:
+                  - /url: server/5137
+                  - img "WildWood" [ref=e200]
+                - heading "WildWood" [level=3] [ref=e201]
+            - cell "Featured Server join.wildwoodsmp.com" [ref=e202]:
+              - generic [ref=e203]:
+                - link [ref=e204] [cursor=pointer]:
+                  - /url: server/5137
+                - generic [ref=e206]:
+                  - tooltip "Featured Server" [ref=e207]: 
+                  - text: join.wildwoodsmp.com
+            - cell " Version 1.7 to 1.21  Survival Server  Cross Platform" [ref=e208]:
+              - generic [ref=e209]:
+                - generic [ref=e210]:
+                  - generic [ref=e211]: 
+                  - text: Version 1.7 to 1.21
+                - link " Survival Server" [ref=e212] [cursor=pointer]:
+                  - /url: category/survival
+                  - generic [ref=e213]:
+                    - generic [ref=e214]: 
+                    - text: Survival Server
+                - generic [ref=e215]:
+                  - generic [ref=e216]: 
+                  - text: Cross Platform
+            - cell "3260/5000" [ref=e217]
+            - cell "Online " [ref=e218]:
+              - link "Online " [ref=e219] [cursor=pointer]:
+                - /url: server/5137
+                - generic [ref=e220]:
+                  - text: Online
+                  - generic [ref=e221]: 
+            - 'cell "WildWood SMP is a brand new SMP-based server! We plan on becoming a one-stop network for all and any SMP gameplay desires! Here''s what we''ve got so far: • Lifesteal SMP - Build your base, kill players and collect their hearts! But don''t run out of hearts, or you''ll be..." [ref=e222]':
+              - paragraph [ref=e223]: "WildWood SMP is a brand new SMP-based server! We plan on becoming a one-stop network for all and any SMP gameplay desires! Here's what we've got so far: • Lifesteal SMP - Build your base, kill players and collect their hearts! But don't run out of hearts, or you'll be..."
+          - 'row "7 SmileMoreCraft SmileMoreCraft Featured Server mc.smilemorecraft.com  Version 1.7 to 26.1  Survival Server  Cross Platform 165/500 Online  🥬Minecraft Survival Multiplayer!🌳SmileMoreCraft is a Minecraft SMP running on the latest version. Our server fully supports both Java & Bedrock! Features include: Grief Protection, Player-ran economy, Free Ranks, Custom Bosses & Items, semi-vanilla while maintaining the core aspect..." [ref=e224]':
+            - cell "7" [ref=e225]:
+              - generic [ref=e226]: "7"
+            - cell "SmileMoreCraft SmileMoreCraft" [ref=e227]:
+              - generic [ref=e228]:
+                - link "SmileMoreCraft" [ref=e229] [cursor=pointer]:
+                  - /url: server/17926
+                  - img "SmileMoreCraft" [ref=e230]
+                - heading "SmileMoreCraft" [level=3] [ref=e231]
+            - cell "Featured Server mc.smilemorecraft.com" [ref=e232]:
+              - generic [ref=e233]:
+                - link [ref=e234] [cursor=pointer]:
+                  - /url: server/17926
+                - generic [ref=e236]:
+                  - tooltip "Featured Server" [ref=e237]: 
+                  - text: mc.smilemorecraft.com
+            - cell " Version 1.7 to 26.1  Survival Server  Cross Platform" [ref=e238]:
+              - generic [ref=e239]:
+                - generic [ref=e240]:
+                  - generic [ref=e241]: 
+                  - text: Version 1.7 to 26.1
+                - link " Survival Server" [ref=e242] [cursor=pointer]:
+                  - /url: category/survival
+                  - generic [ref=e243]:
+                    - generic [ref=e244]: 
+                    - text: Survival Server
+                - generic [ref=e245]:
+                  - generic [ref=e246]: 
+                  - text: Cross Platform
+            - cell "165/500" [ref=e247]
+            - cell "Online " [ref=e248]:
+              - link "Online " [ref=e249] [cursor=pointer]:
+                - /url: server/17926
+                - generic [ref=e250]:
+                  - text: Online
+                  - generic [ref=e251]: 
+            - 'cell "🥬Minecraft Survival Multiplayer!🌳SmileMoreCraft is a Minecraft SMP running on the latest version. Our server fully supports both Java & Bedrock! Features include: Grief Protection, Player-ran economy, Free Ranks, Custom Bosses & Items, semi-vanilla while maintaining the core aspect..." [ref=e252]':
+              - paragraph [ref=e253]: "🥬Minecraft Survival Multiplayer!🌳SmileMoreCraft is a Minecraft SMP running on the latest version. Our server fully supports both Java & Bedrock! Features include: Grief Protection, Player-ran economy, Free Ranks, Custom Bosses & Items, semi-vanilla while maintaining the core aspect..."
+          - row "8 EarthStonks EarthStonks Featured Server buzz.stonksmc.com  Version 1.8 to 1.21  Towny Server  Cross Platform 18/300 Online  stop playing generic earth servers. wilderness mining is contraband here. ore only exists where it does in real life — iron in australia, oil in the middle east etc. claim the land or conquer it. towns have upkeep. debt has consequences. wars pay out. proximity voice chat...." [ref=e254]:
+            - cell "8" [ref=e255]:
+              - generic [ref=e256]: "8"
+            - cell "EarthStonks EarthStonks" [ref=e257]:
+              - generic [ref=e258]:
+                - link "EarthStonks" [ref=e259] [cursor=pointer]:
+                  - /url: server/18644
+                  - img "EarthStonks" [ref=e260]
+                - heading "EarthStonks" [level=3] [ref=e261]
+            - cell "Featured Server buzz.stonksmc.com" [ref=e262]:
+              - generic [ref=e263]:
+                - link [ref=e264] [cursor=pointer]:
+                  - /url: server/18644
+                - generic [ref=e266]:
+                  - tooltip "Featured Server" [ref=e267]: 
+                  - text: buzz.stonksmc.com
+            - cell " Version 1.8 to 1.21  Towny Server  Cross Platform" [ref=e268]:
+              - generic [ref=e269]:
+                - generic [ref=e270]:
+                  - generic [ref=e271]: 
+                  - text: Version 1.8 to 1.21
+                - link " Towny Server" [ref=e272] [cursor=pointer]:
+                  - /url: category/towny
+                  - generic [ref=e273]:
+                    - generic [ref=e274]: 
+                    - text: Towny Server
+                - generic [ref=e275]:
+                  - generic [ref=e276]: 
+                  - text: Cross Platform
+            - cell "18/300" [ref=e277]
+            - cell "Online " [ref=e278]:
+              - link "Online " [ref=e279] [cursor=pointer]:
+                - /url: server/18644
+                - generic [ref=e280]:
+                  - text: Online
+                  - generic [ref=e281]: 
+            - cell "stop playing generic earth servers. wilderness mining is contraband here. ore only exists where it does in real life — iron in australia, oil in the middle east etc. claim the land or conquer it. towns have upkeep. debt has consequences. wars pay out. proximity voice chat...." [ref=e282]:
+              - paragraph [ref=e283]: stop playing generic earth servers. wilderness mining is contraband here. ore only exists where it does in real life — iron in australia, oil in the middle east etc. claim the land or conquer it. towns have upkeep. debt has consequences. wars pay out. proximity voice chat....
+          - row "9 Craftadia Craftadia Featured Server bee.craftadia.com  Version 1.7 to 26.1  Survival Server  Cross Platform 52/2026 Online  Craftadia is a revolutionary Survival experience that focuses on bringing players together unlike ever before! Our server is a grief-free and protected area where anyone and everyone can come online and play with others. We strive to provide a custom experience while maintaining pure..." [ref=e284]:
+            - cell "9" [ref=e285]:
+              - generic [ref=e286]: "9"
+            - cell "Craftadia Craftadia" [ref=e287]:
+              - generic [ref=e288]:
+                - link "Craftadia" [ref=e289] [cursor=pointer]:
+                  - /url: server/8019
+                  - img "Craftadia" [ref=e290]
+                - heading "Craftadia" [level=3] [ref=e291]
+            - cell "Featured Server bee.craftadia.com" [ref=e292]:
+              - generic [ref=e293]:
+                - link [ref=e294] [cursor=pointer]:
+                  - /url: server/8019
+                - generic [ref=e296]:
+                  - tooltip "Featured Server" [ref=e297]: 
+                  - text: bee.craftadia.com
+            - cell " Version 1.7 to 26.1  Survival Server  Cross Platform" [ref=e298]:
+              - generic [ref=e299]:
+                - generic [ref=e300]:
+                  - generic [ref=e301]: 
+                  - text: Version 1.7 to 26.1
+                - link " Survival Server" [ref=e302] [cursor=pointer]:
+                  - /url: category/survival
+                  - generic [ref=e303]:
+                    - generic [ref=e304]: 
+                    - text: Survival Server
+                - generic [ref=e305]:
+                  - generic [ref=e306]: 
+                  - text: Cross Platform
+            - cell "52/2026" [ref=e307]
+            - cell "Online " [ref=e308]:
+              - link "Online " [ref=e309] [cursor=pointer]:
+                - /url: server/8019
+                - generic [ref=e310]:
+                  - text: Online
+                  - generic [ref=e311]: 
+            - cell "Craftadia is a revolutionary Survival experience that focuses on bringing players together unlike ever before! Our server is a grief-free and protected area where anyone and everyone can come online and play with others. We strive to provide a custom experience while maintaining pure..." [ref=e312]:
+              - paragraph [ref=e313]: Craftadia is a revolutionary Survival experience that focuses on bringing players together unlike ever before! Our server is a grief-free and protected area where anyone and everyone can come online and play with others. We strive to provide a custom experience while maintaining pure...
+          - row "10 MetroMC MetroMC Featured Server buzz.metromc.net  Version 1.7 to 1.21  Survival Server  Cross Platform 1021/2000 Online  MetroMC is a unique and cool Minecraft 1.21 SMP! Metro is filled with some crazy content including Custom Terrain, Clue Scrolls, a Dynamic Economy, and more! We focus on creating the best community possible, making sure everyone is heard. We can guarentee you will have an amazing time..." [ref=e314]:
+            - cell "10" [ref=e315]:
+              - generic [ref=e316]: "10"
+            - cell "MetroMC MetroMC" [ref=e317]:
+              - generic [ref=e318]:
+                - link "MetroMC" [ref=e319] [cursor=pointer]:
+                  - /url: server/12528
+                  - img "MetroMC" [ref=e320]
+                - heading "MetroMC" [level=3] [ref=e321]
+            - cell "Featured Server buzz.metromc.net" [ref=e322]:
+              - generic [ref=e323]:
+                - link [ref=e324] [cursor=pointer]:
+                  - /url: server/12528
+                - generic [ref=e326]:
+                  - tooltip "Featured Server" [ref=e327]: 
+                  - text: buzz.metromc.net
+            - cell " Version 1.7 to 1.21  Survival Server  Cross Platform" [ref=e328]:
+              - generic [ref=e329]:
+                - generic [ref=e330]:
+                  - generic [ref=e331]: 
+                  - text: Version 1.7 to 1.21
+                - link " Survival Server" [ref=e332] [cursor=pointer]:
+                  - /url: category/survival
+                  - generic [ref=e333]:
+                    - generic [ref=e334]: 
+                    - text: Survival Server
+                - generic [ref=e335]:
+                  - generic [ref=e336]: 
+                  - text: Cross Platform
+            - cell "1021/2000" [ref=e337]
+            - cell "Online " [ref=e338]:
+              - link "Online " [ref=e339] [cursor=pointer]:
+                - /url: server/12528
+                - generic [ref=e340]:
+                  - text: Online
+                  - generic [ref=e341]: 
+            - cell "MetroMC is a unique and cool Minecraft 1.21 SMP! Metro is filled with some crazy content including Custom Terrain, Clue Scrolls, a Dynamic Economy, and more! We focus on creating the best community possible, making sure everyone is heard. We can guarentee you will have an amazing time..." [ref=e342]:
+              - paragraph [ref=e343]: MetroMC is a unique and cool Minecraft 1.21 SMP! Metro is filled with some crazy content including Custom Terrain, Clue Scrolls, a Dynamic Economy, and more! We focus on creating the best community possible, making sure everyone is heard. We can guarentee you will have an amazing time...
+      - generic [ref=e344]:
+        - paragraph [ref=e345]: Our Minecraft server list was last updated on April 4, 2026, 11:29 pm UTC.
+        - link "Java Servers! ➤" [ref=e346] [cursor=pointer]:
+          - /url: java
+        - link "Bedrock Servers! ➤" [ref=e347] [cursor=pointer]:
+          - /url: bedrock
+    - generic [ref=e349]:
+      - heading "More Minecraft servers:" [level=1] [ref=e350]
+      - paragraph [ref=e351]: "Choose from over 9,310 Minecraft servers. Try out the smart server search:"
+      - link " Smart Search" [ref=e352] [cursor=pointer]:
+        - /url: search
+        - generic [ref=e353]: 
+        - text: Smart Search
+    - generic [ref=e355]:
+      - heading "Frequent Questions:" [level=2] [ref=e356]
+      - generic [ref=e357]:
+        - heading "What are Minecraft Servers?" [level=3] [ref=e359]:
+          - button "What are Minecraft Servers?" [ref=e360] [cursor=pointer]
+        - heading "What is a Minecraft Server List?" [level=3] [ref=e362]:
+          - button "What is a Minecraft Server List?" [ref=e363] [cursor=pointer]
+        - heading "How do I join a Minecraft Server?" [level=3] [ref=e365]:
+          - button "How do I join a Minecraft Server?" [ref=e366] [cursor=pointer]
+        - heading "Does Minecraft have an official multiplayer server?" [level=3] [ref=e368]:
+          - button "Does Minecraft have an official multiplayer server?" [ref=e369] [cursor=pointer]
+        - heading "What is a cracked Minecraft server?" [level=3] [ref=e371]:
+          - button "What is a cracked Minecraft server?" [ref=e372] [cursor=pointer]
+    - generic [ref=e373]:
+      - generic [ref=e374]:
+        - heading "Minecraft Server References" [level=2] [ref=e375]
+        - list [ref=e376]:
+          - listitem [ref=e377]:
+            - link "Official Minecraft Website" [ref=e378] [cursor=pointer]:
+              - /url: https://www.minecraft.net/en-us/servers
+          - listitem [ref=e379]:
+            - link "What is a Minecraft Server?" [ref=e380] [cursor=pointer]:
+              - /url: https://en.wikipedia.org/wiki/Minecraft_server
+          - listitem [ref=e381]:
+            - link "What is Minecraft?" [ref=e382] [cursor=pointer]:
+              - /url: https://en.wikipedia.org/wiki/Minecraft
+          - listitem [ref=e383]:
+            - link "Join a Minecraft Multiplayer Server" [ref=e384] [cursor=pointer]:
+              - /url: https://www.youtube.com/watch?v=Y2aDSSqLfCE
+          - listitem [ref=e385]:
+            - link "Multiplayer server list" [ref=e386] [cursor=pointer]:
+              - /url: https://minecraft.fandom.com/wiki/Server_list
+          - listitem [ref=e387]:
+            - link "Minecraft Wiki" [ref=e388] [cursor=pointer]:
+              - /url: https://minecraft.fandom.com/wiki/Minecraft_Wiki
+          - listitem [ref=e389]:
+            - link "Minecraft Beginner's Guide" [ref=e390] [cursor=pointer]:
+              - /url: https://www.amazon.com/Minecraft-Beginners-Turtleback-Library-Innovation/dp/0606379177/ref=sr_1_2?keywords=minecraft+book+guide&qid=1656868017&sr=8-2
+      - generic [ref=e391]:
+        - heading "Minecraft Java Servers" [level=2] [ref=e392]
+        - list [ref=e393]:
+          - listitem [ref=e394]:
+            - link "Java Minecraft Servers" [ref=e395] [cursor=pointer]:
+              - /url: java
+          - listitem [ref=e396]:
+            - link "Minecraft Pixelmon Servers" [ref=e397] [cursor=pointer]:
+              - /url: category/pixelmon
+          - listitem [ref=e398]:
+            - link "Factions Servers MC" [ref=e399] [cursor=pointer]:
+              - /url: category/factions
+          - listitem [ref=e400]:
+            - link "Prison Minecraft Servers" [ref=e401] [cursor=pointer]:
+              - /url: category/prison
+          - listitem [ref=e402]:
+            - link "Servers for Minecraft 1.21" [ref=e403] [cursor=pointer]:
+              - /url: version/1.21
+          - listitem [ref=e404]:
+            - link "Minecraft Survival Server (Java IP)" [ref=e405] [cursor=pointer]:
+              - /url: category/survival/1&type=0
+      - generic [ref=e406]:
+        - heading "Minecraft Bedrock Servers" [level=2] [ref=e407]
+        - list [ref=e408]:
+          - listitem [ref=e409]:
+            - link "Best Bedrock Servers" [ref=e410] [cursor=pointer]:
+              - /url: bedrock#list
+          - listitem [ref=e411]:
+            - link "Cross-Play Servers" [ref=e412] [cursor=pointer]:
+              - /url: cross-platform
+          - listitem [ref=e413]:
+            - link "SMP Servers" [ref=e414] [cursor=pointer]:
+              - /url: category/survival
+          - listitem [ref=e415]:
+            - link "Minecraft Minigames" [ref=e416] [cursor=pointer]:
+              - /url: category/minigames
+          - listitem [ref=e417]:
+            - link "Minecraft Survival Server (Bedrock IP)" [ref=e418] [cursor=pointer]:
+              - /url: category/survival/1&type=1
+          - listitem [ref=e419]:
+            - link "Buy Minecraft Bedrock" [ref=e420] [cursor=pointer]:
+              - /url: https://www.minecraft.net/en-us/store/minecraft-java-bedrock-edition-pc
+    - complementary [ref=e422]:
+      - text: All servers listed on Minecraft Buzz are
+      - strong [ref=e423]: free-to-join.
+      - text: We maintain up-to-date server lists for both
+      - link "Java Minecraft Servers" [ref=e424] [cursor=pointer]:
+        - /url: java
+      - text: as well as
+      - link "Bedrock (PE) Servers" [ref=e425] [cursor=pointer]:
+        - /url: bedrock
+      - text: .
+  - contentinfo [ref=e426]:
+    - generic [ref=e428]:
+      - generic [ref=e429]:
+        - paragraph [ref=e430]: "About:"
+        - paragraph [ref=e431]:
+          - text: This site is published by
+          - link "Stelios Mac" [ref=e432] [cursor=pointer]:
+            - /url: https://www.facebook.com/stelios.mac.3
+          - text: . To learn more about us, visit the
+          - link "About" [ref=e433] [cursor=pointer]:
+            - /url: about
+          - text: page.
+      - generic [ref=e434]:
+        - paragraph [ref=e435]: "Contact Info:"
+        - paragraph [ref=e436]:
+          - text: "E-Mail:"
+          - link "info@minecraft.buzz" [ref=e437] [cursor=pointer]:
+            - /url: mailto:info@minecraft.buzz?subject=Minecraft%20Buzz
+          - link "Contact Us" [ref=e438] [cursor=pointer]:
+            - /url: contact
+      - generic [ref=e439]:
+        - paragraph [ref=e440]: "Social Media:"
+        - paragraph [ref=e441]:
+          - link "Discord" [ref=e442] [cursor=pointer]:
+            - /url: https://discord.gg/Q2dnHwTV8D
+            - generic [ref=e443]: 
+          - link "Facebook" [ref=e444] [cursor=pointer]:
+            - /url: https://www.facebook.com/minecraftbuzzlist
+            - generic [ref=e445]: 
+          - link "Twitter" [ref=e446] [cursor=pointer]:
+            - /url: https://twitter.com/minecraft_buzz
+            - generic [ref=e447]: 
+          - link "YouTube" [ref=e448] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UC6Y2s-cs1gwioJ7pdqXSbUA
+            - generic [ref=e449]: 
+        - paragraph [ref=e450]:
+          - text: Review us on
+          - link "Trustpilot" [ref=e451] [cursor=pointer]:
+            - /url: https://www.trustpilot.com/review/minecraft.buzz
+          - text: "!"
+      - generic [ref=e452]:
+        - paragraph [ref=e453]:
+          - text: By using Minecraft.Buzz, you agree to our
+          - link "Terms of Service" [ref=e454] [cursor=pointer]:
+            - /url: terms-of-service
+          - text: ","
+          - link "Privacy Policy" [ref=e455] [cursor=pointer]:
+            - /url: privacy-policy
+          - text: and
+          - link "Cookie Policy" [ref=e456] [cursor=pointer]:
+            - /url: cookie-policy
+          - text: .
+        - paragraph [ref=e457]:
+          - text: Minecraft and all associated Minecraft images are copyright of Mojang AB. Minecraft.Buzz is not affiliated with Minecraft or Mojang AB. Copyright © 2019-2026
+          - generic [ref=e458]: Minecraft.Buzz
+          - text: "- All rights reserved."
+        - paragraph [ref=e459]:
+          - link "Live Status Page" [ref=e460] [cursor=pointer]:
+            - /url: https://status.minecraft.buzz
+          - text: "-"
+          - link "Manage Cookie Settings" [ref=e461] [cursor=pointer]:
+            - /url: "#"

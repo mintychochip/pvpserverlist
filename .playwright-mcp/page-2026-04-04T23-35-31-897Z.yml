@@ -1,0 +1,414 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "Minecraft Server List" [ref=e5] [cursor=pointer]:
+          - /url: https://minecraft.buzz/
+          - img "Minecraft Server List" [ref=e6]
+        - button "Toggle Dark Mode" [ref=e7] [cursor=pointer]:
+          - generic [ref=e8]: 
+        - list [ref=e10]:
+          - listitem [ref=e11]:
+            - button "Minecraft Servers" [ref=e12] [cursor=pointer]
+          - listitem [ref=e13]:
+            - link "Realms" [ref=e14] [cursor=pointer]:
+              - /url: realms
+          - listitem [ref=e15]:
+            - link "Events" [ref=e16] [cursor=pointer]:
+              - /url: events
+          - listitem [ref=e17]:
+            - button "Server Owners" [ref=e18] [cursor=pointer]
+          - listitem [ref=e19]:
+            - link "Contact" [ref=e20] [cursor=pointer]:
+              - /url: contact
+          - listitem [ref=e21]:
+            - link "About" [ref=e22] [cursor=pointer]:
+              - /url: about
+          - listitem [ref=e23]:
+            - link "Blog" [ref=e24] [cursor=pointer]:
+              - /url: https://blog.minecraft.buzz
+          - listitem [ref=e25]:
+            - link "Search" [ref=e26] [cursor=pointer]:
+              - /url: search
+  - navigation "breadcrumb" [ref=e27]:
+    - list [ref=e28]:
+      - listitem [ref=e29]:
+        - link "Minecraft Servers" [ref=e30] [cursor=pointer]:
+          - /url: https://minecraft.buzz/
+      - listitem [ref=e31]:
+        - text: /
+        - link "Java Minecraft Servers" [ref=e32] [cursor=pointer]:
+          - /url: java
+      - listitem [ref=e33]:
+        - text: /
+        - link "Survival Servers" [ref=e34] [cursor=pointer]:
+          - /url: category/survival
+      - listitem [ref=e35]:
+        - text: /
+        - link "26.1 Survival Servers" [ref=e36] [cursor=pointer]:
+          - /url: type/26.1/survival
+      - listitem [ref=e37]:
+        - text: /
+        - link "LemonCloud" [ref=e38] [cursor=pointer]:
+          - /url: server/3096
+  - generic [ref=e40]:
+    - generic [ref=e42]:
+      - generic [ref=e43]:
+        - img "LemonCloud" [ref=e45]
+        - generic [ref=e46]:
+          - heading "LemonCloud Minecraft Server Sponsored Server" [level=1] [ref=e47]:
+            - text: LemonCloud Minecraft Server
+            - tooltip "Sponsored Server" [ref=e48]: 
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]: 
+              - text: Online
+            - generic [ref=e52]: 
+            - generic [ref=e53]: 
+            - generic [ref=e54]: 
+            - generic [ref=e55]: 
+            - generic [ref=e56]: 
+            - text: "-"
+            - strong [ref=e57]: 9647 Vote(s)
+            - text: ", 3332 Review(s), Rated: 5/5."
+      - group [ref=e58]:
+        - link " Vote" [ref=e59] [cursor=pointer]:
+          - /url: vote/3096
+          - generic [ref=e60]: 
+          - text: Vote
+        - link " Website" [ref=e61] [cursor=pointer]:
+          - /url: https://lemoncloud.org
+          - generic [ref=e62]: 
+          - text: Website
+        - link " Discord" [ref=e63] [cursor=pointer]:
+          - /url: https://discord.com/invite/lemoncloud
+          - generic [ref=e64]: 
+          - text: Discord
+        - generic [ref=e65] [cursor=pointer]:
+          - generic [ref=e66]: 
+          - text: Copy IP
+      - generic [ref=e67]:
+        - generic [ref=e68]:
+          - generic [ref=e69]:
+            - generic [ref=e70]: 
+            - text: Java IP
+          - generic [ref=e72] [cursor=pointer]: buzz.lemoncloud.org
+        - generic [ref=e73]:
+          - generic [ref=e74]:
+            - generic [ref=e75]: 
+            - text: Bedrock IP
+          - generic [ref=e77] [cursor=pointer]: buzz.lemoncloud.org
+        - generic [ref=e78]:
+          - generic [ref=e79]:
+            - generic [ref=e80]: "#"
+            - text: Bedrock Port
+          - generic [ref=e82]: "19132"
+        - generic [ref=e83]:
+          - generic [ref=e84]:
+            - generic [ref=e85]: 
+            - text: Server Type
+          - generic [ref=e86]:
+            - link "Java Server" [ref=e87] [cursor=pointer]:
+              - /url: java
+            - link "Bedrock / MCPE Server" [ref=e88] [cursor=pointer]:
+              - /url: bedrock
+        - generic [ref=e89]:
+          - generic [ref=e90]:
+            - generic [ref=e91]: 
+            - text: Gamemodes
+          - generic [ref=e92]:
+            - link "Survival" [ref=e93] [cursor=pointer]:
+              - /url: category/survival
+            - link "Lifesteal" [ref=e94] [cursor=pointer]:
+              - /url: category/lifesteal
+            - link "Vanilla" [ref=e95] [cursor=pointer]:
+              - /url: category/vanilla
+            - link "Towny" [ref=e96] [cursor=pointer]:
+              - /url: category/towny
+            - link "Skywars" [ref=e97] [cursor=pointer]:
+              - /url: category/skywars
+            - link "Skyblock" [ref=e98] [cursor=pointer]:
+              - /url: category/skyblock
+            - link "RPG" [ref=e99] [cursor=pointer]:
+              - /url: category/rpg
+            - link "PvP" [ref=e100] [cursor=pointer]:
+              - /url: category/pvp
+            - link "PvE" [ref=e101] [cursor=pointer]:
+              - /url: category/pve
+            - link "Prison" [ref=e102] [cursor=pointer]:
+              - /url: category/prison
+            - link "Pixelmon" [ref=e103] [cursor=pointer]:
+              - /url: category/pixelmon
+            - link "Parkour" [ref=e104] [cursor=pointer]:
+              - /url: category/parkour
+            - link "Oneblock" [ref=e105] [cursor=pointer]:
+              - /url: category/oneblock
+            - link "Minigames" [ref=e106] [cursor=pointer]:
+              - /url: category/minigames
+            - link "KitPvP" [ref=e107] [cursor=pointer]:
+              - /url: category/kitpvp
+            - link "Hunger Games" [ref=e108] [cursor=pointer]:
+              - /url: category/hunger-games
+            - link "HCF" [ref=e109] [cursor=pointer]:
+              - /url: category/hcf
+            - link "Gens" [ref=e110] [cursor=pointer]:
+              - /url: category/gens
+            - link "FTB" [ref=e111] [cursor=pointer]:
+              - /url: category/ftb
+            - link "Factions" [ref=e112] [cursor=pointer]:
+              - /url: category/factions
+            - link "Economy" [ref=e113] [cursor=pointer]:
+              - /url: category/economy
+            - link "Earth" [ref=e114] [cursor=pointer]:
+              - /url: category/earth
+            - link "Creative" [ref=e115] [cursor=pointer]:
+              - /url: category/creative
+            - link "Cobblemon" [ref=e116] [cursor=pointer]:
+              - /url: category/cobblemon
+            - link "Anarchy" [ref=e117] [cursor=pointer]:
+              - /url: category/anarchy
+        - generic [ref=e118]:
+          - generic [ref=e119]:
+            - generic [ref=e120]: 
+            - text: Versions
+          - generic [ref=e121]:
+            - link "1.7" [ref=e122] [cursor=pointer]:
+              - /url: version/1.7
+            - link "1.8" [ref=e123] [cursor=pointer]:
+              - /url: version/1.8
+            - link "1.9" [ref=e124] [cursor=pointer]:
+              - /url: version/1.9
+            - link "1.10" [ref=e125] [cursor=pointer]:
+              - /url: version/1.10
+            - link "1.11" [ref=e126] [cursor=pointer]:
+              - /url: version/1.11
+            - link "1.12" [ref=e127] [cursor=pointer]:
+              - /url: version/1.12
+            - link "1.13" [ref=e128] [cursor=pointer]:
+              - /url: version/1.13
+            - link "1.14" [ref=e129] [cursor=pointer]:
+              - /url: version/1.14
+            - link "1.15" [ref=e130] [cursor=pointer]:
+              - /url: version/1.15
+            - link "1.16" [ref=e131] [cursor=pointer]:
+              - /url: version/1.16
+            - link "1.17" [ref=e132] [cursor=pointer]:
+              - /url: version/1.17
+            - link "1.18" [ref=e133] [cursor=pointer]:
+              - /url: version/1.18
+            - link "1.19" [ref=e134] [cursor=pointer]:
+              - /url: version/1.19
+            - link "1.20" [ref=e135] [cursor=pointer]:
+              - /url: version/1.20
+            - link "1.21" [ref=e136] [cursor=pointer]:
+              - /url: version/1.21
+            - link "26.1" [ref=e137] [cursor=pointer]:
+              - /url: version/26.1
+        - generic [ref=e138]:
+          - generic [ref=e139]:
+            - generic [ref=e140]: 
+            - text: Players
+          - generic [ref=e141]: 498 / 598
+        - generic [ref=e142]:
+          - generic [ref=e143]:
+            - generic [ref=e144]: 
+            - text: Connection
+          - generic [ref=e146]: Fast
+        - generic [ref=e147]:
+          - generic [ref=e148]:
+            - generic [ref=e149]: 
+            - text: Country
+          - generic [ref=e150]:
+            - text: United States
+            - img "US" [ref=e151]
+        - generic [ref=e152]:
+          - generic [ref=e153]:
+            - generic [ref=e154]: 
+            - text: Uptime
+          - generic [ref=e156]: 99%
+      - group [ref=e157]:
+        - link "Share on Twitter" [ref=e158] [cursor=pointer]:
+          - /url: https://twitter.com/intent/tweet/?text=&url=https://minecraft.buzz/server/3096
+          - generic [ref=e159]: 
+        - link "Share on Facebook" [ref=e160] [cursor=pointer]:
+          - /url: https://facebook.com/sharer/sharer.php?u=https://minecraft.buzz/server/3096
+          - generic [ref=e161]: 
+        - link "E-Mail to a Friend" [ref=e162] [cursor=pointer]:
+          - /url: mailto:?subject=&body=https://minecraft.buzz/server/3096
+          - generic [ref=e163]: 
+    - generic [ref=e164]:
+      - heading "Server Information" [level=2] [ref=e165]
+      - paragraph [ref=e166]:
+        - text: Welcome to the LemonCloud Minecraft multiplayer network! We offer a wide variety of game modes for players of all interests and skill levels, including Skyblock, Survival, Prison, Factions, Creative, and PvP.
+        - text: Our network is known for its friendly and welcoming community, where players of all ages can come together and enjoy the game in a safe and positive environment. We have a dedicated and experienced staff team who are always on hand to help out and ensure that everyone is having a great time.
+        - text: In addition to our core game modes, we also host regular events and competitions where players can win prizes and have even more fun. Whether you're a seasoned Minecraft pro or just starting out, there's something for everyone on our network.
+        - text: Join us today and discover the endless possibilities of Minecraft with our fantastic community and exciting game modes.
+        - text: Join now! @
+        - text: "IP: buzz.lemoncloud.net"
+        - text: "Bedrock Port: 19132"
+        - text: "Website: https://www.lemoncloud.org"
+        - text: "Store: https://store.lemoncloud.org"
+    - generic [ref=e167]:
+      - heading "Similar Servers" [level=2] [ref=e168]
+      - generic [ref=e170]:
+        - link "Complex Gaming Featured Server" [ref=e171] [cursor=pointer]:
+          - /url: server/4223
+          - heading "Complex Gaming Featured Server" [level=3] [ref=e172]:
+            - text: Complex Gaming
+            - tooltip "Featured Server" [ref=e173]: 
+        - generic [ref=e174]:
+          - img "Complex Gaming" [ref=e176]
+          - generic [ref=e177]:
+            - text: 1.7 to 26.1 Survival Server,
+            - text: 7071 players online,
+            - text: 38398 votes |
+            - strong [ref=e178]: Rated 5/5
+            - text: .
+      - generic [ref=e180]:
+        - link "Netherite Featured Server" [ref=e181] [cursor=pointer]:
+          - /url: server/5416
+          - heading "Netherite Featured Server" [level=3] [ref=e182]:
+            - text: Netherite
+            - tooltip "Featured Server" [ref=e183]: 
+        - generic [ref=e184]:
+          - img "Netherite" [ref=e186]
+          - generic [ref=e187]:
+            - text: 1.7 to 26.1 Survival Server,
+            - text: 176 players online,
+            - text: 2973 votes |
+            - strong [ref=e188]: Rated 5/5
+            - text: .
+      - generic [ref=e190]:
+        - link "SmileMoreCraft Featured Server" [ref=e191] [cursor=pointer]:
+          - /url: server/17926
+          - heading "SmileMoreCraft Featured Server" [level=3] [ref=e192]:
+            - text: SmileMoreCraft
+            - tooltip "Featured Server" [ref=e193]: 
+        - generic [ref=e194]:
+          - img "SmileMoreCraft" [ref=e196]
+          - generic [ref=e197]:
+            - text: 1.7 to 26.1 Survival Server,
+            - text: 165 players online,
+            - text: 1689 votes |
+            - strong [ref=e198]: Rated 5/5
+            - text: .
+    - generic [ref=e199]:
+      - heading "Server Trailer" [level=2] [ref=e200]
+      - button "Play" [ref=e203] [cursor=pointer]:
+        - generic [ref=e204]: Play
+    - generic [ref=e205]:
+      - heading "Server F.A.Q." [level=2] [ref=e206]
+      - generic [ref=e208]:
+        - heading "How do I join LemonCloud?" [level=3] [ref=e210]:
+          - button "How do I join LemonCloud?" [ref=e211] [cursor=pointer]
+        - heading "What is the server IP for LemonCloud?" [level=3] [ref=e213]:
+          - button "What is the server IP for LemonCloud?" [ref=e214] [cursor=pointer]
+        - heading "Does LemonCloud have a PE server?" [level=3] [ref=e216]:
+          - button "Does LemonCloud have a PE server?" [ref=e217] [cursor=pointer]
+      - generic [ref=e219]:
+        - heading "Is LemonCloud free to play?" [level=3] [ref=e221]:
+          - button "Is LemonCloud free to play?" [ref=e222] [cursor=pointer]
+        - heading "I have an issue. Who can I contact?" [level=3] [ref=e224]:
+          - button "I have an issue. Who can I contact?" [ref=e225] [cursor=pointer]
+        - heading "How many people are playing LemonCloud?" [level=3] [ref=e227]:
+          - button "How many people are playing LemonCloud?" [ref=e228] [cursor=pointer]
+    - generic [ref=e229]:
+      - heading "Server Reviews" [level=2] [ref=e230]
+      - paragraph [ref=e231]: You can sumbit a review when voting.
+    - generic [ref=e232]:
+      - paragraph [ref=e233]:
+        - strong [ref=e234]: Not your cup of tea?
+        - text: Find more awesome servers here!
+        - link "Minecraft Servers ➤" [ref=e235] [cursor=pointer]:
+          - /url: https://minecraft.buzz/
+      - complementary [ref=e236]:
+        - text: This server supports both
+        - link "Minecraft Java" [ref=e237] [cursor=pointer]:
+          - /url: https://www.minecraft.net/en-us/store/minecraft-java-edition
+        - text: as well as
+        - link "Bedrock / PE" [ref=e238] [cursor=pointer]:
+          - /url: https://play.google.com/store/apps/details?id=com.mojang.minecraftpe&hl=en&gl=US
+        - text: Editions and is
+        - strong [ref=e239]: free-to-join.
+        - text: You can use a PC (Windows, MacOS, Linux), Xbox (One, Series X/S), PlayStation (PS4 & PS5) or Mobile (Windows 10 Mobile, Android & iOS).
+  - contentinfo [ref=e240]:
+    - generic [ref=e242]:
+      - generic [ref=e243]:
+        - paragraph [ref=e244]: "About:"
+        - paragraph [ref=e245]:
+          - text: This site is published by
+          - link "Stelios Mac" [ref=e246] [cursor=pointer]:
+            - /url: https://www.facebook.com/stelios.mac.3
+          - text: . To learn more about us, visit the
+          - link "About" [ref=e247] [cursor=pointer]:
+            - /url: about
+          - text: page.
+      - generic [ref=e248]:
+        - paragraph [ref=e249]: "Contact Info:"
+        - paragraph [ref=e250]:
+          - text: "E-Mail:"
+          - link "info@minecraft.buzz" [ref=e251] [cursor=pointer]:
+            - /url: mailto:info@minecraft.buzz?subject=Minecraft%20Buzz
+          - link "Contact Us" [ref=e252] [cursor=pointer]:
+            - /url: contact
+      - generic [ref=e253]:
+        - paragraph [ref=e254]: "Social Media:"
+        - paragraph [ref=e255]:
+          - link "Discord" [ref=e256] [cursor=pointer]:
+            - /url: https://discord.gg/Q2dnHwTV8D
+            - generic [ref=e257]: 
+          - link "Facebook" [ref=e258] [cursor=pointer]:
+            - /url: https://www.facebook.com/minecraftbuzzlist
+            - generic [ref=e259]: 
+          - link "Twitter" [ref=e260] [cursor=pointer]:
+            - /url: https://twitter.com/minecraft_buzz
+            - generic [ref=e261]: 
+          - link "YouTube" [ref=e262] [cursor=pointer]:
+            - /url: https://www.youtube.com/channel/UC6Y2s-cs1gwioJ7pdqXSbUA
+            - generic [ref=e263]: 
+        - paragraph [ref=e264]:
+          - text: Review us on
+          - link "Trustpilot" [ref=e265] [cursor=pointer]:
+            - /url: https://www.trustpilot.com/review/minecraft.buzz
+          - text: "!"
+      - generic [ref=e266]:
+        - paragraph [ref=e267]:
+          - text: By using Minecraft.Buzz, you agree to our
+          - link "Terms of Service" [ref=e268] [cursor=pointer]:
+            - /url: terms-of-service
+          - text: ","
+          - link "Privacy Policy" [ref=e269] [cursor=pointer]:
+            - /url: privacy-policy
+          - text: and
+          - link "Cookie Policy" [ref=e270] [cursor=pointer]:
+            - /url: cookie-policy
+          - text: .
+        - paragraph [ref=e271]:
+          - text: Minecraft and all associated Minecraft images are copyright of Mojang AB. Minecraft.Buzz is not affiliated with Minecraft or Mojang AB. Copyright © 2019-2026
+          - generic [ref=e272]: Minecraft.Buzz
+          - text: "- All rights reserved."
+        - paragraph [ref=e273]:
+          - link "Live Status Page" [ref=e274] [cursor=pointer]:
+            - /url: https://status.minecraft.buzz
+          - text: "-"
+          - link "Manage Cookie Settings" [ref=e275] [cursor=pointer]:
+            - /url: "#"
+  - dialog "Cookie banner":
+    - generic [ref=e277]:
+      - link "Privacy Policy. External link. Opens in a new tab or window." [ref=e283] [cursor=pointer]:
+        - /url: https://minecraft.buzz/privacy-policy
+        - text: Privacy policy
+      - generic [ref=e284]:
+        - generic [ref=e285]:
+          - link "CookieFirst logo. External link. Opens in a new tab or window." [ref=e287] [cursor=pointer]:
+            - /url: https://cookiefirst.com/?utm_medium=banner&utm_campaign=cookiebanner&utm_source=https://minecraft.buzz
+            - img "CookieFirst logo" [ref=e288]
+          - heading "We use cookies" [level=2] [ref=e290]
+          - paragraph [ref=e293]: We may place these for analysis of our visitor data, to improve our website, show personalised content and to give you a great website experience. For more information about the cookies we use open the settings.
+        - generic [ref=e295]:
+          - button "Accept all cookies" [ref=e297] [cursor=pointer]:
+            - generic [ref=e298]: Accept all
+          - button "Deny all cookies" [ref=e300] [cursor=pointer]:
+            - generic [ref=e301]: Deny
+          - button "Adjust cookie preferences" [ref=e303] [cursor=pointer]:
+            - generic [ref=e304]: No, adjust
