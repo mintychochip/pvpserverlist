@@ -121,9 +121,6 @@ export function ServerCard({ server, onVote }: ServerCardProps) {
                   </span>
                 )}
               </h3>
-              <p className="text-xs text-zinc-500 font-mono">
-                {server.ip}:{server.port}
-              </p>
             </div>
           </div>
 
@@ -160,31 +157,38 @@ export function ServerCard({ server, onVote }: ServerCardProps) {
         </div>
       </Link>
 
-      <div className="px-4 pb-4 flex items-center justify-between border-t border-zinc-800 pt-3">
-        <div className="flex flex-col gap-0.5">
-          <div className="text-sm">
-            {isOnline ? (
-              <span className="text-green-400">
-                {player_count}/{max_players} online
-              </span>
-            ) : (
-              <span className="text-zinc-500">Offline</span>
-            )}
+      <div className="px-4 pb-4 border-t border-zinc-800 pt-3">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex flex-col gap-0.5">
+            <div className="text-sm">
+              {isOnline ? (
+                <span className="text-green-400">
+                  {player_count}/{max_players} online
+                </span>
+              ) : (
+                <span className="text-zinc-500">Offline</span>
+              )}
+            </div>
+            <LastChecked time={last_checked} />
           </div>
-          <LastChecked time={last_checked} />
-        </div>
 
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-zinc-500 flex items-center gap-1">
-            <Vote className="w-3 h-3" />
-            {server.vote_count}
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-zinc-500 flex items-center gap-1">
+              <Vote className="w-3 h-3" />
+              {server.vote_count}
+            </span>
+            <button
+              onClick={() => onVote?.(server.id)}
+              className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition-colors"
+            >
+              Vote
+            </button>
+          </div>
+        </div>
+        <div className="flex items-center justify-center">
+          <span className="text-sm font-mono text-zinc-400 bg-zinc-800 px-3 py-1.5 rounded-lg">
+            {server.ip}:{server.port}
           </span>
-          <button
-            onClick={() => onVote?.(server.id)}
-            className="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition-colors"
-          >
-            Vote
-          </button>
         </div>
       </div>
     </div>
