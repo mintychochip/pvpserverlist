@@ -4,7 +4,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
-import { Search } from "lucide-react";
+import { Search, LayoutGrid, List } from "lucide-react";
 
 const TAGS = ["crystal-pvp", "uhc-pvp", "sumo", "nodepuff", "lifesteal", "smp", "practice", "bridge"];
 const VERSIONS = ["1.8", "1.12", "1.16", "1.20.4"];
@@ -33,19 +33,48 @@ export function FilterBar() {
   const currentVersion = searchParams.get("version") ?? "";
   const currentSort = searchParams.get("sort") ?? "votes";
   const currentSearch = searchParams.get("search") ?? "";
+  const currentLayout = searchParams.get("layout") ?? "grid";
 
   return (
     <div className="space-y-3">
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-        <input
-          type="text"
-          placeholder="Search servers..."
-          defaultValue={currentSearch}
-          onChange={(e) => updateParam("search", e.target.value)}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-700"
-        />
+      {/* Search + Layout Toggle Row */}
+      <div className="flex gap-3 items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+          <input
+            type="text"
+            placeholder="Search servers..."
+            defaultValue={currentSearch}
+            onChange={(e) => updateParam("search", e.target.value)}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-zinc-700"
+          />
+        </div>
+
+        {/* Layout Toggle */}
+        <div className="flex bg-zinc-900 border border-zinc-800 rounded-lg p-1">
+          <button
+            onClick={() => updateParam("layout", "grid")}
+            className={`p-2 rounded transition-colors ${
+              currentLayout === "grid"
+                ? "bg-indigo-600 text-white"
+                : "text-zinc-400 hover:text-white"
+            }`}
+            title="Grid view"
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => updateParam("layout", "list")}
+            className={`p-2 rounded transition-colors ${
+              currentLayout === "list"
+                ? "bg-indigo-600 text-white"
+                : "text-zinc-400 hover:text-white"
+            }`}
+            title="List view"
+          >
+            <List className="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       {/* Tags */}

@@ -30,7 +30,7 @@ export const revalidate = 60;
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; sort?: string; tag?: string; version?: string; search?: string }>;
+  searchParams: Promise<{ page?: string; sort?: string; tag?: string; version?: string; search?: string; layout?: string }>;
 }) {
   const params = await searchParams;
   const page = parseInt(params.page ?? "1");
@@ -38,6 +38,7 @@ export default async function HomePage({
   const tag = params.tag;
   const version = params.version;
   const search = params.search;
+  const layout = params.layout ?? "grid";
   const limit = 20;
   const offset = (page - 1) * limit;
 
@@ -125,7 +126,10 @@ export default async function HomePage({
             <FilterBar />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1">
+          <div className={layout === "grid"
+            ? "grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            : "grid gap-4 grid-cols-1"
+          }>
             {servers?.map((server) => (
               <ServerCard key={server.id} server={server as unknown as ServerWithStatus} />
             ))}
@@ -140,7 +144,7 @@ export default async function HomePage({
           {totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-8">
               {page > 1 && (
-                <Link href={`/?page=${page - 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}`}
+                <Link href={`/?page=${page - 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}${layout !== "grid" ? `&layout=${layout}` : ""}`}
                    className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-sm">
                   Previous
                 </Link>
@@ -149,7 +153,7 @@ export default async function HomePage({
                 Page {page} of {totalPages}
               </span>
               {page < totalPages && (
-                <Link href={`/?page=${page + 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}`}
+                <Link href={`/?page=${page + 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}${layout !== "grid" ? `&layout=${layout}` : ""}`}
                    className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-sm">
                   Next
                 </Link>
