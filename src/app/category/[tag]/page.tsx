@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { ServerCard } from "@/components/server/ServerCard";
 import { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 interface ServerWithStatus {
   id: string;
   ip: string;

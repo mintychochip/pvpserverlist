@@ -6,6 +6,8 @@ import { ServerCard } from "@/components/server/ServerCard";
 import { Metadata } from "next";
 import { AdBanner } from "@/components/ads/AdBanner";
 
+export const dynamic = "force-dynamic";
+
 interface ServerWithStatus {
   id: string;
   ip: string;
