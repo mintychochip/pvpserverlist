@@ -13,6 +13,8 @@ export async function GET(req: NextRequest) {
   const tag = url.searchParams.get("tag");
   const version = url.searchParams.get("version");
   const search = url.searchParams.get("search");
+  const maxOfflineHours = parseInt(url.searchParams.get("max_offline_hours") ?? "0");
+  const showOffline = url.searchParams.get("show_offline") === "true";
 
   const offset = (page - 1) * limit;
 
@@ -33,6 +35,18 @@ export async function GET(req: NextRequest) {
 
   if (search) {
     query = query.ilike("name", `%${search}%`);
+  }
+
+  // Filter by offline duration
+  if (maxOfflineHours > 0) {
+    const cutoff = new Date(Date.now() - maxOfflineHours * 60 * 60 * 1000).toISOString();
+    if (showOffline) {
+      // Show servers that ARE offline but within the window
+      query = query.lt("last_online_at", cutoff).not("last_online_at", "is", null);
+    } else {
+      // Hide servers offline longer than cutoff (include servers never checked)
+      query = query.or(`last_online_at.gte.${cutoff},last_online_at.is.null`);
+    }
   }
 
   // Sort
