@@ -7,6 +7,7 @@ import { FilterBar } from "@/components/server/FilterBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { SidebarAds } from "@/components/ads/SidebarAds";
+import { ContactForm } from "@/components/ui/ContactForm";
 
 interface ServerWithStatus {
   id: string;
@@ -197,9 +198,10 @@ export default async function HomePage({
               </div>
               <div>
                 <h3 className="text-white font-semibold mb-2">How can I contact you?</h3>
-                <p className="text-zinc-400 text-sm">You can reach out via email at <a href="mailto:info@pvpserverlist.com" className="text-indigo-400 hover:underline">info@pvpserverlist.com</a>, or message us via Discord or Twitter.</p>
+                <p className="text-zinc-400 text-sm">You can reach out via email at <a href="mailto:info@pvpserverlist.com" className="text-indigo-400 hover:underline">info@pvpserverlist.com</a>, or message us via Discord or Twitter. You can also use the contact form below.</p>
               </div>
             </div>
+            <ContactForm />
             <div className="mt-10 pt-6 border-t border-zinc-800 text-center text-zinc-600 text-sm">
               PvP Index — Real-time Minecraft server status
             </div>
