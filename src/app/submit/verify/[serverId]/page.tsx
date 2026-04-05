@@ -3,6 +3,19 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notFound } from "next/navigation";
 
+interface VerifyServer {
+  id: string;
+  name: string;
+  ip: string;
+  port: number;
+}
+
+interface VerifyToken {
+  token: string;
+  expires_at: string;
+  verified_at: string | null;
+}
+
 export default async function VerifyPage({
   params,
 }: {
@@ -11,23 +24,32 @@ export default async function VerifyPage({
   const { serverId } = await params;
   const supabase = createAdminClient();
 
-  const { data: server } = await supabase
-    .from("servers")
-    .select("id, name, ip, port")
-    .eq("id", serverId)
-    .single();
+  let server: VerifyServer | null = null;
+  let token: VerifyToken | null = null;
 
-  if (!server) notFound();
+  try {
+    const { data } = await supabase
+      .from("servers")
+      .select("id, name, ip, port")
+      .eq("id", serverId)
+      .single();
+    server = data as VerifyServer | null;
 
-  const { data: token } = await supabase
-    .from("verification_tokens")
-    .select("token, expires_at, verified_at")
-    .eq("server_id", serverId)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .single();
+    if (server) {
+      const { data: tokenData } = await supabase
+        .from("verification_tokens")
+        .select("token, expires_at, verified_at")
+        .eq("server_id", serverId)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+      token = tokenData as VerifyToken | null;
+    }
+  } catch (err) {
+    console.error("Supabase error:", err);
+  }
 
-  if (!token) notFound();
+  if (!server || !token) notFound();
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">

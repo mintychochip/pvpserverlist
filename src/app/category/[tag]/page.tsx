@@ -55,17 +55,23 @@ export default async function CategoryPage({
   params: Promise<{ tag: string }>;
 }) {
   const { tag } = await params;
-  const supabase = await createClient();
+  let servers: ServerWithStatus[] = [];
 
-  const { data: servers } = await supabase
-    .from("servers")
-    .select(`
-      id, ip, port, name, description, version, tags, verified, vote_count,
-      server_status (status, latency_ms, player_count, max_players)
-    `)
-    .contains("tags", [tag])
-    .order("vote_count", { ascending: false })
-    .limit(50);
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("servers")
+      .select(`
+        id, ip, port, name, description, version, tags, verified, vote_count,
+        server_status (status, latency_ms, player_count, max_players)
+      `)
+      .contains("tags", [tag])
+      .order("vote_count", { ascending: false })
+      .limit(50);
+    servers = (data ?? []) as unknown as ServerWithStatus[];
+  } catch (err) {
+    console.error("Supabase error:", err);
+  }
 
   const label = TAG_LABELS[tag] ?? tag;
 

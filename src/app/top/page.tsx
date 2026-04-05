@@ -29,16 +29,22 @@ export const metadata: Metadata = {
 };
 
 export default async function TopPage() {
-  const supabase = await createClient();
+  let servers: ServerWithStatus[] = [];
 
-  const { data: servers } = await supabase
-    .from("servers")
-    .select(`
-      id, ip, port, name, description, version, tags, verified, vote_count,
-      server_status (status, latency_ms, player_count, max_players)
-    `)
-    .order("vote_count", { ascending: false })
-    .limit(100);
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("servers")
+      .select(`
+        id, ip, port, name, description, version, tags, verified, vote_count,
+        server_status (status, latency_ms, player_count, max_players)
+      `)
+      .order("vote_count", { ascending: false })
+      .limit(100);
+    servers = (data ?? []) as unknown as ServerWithStatus[];
+  } catch (err) {
+    console.error("Supabase error:", err);
+  }
 
   return (
     <div className="min-h-screen">

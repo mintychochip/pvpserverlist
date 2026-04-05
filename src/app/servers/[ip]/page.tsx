@@ -16,6 +16,19 @@ interface ServerStatus {
   last_checked?: string;
 }
 
+interface ServerDetail {
+  id: string;
+  ip: string;
+  port: number;
+  name: string;
+  description: string | null;
+  version: string | null;
+  tags: string[];
+  verified: boolean;
+  vote_count: number;
+  server_status?: ServerStatus | null;
+}
+
 export const revalidate = 0;
 
 export default async function ServerPage({
@@ -24,16 +37,22 @@ export default async function ServerPage({
   params: Promise<{ ip: string }>;
 }) {
   const { ip } = await params;
-  const supabase = await createClient();
 
-  const { data: server } = await supabase
-    .from("servers")
-    .select(`
-      id, ip, port, name, description, version, tags, verified, vote_count,
-      server_status (status, latency_ms, player_count, max_players, motd, last_checked)
-    `)
-    .eq("ip", ip)
-    .maybeSingle();
+  let server: ServerDetail | null = null;
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from("servers")
+      .select(`
+        id, ip, port, name, description, version, tags, verified, vote_count,
+        server_status (status, latency_ms, player_count, max_players, motd, last_checked)
+      `)
+      .eq("ip", ip)
+      .maybeSingle();
+    server = data as ServerDetail | null;
+  } catch (err) {
+    console.error("Supabase error:", err);
+  }
 
   if (!server) notFound();
 
