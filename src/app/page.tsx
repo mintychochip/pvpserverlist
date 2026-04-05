@@ -21,6 +21,7 @@ interface ServerWithStatus {
   vote_count: number;
   banner: string | null;
   icon: string | null;
+  last_online_at: string | null;
   server_status?: {
     status: boolean;
     latency_ms: number | null;
@@ -35,7 +36,7 @@ export const revalidate = 60;
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; sort?: string; tag?: string; version?: string; search?: string; layout?: string }>;
+  searchParams: Promise<{ page?: string; sort?: string; tag?: string; version?: string; search?: string; layout?: string; max_offline_hours?: string; show_offline?: string }>;
 }) {
   const params = await searchParams;
   const page = parseInt(params.page ?? "1");
@@ -44,6 +45,9 @@ export default async function HomePage({
   const version = params.version;
   const search = params.search;
   const layout = params.layout ?? "grid";
+  const hideOffline = params.max_offline_hours === "24";
+  const showOffline = params.show_offline === "true";
+  const maxOfflineHours = parseInt(params.max_offline_hours ?? "0");
   const limit = 20;
   const offset = (page - 1) * limit;
 
@@ -63,6 +67,16 @@ export default async function HomePage({
     if (tag) query = query.contains("tags", [tag]);
     if (version) query = query.eq("version", version);
     if (search) query = query.ilike("name", `%${search}%`);
+
+    // Filter by offline duration
+    if (maxOfflineHours > 0) {
+      const cutoff = new Date(Date.now() - maxOfflineHours * 60 * 60 * 1000).toISOString();
+      if (showOffline) {
+        query = query.lt("last_online_at", cutoff).not("last_online_at", "is", null);
+      } else {
+        query = query.or(`last_online_at.gte.${cutoff},last_online_at.is.null`);
+      }
+    }
 
     if (sort === "votes") query = query.order("vote_count", { ascending: false });
     else if (sort === "players") query = query.order("player_count", { ascending: false });
@@ -117,9 +131,17 @@ export default async function HomePage({
           <div>
             <main className="px-4 py-8">
               <div className="mb-8">
-                <h2 className="text-3xl font-bold text-white mb-2">
-                  Best Minecraft PvP Servers
-                </h2>
+                {/* Determine heading based on tab */}
+                {(() => {
+                  const heading = showOffline
+                    ? "Recently Offline Servers"
+                    : "Best Minecraft PvP Servers";
+                  return (
+                    <h2 className="text-3xl font-bold text-white mb-2">
+                      {heading}
+                    </h2>
+                  );
+                })()}
                 <p className="text-zinc-400">
                   Real-time latency checks. Ranked by performance. Updated daily.
                 </p>
@@ -150,21 +172,30 @@ export default async function HomePage({
 
               {totalPages > 1 && (
                 <div className="flex justify-center gap-2 mt-8">
-                  {page > 1 && (
-                    <Link href={`/?page=${page - 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}${layout !== "grid" ? `&layout=${layout}` : ""}`}
-                       className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-sm">
-                      Previous
-                    </Link>
-                  )}
-                  <span className="px-4 py-2 text-zinc-500 text-sm">
-                    Page {page} of {totalPages}
-                  </span>
-                  {page < totalPages && (
-                    <Link href={`/?page=${page + 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}${layout !== "grid" ? `&layout=${layout}` : ""}`}
-                       className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-sm">
-                      Next
-                    </Link>
-                  )}
+                  {(() => {
+                    const filterParams = maxOfflineHours > 0
+                      ? `&max_offline_hours=${maxOfflineHours}${showOffline ? "&show_offline=true" : ""}`
+                      : "";
+                    return (
+                      <>
+                        {page > 1 && (
+                          <Link href={`/?page=${page - 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}${layout !== "grid" ? `&layout=${layout}` : ""}${filterParams}`}
+                             className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-sm">
+                            Previous
+                          </Link>
+                        )}
+                        <span className="px-4 py-2 text-zinc-500 text-sm">
+                          Page {page} of {totalPages}
+                        </span>
+                        {page < totalPages && (
+                          <Link href={`/?page=${page + 1}&sort=${sort}${tag ? `&tag=${tag}` : ""}${version ? `&version=${version}` : ""}${layout !== "grid" ? `&layout=${layout}` : ""}${filterParams}`}
+                             className="px-4 py-2 bg-zinc-800 text-white rounded-lg text-sm">
+                            Next
+                          </Link>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               )}
             </main>
