@@ -10,6 +10,16 @@ jobs:
   ping-servers:
     runs-on: ubuntu-latest
     steps:
-      - name: Call watcher cron endpoint
-        run: |
-          curl -s -o /dev/null -w "%{http_code}" "${{ secrets.SITE_URL }}/api/cron/watcher"
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: opc
+          key: ${{ secrets.VPS_SSH_KEY }}
+          known_hosts: ${{ secrets.VPS_KNOWN_HOST }}
+          script: |
+            cd ~/pvpserverlist-watcher
+            git pull origin master
+            npm install --production
+            npm run build
+            pm2 restart pvpserverlist-watcher
