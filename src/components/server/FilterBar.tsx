@@ -35,16 +35,22 @@ export function FilterBar() {
   const currentSearch = searchParams.get("search") ?? "";
   const currentLayout = searchParams.get("layout") ?? "grid";
 
-  const hideOffline = searchParams.get("max_offline_hours") === "24";
-  const showOffline = searchParams.get("show_offline") === "true";
+  // Active when: no show_offline param is set (regardless of max_offline_hours value)
+  // ON = hide offline servers (default behavior)
+  // OFF = show recently offline tab
+  const isRecentlyOfflineTab = searchParams.get("show_offline") === "true";
+  const isHideOfflineActive = !isRecentlyOfflineTab;
 
   const toggleHideOffline = () => {
     const params = new URLSearchParams(searchParams.toString());
-    if (hideOffline) {
-      params.delete("max_offline_hours");
+    if (isHideOfflineActive) {
+      // Switch to recently offline tab
+      params.set("show_offline", "true");
+      params.set("max_offline_hours", "72");
     } else {
-      params.set("max_offline_hours", "24");
+      // Switch back to hide offline (default)
       params.delete("show_offline");
+      params.delete("max_offline_hours");
     }
     router.push(`/?${params.toString()}`);
   };
@@ -101,13 +107,13 @@ export function FilterBar() {
         <button
           onClick={toggleHideOffline}
           className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-sm ${
-            hideOffline
+            isHideOfflineActive
               ? "bg-indigo-600 border-indigo-600 text-white"
               : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white"
           }`}
-          title={hideOffline ? "Showing online servers" : "Hiding servers offline for 24+ hours"}
+          title={isHideOfflineActive ? "Showing online servers" : "Hiding servers offline for 24+ hours"}
         >
-          {hideOffline ? (
+          {isHideOfflineActive ? (
             <EyeOff className="w-4 h-4" />
           ) : (
             <Eye className="w-4 h-4" />
@@ -131,7 +137,7 @@ export function FilterBar() {
         <button
           onClick={showRecentlyOffline}
           className={`text-xs px-3 py-1.5 rounded-full transition-colors ${
-            showOffline
+            isRecentlyOfflineTab
               ? "bg-indigo-600 text-white"
               : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
           }`}
