@@ -18,7 +18,7 @@ export async function GET(
 
   const { data: server } = await supabase
     .from("servers")
-    .select("name, vote_count")
+    .select("id, name, vote_count")
     .eq("ip", serverIp)
     .maybeSingle();
 
