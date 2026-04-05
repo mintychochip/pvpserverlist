@@ -11,7 +11,7 @@
     "db:migrate": "supabase db push"
   },
   "dependencies": {
-    "next": "15.2.0",
+    "next": "15.5.14",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "@supabase/supabase-js": "^2.47.0",
@@ -29,7 +29,7 @@
     "postcss": "^8.4.49",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.17.0",
-    "eslint-config-next": "15.2.0",
+    "eslint-config-next": "15.5.14",
     "supabase": "^2.0.0"
   }
 }
