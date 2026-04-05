@@ -85,7 +85,8 @@ async function upsertServerStatus(supabase: any,
   latencyMs: number | null,
   playerCount: number,
   maxPlayers: number,
-  motd: string
+  motd: string,
+  version: string
 ): Promise<void> {
   await supabase.from("server_status").upsert(
     {
@@ -95,6 +96,7 @@ async function upsertServerStatus(supabase: any,
       player_count: playerCount,
       max_players: maxPlayers,
       motd,
+      version,
       last_checked: new Date().toISOString(),
     } as never,
     { onConflict: "server_id" }
@@ -195,9 +197,21 @@ export async function GET() {
               result.latency_ms,
               result.player_count,
               result.max_players,
-              result.motd
-            ).then(() => {
+              result.motd,
+              result.version
+            ).then(async () => {
+              // Sync server-reported version and last_online_at when online
               if (result.status) {
+                const update: Record<string, unknown> = {
+                  last_online_at: new Date().toISOString(),
+                };
+                if (result.version && result.version.trim() !== "") {
+                  update.version = result.version;
+                }
+                await supabase
+                  .from("servers")
+                  .update(update)
+                  .eq("id", server.id);
                 online++;
                 console.log(`  ✓ ${server.name} (${server.ip}) — ${result.player_count}/${result.max_players} players, ${result.latency_ms}ms`);
               } else {
