@@ -50,6 +50,7 @@ Stack: Next.js (App Router) + Supabase (Postgres + Edge Functions) + SLP (Server
 | platform      | TEXT         | Enum: 'java', 'bedrock', 'crossplay' |
 | bedrock_ip    | TEXT         | Bedrock IP if crossplay         |
 | bedrock_port  | INTEGER      | Bedrock port if crossplay       |
+| region        | TEXT         | Enum: 'north-america', 'europe', 'asia', 'oceania', 'south-america' |
 | verified      | BOOLEAN      | Default false                   |
 | votifier_key  | TEXT         | Encrypted RSA public key        |
 | vote_count    | INTEGER      | Default 0                       |
@@ -304,6 +305,41 @@ Each keyword maps to a `/category/[slug]` page:
 - `/category/practice-pvp`
 
 Server owners select tags at submission. Tag → slug mapping generates category pages automatically.
+
+### Programmatic SEO (The "Long-Tail Net")
+
+Auto-generate pages for every combination of filters — capturing AI-driven search traffic that big sites miss.
+
+**URL Structure:**
+```
+/minecraft/version/{version}/{tag}/{region}
+/minecraft/tag/{tag}/{variant}
+/minecraft/version/{version}/tag/{tag}
+```
+
+**Examples:**
+- `/minecraft/version/1.21.1/lifesteal/europe`
+- `/minecraft/version/1.8/tag/nodepuff`
+- `/minecraft/tag/crystal-pvp/low-ping`
+- `/minecraft/version/1.20.4/tag/survival/north-america`
+
+**Dimension combinations:**
+- **Version**: 1.8, 1.12, 1.16, 1.18, 1.19, 1.20.4, 1.21, 1.21.1
+- **Tag**: crystal-pvp, uhc-pvp, sumo, nodepuff, lifesteal, smp, practice, bridge, hunger-games, prison
+- **Region**: north-america, europe, asia, oceania, south-america (based on server latency)
+- **Variant**: low-ping (<50ms), medium-ping (<150ms), no-lag, p2w, no-p2w
+
+**Implementation:**
+- `src/app/minecraft/version/[version]/[tag]/[region]/page.tsx` — dynamic route with metadata
+- `src/app/minecraft/tag/[tag]/[variant]/page.tsx` — tag + variant combo
+- Query param → slug mapping generates pages dynamically at request time (SSG would be thousands of pages)
+- Each page has unique metadata: `<title>Minecraft 1.21.1 Lifesteal Servers (Europe) | PvP Index</title>`
+- Each page links to: category page, version page, server list filtered by those params
+
+**Why this wins in 2026:**
+AI-driven search (SGE, Perplexity) favors the most specific result. If someone asks for "Low lag 1.21.1 survival server in London," your site has a page matching that exact data point. Generic lists never optimize for these combinations.
+
+**Page count:** With 8 versions × 10 tags × 5 regions = 400 combinations, plus variants = 1000+ potential pages, all generated from the same route templates.
 
 ### JSON-LD Schema
 
