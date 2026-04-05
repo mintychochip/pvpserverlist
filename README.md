@@ -2,7 +2,7 @@
 
 Real-time Minecraft PvP server directory. Live latency checks, player counts, and community votes — ranked by performance.
 
-**Live:** [pvpserverlist.gg](https://pvpserverlist.gg)
+**Live:** [pvp-directory.vercel.app](https://pvp-directory.vercel.app) (custom domain: pvpserverlist.gg — coming soon)
 
 ## Stack
 
