@@ -66,6 +66,7 @@ export function ServerCard({ server, onVote }: ServerCardProps) {
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-colors">
+<<<<<<< Updated upstream
       <Link href={`/servers/${server.id}`} className="block">
         {server.banner && (
           <div className="w-full aspect-[2.87/1] overflow-hidden bg-zinc-800">
@@ -79,6 +80,48 @@ export function ServerCard({ server, onVote }: ServerCardProps) {
                 playsInline
                 onError={(e) => { (e.target as HTMLVideoElement).style.display = 'none'; }}
               />
+=======
+      {server.banner && (
+        <div className="w-full h-24 md:h-28 overflow-hidden bg-zinc-800">
+          {server.banner.endsWith('.mp4') ? (
+            <video
+              src={server.banner}
+              className="w-full h-full object-cover"
+              muted={true}
+              autoPlay={true}
+              loop={true}
+              playsInline
+              onLoadedData={(e) => { try { (e.target as HTMLVideoElement).play(); } catch(_e) {} }}
+            />
+          ) : (
+            <img
+              src={server.banner}
+              alt=""
+              className="w-full h-full object-cover"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+          )}
+        </div>
+      )}
+      <div className="p-4">
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-3">
+          {server.icon ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={server.icon}
+              alt={server.name}
+              className="w-10 h-10 rounded-lg border border-zinc-700 bg-zinc-800 object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).parentElement!.innerHTML = `<div class="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center">${isOnline ? '🟢' : '⬛'}</div>`;
+              }}
+            />
+          ) : (
+            <div className="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center">
+              {isOnline ? (
+                <Server className="w-5 h-5 text-green-400" />
+>>>>>>> Stashed changes
             ) : (
               <img
                 src={server.banner}
