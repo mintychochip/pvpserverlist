@@ -14,7 +14,7 @@ java {
 
 // Configure the main class
 application {
-    mainClass.set("com.example.MainKt") // Replace with your main class
+    mainClass.set("dev.justin.gambit.Main")
 }
 
 // Configure repositories
