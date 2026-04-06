@@ -27,7 +27,7 @@ repositories {
 
 // Define dependencies
 dependencies {
-    implementation("com.github.Minestom:Minestom:1.4.0")
+    implementation("com.github.Minestom:Minestom:1.5.1")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
     implementation("org.apache.logging.log4j:log4j-core:2.20.0")
