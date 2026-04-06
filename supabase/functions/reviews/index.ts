@@ -1,7 +1,7 @@
 // Server Reviews API
 // Submit and fetch reviews with moderation
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'npm:@supabase/supabase-js';
 
 export async function handleReviews(request: Request): Promise<Response> {
   const headers = {

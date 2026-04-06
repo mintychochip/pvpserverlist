@@ -2,9 +2,9 @@
 // Periodically checks server status and updates database
 // Can be triggered by cron job or called manually
 
-import { createClient } from '@supabase/supabase-js';
-import * as net from 'net';
-import { Buffer } from 'buffer';
+import { createClient } from 'npm:@supabase/supabase-js';
+import * as net from 'node:net';
+import { Buffer } from 'node:buffer';
 
 // Varint helper functions
 function varintSize(value: number): number {
