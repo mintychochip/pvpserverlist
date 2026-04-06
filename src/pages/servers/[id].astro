@@ -1,27 +1,122 @@
 ---
-// Redirect old /servers/[id] URLs to client-side /servers/index.html
-export async function getStaticPaths() {
-  // Generate a few sample UUIDs to pre-render (most will be handled by 404.html redirect)
-  return [
-    { params: { id: '50953c63-c6e7-4a45-8244-523a4e1ae48a' } }
-  ];
-}
+// Server Detail Page - Server-side rendered with Cloudflare
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
 
 const { id } = Astro.params;
+
+// Server-side fetch from Supabase
+const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.35hrTSgxQnICpLOY3g6W3eNxxe7DKCc3q165tyb0Ieo';
+
+let server = null;
+let error = null;
+
+try {
+  const response = await fetch(`${supabaseUrl}/rest/v1/servers?id=eq.${id}&select=*`, {
+    headers: {
+      'apikey': supabaseKey,
+      'Authorization': `Bearer ${supabaseKey}`
+    }
+  });
+  
+  if (response.ok) {
+    const data = await response.json();
+    server = data[0] || null;
+  } else {
+    error = 'Failed to fetch server';
+  }
+} catch (e) {
+  error = e.message;
+}
+
+// If no server found, return 404
+if (!server) {
+  return new Response('Server not found', { status: 404 });
+}
 ---
 
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Redirecting...</title>
-  <script>
-    var path = window.location.pathname;
-    var uuid = path.replace(/^\/servers\//, '').replace(/\/$/, '');
-    window.location.replace('/servers/index.html?id=' + uuid);
-  </script>
-</head>
-<body>
-  <p>Redirecting to server...</p>
-</body>
-</html>
+<Layout 
+  title={`${server.name} | GuildPost`}
+  description={server.description || `View ${server.name} Minecraft server on GuildPost`}
+  url={`https://guildpost.tech/servers/${id}`}
+>
+  <div class="min-h-screen bg-[#0a0a0f]">
+    <Header />
+    
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm text-[#8892b0] mb-6">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <a href="/minecraft" class="hover:text-white transition-colors">Minecraft</a>
+        <span>/</span>
+        <span class="text-white">{server.name}</span>
+      </nav>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Server Header -->
+          <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-16 h-16 bg-[#1a1a25] rounded-lg flex items-center justify-center text-2xl">
+                ⛏
+              </div>
+              <div>
+                <h1 class="text-2xl font-bold text-white">{server.name}</h1>
+                <code class="text-[#8892b0]">{server.ip}:{server.port}</code>
+              </div>
+            </div>
+            
+            {server.description && (
+              <p class="text-[#8892b0] leading-relaxed">{server.description}</p>
+            )}
+          </div>
+          
+          <!-- Stats -->
+          <div class="grid grid-cols-3 gap-4">
+            <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+              <p class="text-2xl font-bold text-[#00f5d4]">{server.players_online || 0}</p>
+              <p class="text-xs text-[#8892b0]">Players Online</p>
+            </div>
+            <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+              <p class="text-2xl font-bold text-white">{server.max_players || 0}</p>
+              <p class="text-xs text-[#8892b0]">Max Players</p>
+            </div>
+            <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+              <p class="text-2xl font-bold text-[#ff3864]">{server.vote_count || 0}</p>
+              <p class="text-xs text-[#8892b0]">Votes</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="space-y-4">
+          <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+            <h3 class="font-bold text-white mb-3">Server Info</h3>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-[#8892b0]">Version</span>
+                <span class="text-white">{server.version || 'Any'}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[#8892b0]">Status</span>
+                <span class={server.status === 'online' ? 'text-green-500' : 'text-gray-500'}>
+                  {server.status === 'online' ? '● Online' : '○ Offline'}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <a 
+            href={`minecraft://${server.ip}:${server.port}`}
+            class="block w-full p-4 bg-[#00f5d4] text-[#0a0a0f] font-bold text-center rounded-lg hover:bg-[#00d4b8] transition-colors"
+          >
+            Join Server
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+</Layout>
