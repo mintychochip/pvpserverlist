@@ -1,7 +1,7 @@
 // Server Analytics API
 // Returns player count history for charting
 
-import { createClient } from 'npm:@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 
 export async function handleAnalytics(request: Request): Promise<Response> {
   const headers = {

@@ -1,9 +1,9 @@
 // Votifier Vote Service with Anti-Abuse
 // Features: IP tracking, proxy/VPN detection, rate limiting, fingerprinting
 
-import { createClient } from 'npm:@supabase/supabase-js';
-import * as crypto from 'node:crypto';
-import * as net from 'node:net';
+import { createClient } from '@supabase/supabase-js';
+import * as crypto from 'crypto';
+import * as net from 'net';
 
 interface VoteRequest {
   serverId: string;

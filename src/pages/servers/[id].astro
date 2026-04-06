@@ -150,80 +150,6 @@ const { id } = Astro.params;
               <p class="text-xs text-[#8892b0] mt-2 text-center">Player count over time (30-minute intervals)</p>
             </section>
 
-            <!-- Reviews Section -->
-            <section class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
-              <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center gap-3">
-                  <h2 class="text-xl font-bold text-white">Reviews</h2>
-                  <div id="rating-summary" class="flex items-center gap-2 hidden">
-                    <span id="avg-rating" class="text-2xl font-bold text-[#00f5d4]">—</span>
-                    <div id="star-display" class="flex text-yellow-500"></div>
-                    <span id="review-count" class="text-sm text-[#8892b0]">(0)</span>
-                  </div>
-                </div>
-                <button id="write-review-btn" class="px-4 py-2 bg-[#00f5d4] text-[#0a0a0f] font-bold hover:bg-[#00d4b8] transition-colors rounded-lg text-sm">
-                  Write Review
-                </button>
-              </div>
-
-              <!-- Rating Distribution -->
-              <div id="rating-distribution" class="mb-6 hidden">
-                <div class="space-y-1">
-                  {[5,4,3,2,1].map(stars => `
-                    <div class="flex items-center gap-2">
-                      <span class="text-sm text-[#8892b0] w-8">${stars}★</span>
-                      <div class="flex-1 h-2 bg-[#2a2a3a] rounded-full overflow-hidden">
-                        <div id="bar-${stars}" class="h-full bg-[#00f5d4] rounded-full" style="width: 0%"></div>
-                      </div>
-                      <span id="count-${stars}" class="text-sm text-[#8892b0] w-8 text-right">0</span>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-
-              <!-- Review Form -->
-              <div id="review-form-container" class="hidden mb-6 p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg">
-                <h3 class="text-lg font-bold text-white mb-4">Write a Review</h3>
-                <form id="review-form" class="space-y-4">
-                  <div>
-                    <label class="block text-sm text-[#8892b0] mb-2">Your Minecraft Username *</label>
-                    <input type="text" id="review-username" required class="w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] text-white rounded focus:outline-none focus:border-[#00f5d4]" />
-                  </div>
-                  <div>
-                    <label class="block text-sm text-[#8892b0] mb-2">Rating *</label>
-                    <div id="star-input" class="flex gap-1 text-2xl cursor-pointer">
-                      {[1,2,3,4,5].map(i => `<span class="star text-[#2a2a3a] hover:text-yellow-500 transition-colors" data-rating="${i}">★</span>`).join('')}
-                    </div>
-                    <input type="hidden" id="review-rating" required />
-                  </div>
-                  <div>
-                    <label class="block text-sm text-[#8892b0] mb-2">Title (optional)</label>
-                    <input type="text" id="review-title" maxlength="100" class="w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] text-white rounded focus:outline-none focus:border-[#00f5d4]" placeholder="Summarize your experience" />
-                  </div>
-                  <div>
-                    <label class="block text-sm text-[#8892b0] mb-2">Review *</label>
-                    <textarea id="review-content" required minlength="10" maxlength="1000" rows="4" class="w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] text-white rounded focus:outline-none focus:border-[#00f5d4] resize-none" placeholder="What did you like? What could be improved?"></textarea>
-                    <p class="text-xs text-[#8892b0] mt-1">Min 10, max 1000 characters</p>
-                  </div>
-                  <div class="flex gap-3">
-                    <button type="submit" class="px-4 py-2 bg-[#00f5d4] text-[#0a0a0f] font-bold hover:bg-[#00d4b8] transition-colors rounded">Submit Review</button>
-                    <button type="button" id="cancel-review" class="px-4 py-2 bg-[#2a2a3a] text-white hover:bg-[#3a3a4a] transition-colors rounded">Cancel</button>
-                  </div>
-                  <div id="review-message" class="hidden p-3 rounded text-sm"></div>
-                </form>
-              </div>
-
-              <!-- Reviews List -->
-              <div id="reviews-list" class="space-y-4">
-                <div class="text-center py-8 text-[#8892b0]">Loading reviews...</div>
-              </div>
-
-              <!-- Load More -->
-              <div id="reviews-pagination" class="mt-6 text-center hidden">
-                <button id="load-more-reviews" class="px-4 py-2 bg-[#2a2a3a] text-white hover:bg-[#3a3a4a] transition-colors rounded">Load More Reviews</button>
-              </div>
-            </section>
-
             <!-- Description -->
             <section class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
               <h2 class="text-xl font-bold text-white mb-4">About</h2>
@@ -424,36 +350,15 @@ const { id } = Astro.params;
     // Join button link
     document.getElementById('join-btn').href = `minecraft://?addServer=${server.name}|${server.ip}:${server.port}`;
     
-    // Copy IP button with toast
+    // Copy IP button
     document.getElementById('copy-ip-btn').addEventListener('click', () => {
       navigator.clipboard.writeText(`${server.ip}:${server.port}`);
-      showToast('IP copied to clipboard!');
       const btn = document.getElementById('copy-ip-btn');
-      const originalHTML = btn.innerHTML;
       btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Copied!`;
-      btn.classList.add('text-green-500', 'border-green-500');
       setTimeout(() => {
-        btn.innerHTML = originalHTML;
-        btn.classList.remove('text-green-500', 'border-green-500');
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy IP`;
       }, 2000);
     });
-    
-    // Toast notification
-    function showToast(message) {
-      const existing = document.getElementById('toast');
-      if (existing) existing.remove();
-      
-      const toast = document.createElement('div');
-      toast.id = 'toast';
-      toast.className = 'fixed bottom-4 right-4 px-4 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg shadow-lg z-50 animate-fade-in';
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.classList.add('opacity-0', 'transition-opacity');
-        setTimeout(() => toast.remove(), 300);
-      }, 3000);
-    }
     
     // Votifier status indicator
     if (server.votifier_key) {
@@ -777,160 +682,5 @@ const { id } = Astro.params;
   // Load chart after server loads
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => loadChart(24), 500);
-    loadReviews();
   });
-  
-  // Reviews functionality
-  let currentRating = 0;
-  
-  async function loadReviews() {
-    try {
-      const response = await fetch(`https://wpxutsdbiampnxfgkjwq.supabase.co/functions/v1/reviews?serverId=${serverId}`);
-      if (!response.ok) throw new Error('Failed to load reviews');
-      
-      const data = await response.json();
-      
-      // Update rating summary
-      if (data.stats && data.stats.total_reviews > 0) {
-        document.getElementById('rating-summary').classList.remove('hidden');
-        document.getElementById('avg-rating').textContent = data.stats.avg_rating || '—';
-        document.getElementById('review-count').textContent = `(${data.stats.total_reviews})`;
-        
-        // Render stars
-        const stars = '★'.repeat(Math.round(data.stats.avg_rating || 0)) + '☆'.repeat(5 - Math.round(data.stats.avg_rating || 0));
-        document.getElementById('star-display').textContent = stars;
-        
-        // Update distribution
-        document.getElementById('rating-distribution').classList.remove('hidden');
-        data.distribution.forEach(d => {
-          const bar = document.getElementById(`bar-${d.rating}`);
-          const count = document.getElementById(`count-${d.rating}`);
-          if (bar) bar.style.width = `${d.percentage}%`;
-          if (count) count.textContent = d.count;
-        });
-      }
-      
-      // Render reviews
-      const reviewsList = document.getElementById('reviews-list');
-      if (data.reviews && data.reviews.length > 0) {
-        reviewsList.innerHTML = data.reviews.map(review => `
-          <div class="p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg">
-            <div class="flex items-start justify-between mb-2">
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-white">${review.username}</span>
-                ${review.is_verified ? `<span class="px-2 py-0.5 bg-green-500/20 text-green-500 text-xs rounded">✓ Verified</span>` : ''}
-              </div>
-              <div class="text-yellow-500">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
-            </div>
-            ${review.title ? `<h4 class="font-bold text-white mb-1">${review.title}</h4>` : ''}
-            <p class="text-[#8892b0] text-sm mb-2">${review.content}</p>
-            <div class="flex items-center gap-4 text-xs text-[#8892b0]">
-              <span>${new Date(review.created_at).toLocaleDateString()}</span>
-              ${review.playtime_hours ? `<span>${review.playtime_hours}h playtime</span>` : ''}
-            </div>
-          </div>
-        `).join('');
-      } else {
-        reviewsList.innerHTML = '<div class="text-center py-8 text-[#8892b0]">No reviews yet. Be the first to write one!</div>';
-      }
-    } catch (err) {
-      console.error('Reviews error:', err);
-      document.getElementById('reviews-list').innerHTML = '<div class="text-center py-8 text-[#8892b0]">Failed to load reviews</div>';
-    }
-  }
-  
-  // Review form toggle
-  document.getElementById('write-review-btn')?.addEventListener('click', () => {
-    document.getElementById('review-form-container').classList.remove('hidden');
-    document.getElementById('write-review-btn').classList.add('hidden');
-  });
-  
-  document.getElementById('cancel-review')?.addEventListener('click', () => {
-    document.getElementById('review-form-container').classList.add('hidden');
-    document.getElementById('write-review-btn').classList.remove('hidden');
-    document.getElementById('review-form').reset();
-    currentRating = 0;
-    updateStarDisplay();
-  });
-  
-  // Star rating
-  function updateStarDisplay() {
-    document.querySelectorAll('#star-input .star').forEach((star, i) => {
-      star.classList.toggle('text-yellow-500', i < currentRating);
-      star.classList.toggle('text-[#2a2a3a]', i >= currentRating);
-    });
-    document.getElementById('review-rating').value = currentRating;
-  }
-  
-  document.querySelectorAll('#star-input .star').forEach(star => {
-    star.addEventListener('click', () => {
-      currentRating = parseInt(star.dataset.rating);
-      updateStarDisplay();
-    });
-    star.addEventListener('mouseenter', () => {
-      const rating = parseInt(star.dataset.rating);
-      document.querySelectorAll('#star-input .star').forEach((s, i) => {
-        s.classList.toggle('text-yellow-500', i < rating);
-        s.classList.toggle('text-[#2a2a3a]', i >= rating);
-      });
-    });
-  });
-  
-  document.getElementById('star-input')?.addEventListener('mouseleave', updateStarDisplay);
-  
-  // Submit review
-  document.getElementById('review-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    if (currentRating === 0) {
-      showReviewMessage('Please select a rating', 'error');
-      return;
-    }
-    
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    
-    try {
-      const response = await fetch(`https://wpxutsdbiampnxfgkjwq.supabase.co/functions/v1/reviews?serverId=${serverId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: document.getElementById('review-username').value,
-          rating: currentRating,
-          title: document.getElementById('review-title').value,
-          content: document.getElementById('review-content').value,
-          playtime_hours: null
-        })
-      });
-      
-      const result = await response.json();
-      
-      if (response.ok) {
-        showReviewMessage('Review submitted!', 'success');
-        setTimeout(() => {
-          document.getElementById('review-form-container').classList.add('hidden');
-          document.getElementById('write-review-btn').classList.remove('hidden');
-          document.getElementById('review-form').reset();
-          currentRating = 0;
-          updateStarDisplay();
-          loadReviews(); // Refresh
-        }, 1500);
-      } else {
-        showReviewMessage(result.error || 'Failed to submit review', 'error');
-      }
-    } catch (err) {
-      showReviewMessage('Network error. Try again.', 'error');
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit Review';
-    }
-  });
-  
-  function showReviewMessage(text, type) {
-    const msg = document.getElementById('review-message');
-    msg.textContent = text;
-    msg.className = `p-3 rounded text-sm ${type === 'error' ? 'bg-[#ff3864]/10 text-[#ff3864]' : 'bg-green-500/10 text-green-500'}`;
-    msg.classList.remove('hidden');
-  }
 </script>

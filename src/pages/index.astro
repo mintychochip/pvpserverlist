@@ -16,7 +16,7 @@ const gameCategories = [
     name: "Minecraft",
     description: "PvP, Survival, Skyblock, Factions & more",
     iconColor: "#00f5d4",
-    serverCount: 1037,
+    serverCount: 1064,
     href: "/minecraft",
     featured: true,
   },
@@ -68,7 +68,7 @@ const gameCategories = [
           class="flex justify-center gap-8 md:gap-16 mb-8 py-6 px-8 bg-[#12121a] border border-[#2a2a3a] max-w-2xl mx-auto"
           style="clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%)"
         >
-          <AnimatedStat value={1037} label="Servers" color="#00f5d4" />
+          <AnimatedStat value={1064} label="Servers" color="#00f5d4" />
           <AnimatedStat value={50} suffix="+" label="Game Modes" color="#00f5d4" />
           <AnimatedStat value={0} label="Fake Reviews" color="#ff3864" />
         </div>
@@ -146,117 +146,25 @@ const gameCategories = [
       </div>
     </section>
 
-    <!-- Search Bar Section -->
-    <section class="px-4 py-8 border-t border-[#1a1a25]">
-      <div class="max-w-4xl mx-auto">
-        <form action="/search" method="GET" class="flex gap-2">
-          <div class="flex-1 relative">
-            <input 
-              type="search" 
-              name="q"
-              placeholder="Search servers by name, IP, or game mode..."
-              class="w-full px-4 py-4 pl-12 bg-[#12121a] border border-[#2a2a3a] text-white placeholder-[#8892b0] rounded-lg focus:outline-none focus:border-[#00f5d4] transition-colors text-lg"
-            />
-            <svg 
-              class="absolute left-4 top-1/2 -translate-y-1/2 text-[#8892b0]" 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="20" 
-              height="20" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              stroke-width="2"
-            >
-              <circle cx="11" cy="11" r="8"/>
-              <path d="m21 21-4.3-4.3"/>
-            </svg>
-          </div>
-          <button 
-            type="submit"
-            class="px-8 py-4 bg-[#00f5d4] text-[#0a0a0f] font-bold hover:bg-[#00d4b8] transition-colors rounded-lg"
-          >
-            Search
-          </button>
-        </form>
-        
-        <!-- Quick Search Tags -->
-        <div class="mt-4 flex flex-wrap gap-2 justify-center">
-          <span class="text-sm text-[#8892b0]">Popular:</span>
-          {['PvP', 'Survival', 'Skyblock', 'Factions', 'SMP', 'Minigames', 'Prison', 'Bedwars'].map(tag => (
-            <a href={`/search?q=${tag.toLowerCase()}`} class="text-sm text-[#00f5d4] hover:underline">
-              {tag}
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Trending Servers (Most Voted Today) -->
-    <section class="px-4 py-16 border-t border-[#1a1a25]">
-      <div class="max-w-6xl mx-auto">
-        <div class="flex items-center justify-between mb-8">
-          <div class="flex items-center gap-3">
-            <h2 class="text-3xl font-bold text-white">
-              🔥 Trending Today
-            </h2>
-            <span class="px-3 py-1 bg-[#ff3864]/20 text-[#ff3864] text-sm font-bold rounded-full">
-              HOT
-            </span>
-          </div>
-          <a href="/search?sort=votes" class="text-[#00f5d4] hover:underline flex items-center gap-2">
-            View All
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-        </div>
-        
-        <div id="trending-servers" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="col-span-full text-center py-12 text-[#8892b0]">
-            Loading trending servers...
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Recently Added Servers -->
-    <section class="px-4 py-16 border-t border-[#1a1a25]">
-      <div class="max-w-6xl mx-auto">
-        <div class="flex items-center justify-between mb-8">
-          <div class="flex items-center gap-3">
-            <h2 class="text-3xl font-bold text-white">
-              ✨ New Servers
-            </h2>
-            <span class="px-3 py-1 bg-[#00f5d4]/20 text-[#00f5d4] text-sm font-bold rounded-full">
-              JUST ADDED
-            </span>
-          </div>
-          <a href="/search?sort=recent" class="text-[#00f5d4] hover:underline flex items-center gap-2">
-            View All
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-        </div>
-        
-        <div id="recent-servers" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="col-span-full text-center py-12 text-[#8892b0]">
-            Loading new servers...
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Featured Minecraft Servers -->
+    <!-- Featured Minecraft Servers - Client Side Fetched -->
     <section class="px-4 py-16 border-t border-[#1a1a25]">
       <div class="max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-8">
           <h2 class="text-3xl font-bold text-white">
-            ⭐ Top Rated Servers
+            Featured Minecraft Servers
           </h2>
-          <a href="/minecraft" class="text-[#00f5d4] hover:underline flex items-center gap-2">
+          <a 
+            href="/minecraft" 
+            class="text-[#00f5d4] hover:underline flex items-center gap-2"
+          >
             View All
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
 
+        <!-- Server grid - populated client-side -->
         <div id="featured-servers" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Loading state -->
           <div class="col-span-full text-center py-12 text-[#8892b0]">
             Loading servers...
           </div>
@@ -352,114 +260,75 @@ const gameCategories = [
   const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.FUiWKe-SwTnKEQFmVzN4L46E5gP2qXl1MnEkrzjWfSw';
   
-  // Log for debugging
-  console.log('Supabase URL:', supabaseUrl);
-  console.log('Loading servers...');
-  
-  function renderServerCard(server) {
-    const isOnline = server.status === 'online';
-    return `
+  async function loadServers() {
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    const { data: servers, error } = await supabase
+      .from('servers')
+      .select('id, ip, port, name, description, version, tags, verified, vote_count, icon, banner')
+      .order('vote_count', { ascending: false })
+      .limit(6);
+    
+    if (error) {
+      console.error('Error loading servers:', error);
+      document.getElementById('featured-servers').innerHTML = `
+        <div class="col-span-full text-center py-12 text-[#8892b0]">
+          Error loading servers. Please try again.
+        </div>
+      `;
+      return;
+    }
+    
+    if (!servers || servers.length === 0) {
+      document.getElementById('featured-servers').innerHTML = `
+        <div class="col-span-full text-center py-12 text-[#8892b0]">
+          No servers found.
+        </div>
+      `;
+      return;
+    }
+    
+    // Render servers
+    const container = document.getElementById('featured-servers');
+    container.innerHTML = servers.map(server => `
       <a href="/servers/${server.id}" class="block p-5 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] transition-colors group rounded-lg">
         <div class="flex items-start gap-4 mb-4">
           ${server.icon ? `
-            <div class="relative">
-              <img src="${server.icon}" alt="" class="w-14 h-14 rounded bg-[#1a1a25]" loading="lazy" />
-              <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} border-2 border-[#12121a]"></span>
-            </div>
+            <img src="${server.icon}" alt="" class="w-14 h-14 rounded bg-[#1a1a25]" loading="lazy" />
           ` : `
-            <div class="relative">
-              <div class="w-14 h-14 rounded bg-[#1a1a25] flex items-center justify-center">
-                <span class="text-[#00f5d4] text-2xl">⛏</span>
-              </div>
-              <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} border-2 border-[#12121a]"></span>
+            <div class="w-14 h-14 rounded bg-[#1a1a25] flex items-center justify-center">
+              <span class="text-[#00f5d4] text-2xl">⛏</span>
             </div>
           `}
           <div class="flex-1 min-w-0">
-            <div class="flex items-center gap-2 mb-1">
-              <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate text-lg">${server.name}</h3>
-              ${isOnline ? `<span class="px-2 py-0.5 bg-green-500/20 text-green-500 text-xs font-bold rounded">ONLINE</span>` : ''}
-            </div>
+            <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate text-lg">
+              ${server.name}
+            </h3>
             <p class="text-sm text-[#8892b0] font-mono truncate">${server.ip}:${server.port}</p>
           </div>
         </div>
+        
+        <!-- Stats Row -->
         <div class="flex items-center gap-4 mb-3 text-sm">
-          <span class="flex items-center gap-1 ${isOnline ? 'text-green-500' : 'text-[#8892b0]'}">
-            <span class="w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-500'}"></span>
-            ${isOnline ? `${server.players_online || 0}/${server.max_players || 0}` : 'Offline'}
+          <span class="flex items-center gap-1 ${server.players_online > 0 ? 'text-green-500' : 'text-[#8892b0]'}">
+            <span class="w-1.5 h-1.5 rounded-full ${server.players_online > 0 ? 'bg-green-500' : 'bg-gray-500'}"></span>
+            ${server.players_online || 0}/${server.max_players || '?'} online
           </span>
           <span class="flex items-center gap-1 text-[#ff3864]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
-            ${server.vote_count || 0}
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+            ${server.vote_count || 0} votes
           </span>
         </div>
+        
+        <!-- Tags -->
         <div class="flex flex-wrap gap-1">
-          ${(server.tags || []).slice(0, 3).map(tag => `<span class="text-xs px-2 py-1 bg-[#1a1a25] text-[#8892b0] rounded">${tag}</span>`).join('')}
+          ${(server.tags || []).slice(0, 3).map(tag => `
+            <span class="text-xs px-2 py-1 bg-[#1a1a25] text-[#8892b0] rounded">${tag}</span>
+          `).join('')}
           ${server.version ? `<span class="text-xs px-2 py-1 bg-[#00f5d4]/10 text-[#00f5d4] rounded">${server.version}</span>` : ''}
         </div>
       </a>
-    `;
-  }
-
-  async function loadServers() {
-    try {
-      const supabase = createClient(supabaseUrl, supabaseKey);
-      
-      // Load trending (most voted)
-      const { data: trending, error: trendingError } = await supabase
-        .from('servers')
-        .select('id, ip, port, name, description, version, tags, verified, vote_count, icon, banner, status, players_online, max_players')
-        .order('vote_count', { ascending: false })
-        .limit(6);
-      
-      if (trendingError) {
-        console.error('Trending error:', trendingError);
-        document.getElementById('trending-servers').innerHTML = `<div class="col-span-full text-center py-12 text-[#ff3864]">Error: ${trendingError.message}</div>`;
-      } else if (trending && trending.length > 0) {
-        document.getElementById('trending-servers').innerHTML = trending.map(renderServerCard).join('');
-      } else {
-        document.getElementById('trending-servers').innerHTML = '<div class="col-span-full text-center py-12 text-[#8892b0]">No servers yet</div>';
-      }
-      
-      // Load recently added
-      const { data: recent, error: recentError } = await supabase
-        .from('servers')
-        .select('id, ip, port, name, description, version, tags, verified, vote_count, icon, banner, status, players_online, max_players, created_at')
-        .order('created_at', { ascending: false })
-        .limit(6);
-      
-      if (recentError) {
-        console.error('Recent error:', recentError);
-        document.getElementById('recent-servers').innerHTML = `<div class="col-span-full text-center py-12 text-[#ff3864]">Error: ${recentError.message}</div>`;
-      } else if (recent && recent.length > 0) {
-        document.getElementById('recent-servers').innerHTML = recent.map(renderServerCard).join('');
-      } else {
-        document.getElementById('recent-servers').innerHTML = '<div class="col-span-full text-center py-12 text-[#8892b0]">No servers yet</div>';
-      }
-      
-      // Load featured (top rated)
-      const { data: featured, error: featuredError } = await supabase
-        .from('servers')
-        .select('id, ip, port, name, description, version, tags, verified, vote_count, icon, banner, status, players_online, max_players')
-        .order('vote_count', { ascending: false })
-        .limit(6);
-      
-      if (featuredError) {
-        console.error('Featured error:', featuredError);
-        document.getElementById('featured-servers').innerHTML = `<div class="col-span-full text-center py-12 text-[#ff3864]">Error loading servers: ${featuredError.message}</div>`;
-        return;
-      }
-      
-      if (featured && featured.length > 0) {
-        document.getElementById('featured-servers').innerHTML = featured.map(renderServerCard).join('');
-      } else {
-        document.getElementById('featured-servers').innerHTML = '<div class="col-span-full text-center py-12 text-[#8892b0]">No servers found. <a href="/submit" class="text-[#00f5d4] hover:underline">Add the first one!</a></div>';
-      }
-    } catch (err) {
-      console.error('Load servers error:', err);
-      document.getElementById('trending-servers').innerHTML = `<div class="col-span-full text-center py-12 text-[#ff3864]">Failed to connect to database</div>`;
-      document.getElementById('recent-servers').innerHTML = `<div class="col-span-full text-center py-12 text-[#ff3864]">Failed to connect to database</div>`;
-      document.getElementById('featured-servers').innerHTML = `<div class="col-span-full text-center py-12 text-[#ff3864]">Failed to connect to database. Check console for details.</div>`;
-    }
+    `).join('');
   }
   
   // Load servers when DOM is ready
