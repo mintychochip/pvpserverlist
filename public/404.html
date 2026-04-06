@@ -2,20 +2,17 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Guild Post - Server Lookup</title>
+  <title>Redirecting...</title>
   <script>
-    // Handle UUID-based server URLs on GitHub Pages
-    const path = window.location.pathname;
-    const match = path.match(/^\/servers\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i);
-    
-    if (match) {
-      // Store the server ID and redirect to the server page with query param
-      const serverId = match[1];
-      window.location.href = `/servers/index.html?id=${serverId}`;
-    } else {
-      // Default redirect to home
-      window.location.href = '/';
-    }
+    (function() {
+      var path = window.location.pathname;
+      var match = path.match(/^\/servers\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i);
+      if (match) {
+        window.location.replace('/servers/index.html?id=' + match[1]);
+      } else {
+        window.location.replace('/');
+      }
+    })();
   </script>
 </head>
 <body>
