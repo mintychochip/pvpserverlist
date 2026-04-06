@@ -137,9 +137,19 @@
     
     async function loadServer() {
       const params = new URLSearchParams(window.location.search);
-      const serverId = params.get('id') || window.location.pathname.split('/').pop();
+      // Get server ID from query param OR from URL path (handling trailing slashes)
+      let serverId = params.get('id');
+      if (!serverId) {
+        // Extract UUID from path like /servers/UUID or /servers/UUID/
+        const pathParts = window.location.pathname.split('/').filter(p => p && p !== 'index.html');
+        const potentialId = pathParts[pathParts.length - 1];
+        // Validate UUID format
+        if (potentialId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(potentialId)) {
+          serverId = potentialId;
+        }
+      }
       
-      if (!serverId || serverId === 'index.html') {
+      if (!serverId) {
         document.getElementById('content').innerHTML = '<div class="error">No server ID provided</div>';
         return;
       }
