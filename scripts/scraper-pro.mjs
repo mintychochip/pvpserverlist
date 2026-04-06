@@ -147,7 +147,7 @@ class ServerScraper {
           await page.waitForTimeout(2000);
 
           // Extract servers from this page
-          const pageServers = await this.extractServers(page, source.selectors);
+          const pageServers = await this.extractServers(page, source.selectors, pageUrl);
           
           // Add to collection
           for (const server of pageServers) {
@@ -188,8 +188,8 @@ class ServerScraper {
     return added;
   }
 
-  async extractServers(page, selectors) {
-    return await page.evaluate((sel) => {
+  async extractServers(page, selectors, baseUrl) {
+    return await page.evaluate((sel, baseUrl) => {
       const servers = [];
       const rows = document.querySelectorAll(sel.rows);
       
@@ -197,6 +197,11 @@ class ServerScraper {
         const getText = (selector) => {
           const el = row.querySelector(selector);
           return el ? el.textContent.trim() : '';
+        };
+
+        const getAttr = (selector, attr) => {
+          const el = row.querySelector(selector);
+          return el ? el.getAttribute(attr) : '';
         };
 
         const name = getText(sel.name);
@@ -216,6 +221,34 @@ class ServerScraper {
         const playersText = getText(sel.players);
         const playersMatch = playersText.match(/(\d+)\s*\/\s*(\d+)/);
         
+        // Extract icon and banner if available
+        let icon = null;
+        let banner = null;
+        
+        // Try to find icon image
+        const iconEl = row.querySelector('img.server-icon, .server-icon img, img[width="64"], img[alt*="icon"]');
+        if (iconEl) {
+          let src = iconEl.getAttribute('src');
+          if (src) {
+            if (src.startsWith('//')) src = 'https:' + src;
+            else if (src.startsWith('/')) src = new URL(src, baseUrl).href;
+            else if (!src.startsWith('http')) src = new URL(src, baseUrl).href;
+            icon = src;
+          }
+        }
+        
+        // Try to find banner image
+        const bannerEl = row.querySelector('img.server-banner, .server-banner img, img[width="1200"], img[width="1920"]');
+        if (bannerEl) {
+          let src = bannerEl.getAttribute('src');
+          if (src) {
+            if (src.startsWith('//')) src = 'https:' + src;
+            else if (src.startsWith('/')) src = new URL(src, baseUrl).href;
+            else if (!src.startsWith('http')) src = new URL(src, baseUrl).href;
+            banner = src;
+          }
+        }
+        
         servers.push({
           name: name || 'Unnamed Server',
           ip,
@@ -224,12 +257,14 @@ class ServerScraper {
           max_players: playersMatch ? parseInt(playersMatch[2]) : 0,
           version: getText(sel.version) || '1.20+',
           description: `${name || 'Minecraft'} server`,
-          tags: ['Multiplayer']
+          tags: ['Multiplayer'],
+          icon,
+          banner
         });
       });
 
       return servers;
-    }, selectors);
+    }, selectors, baseUrl);
   }
 
   async run() {
