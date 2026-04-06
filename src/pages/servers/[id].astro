@@ -3,7 +3,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 
-// Pre-render all server IDs at build time (for SEO)
+// Pre-render all server IDs at build time using UUIDs
 export async function getStaticPaths() {
   // Fetch all server IDs from Supabase at build time
   const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
