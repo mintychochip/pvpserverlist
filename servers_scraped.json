@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2026-04-06T12:49:17.938Z",
+  "scraped_at": "2026-04-06T19:02:10.472Z",
   "total": 0,
   "sources": [
     {
@@ -21,6 +21,26 @@
       "source": "mc-lists.org",
       "added": 0,
       "timestamp": "2026-04-06T12:49:17.919Z"
+    },
+    {
+      "source": "minecraft-list.cz",
+      "added": 0,
+      "timestamp": "2026-04-06T19:01:48.946Z"
+    },
+    {
+      "source": "minecraft-server.eu",
+      "added": 0,
+      "timestamp": "2026-04-06T19:01:55.288Z"
+    },
+    {
+      "source": "craftlist.org",
+      "added": 0,
+      "timestamp": "2026-04-06T19:02:10.326Z"
+    },
+    {
+      "source": "mc-lists.org",
+      "added": 0,
+      "timestamp": "2026-04-06T19:02:10.448Z"
     }
   ],
   "servers": []
