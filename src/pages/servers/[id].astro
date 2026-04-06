@@ -3,11 +3,10 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 
-// Pre-render all server IDs at build time using UUIDs
+// Use fallback mode for server pages (renders on demand)
 export async function getStaticPaths() {
-  // Fetch all server IDs from Supabase at build time
-  const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.35hrTSgxQnICpLOY3g6W3eNxxe7DKCc3q165tyb0Ieo';
+  return [];
+}
   
   try {
     const response = await fetch(`${supabaseUrl}/rest/v1/servers?select=id`, {
