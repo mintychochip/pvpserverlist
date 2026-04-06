@@ -1,14 +1,11 @@
 ---
-// Category Page - Filter servers by tag
-import Layout from '../../layouts/Layout.astro';
-import Header from '../../components/Header.astro';
-
-// Pre-render all known categories at build time
+// Redirect old /category/[tag] URLs to new /minecraft/[tag] URLs
 export async function getStaticPaths() {
   const categories = [
     'pvp', 'survival', 'skyblock', 'factions', 'smp', 'minigames', 
     'prison', 'bedwars', 'lifesteal', 'kitpvp', 'creative', 'towny',
-    'parkour', 'hardcore', 'anarchy', 'roleplay', 'economy', 'vanilla'
+    'parkour', 'hardcore', 'anarchy', 'roleplay', 'economy', 'vanilla',
+    'multiplayer', 'rpg', 'modded', 'pixelmon', 'bedwars', 'economy'
   ];
   return categories.map(tag => ({
     params: { tag }
@@ -16,13 +13,17 @@ export async function getStaticPaths() {
 }
 
 const { tag } = Astro.params;
-const formattedTag = tag ? tag.charAt(0).toUpperCase() + tag.slice(1) : '';
 ---
+
+<meta http-equiv="refresh" content={`0;url=/minecraft/${tag}`} />
+<script define:vars={{ tag }}>
+  window.location.href = `/minecraft/${tag}`;
+</script>
 
 <Layout 
   title={`${formattedTag} Minecraft Servers`}
   description={`Find the best ${formattedTag} Minecraft servers. Browse top-rated ${tag} servers with live status and player counts on GuildPost.`}
-  url={`https://guildpost.tech/category/${tag}`}
+  url={`https://guildpost.tech/minecraft/${tag}`}
   keywords={`${tag} minecraft servers, ${tag} server list, minecraft ${tag}, best ${tag} servers, minecraft multiplayer`}
 >
   <div class="min-h-screen bg-[#0a0a0f]">
