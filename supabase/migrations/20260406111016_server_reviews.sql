@@ -1,5 +1,4 @@
 -- Server Reviews Migration
--- Adds review system for servers
 
 CREATE TABLE IF NOT EXISTS server_reviews (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -10,18 +9,17 @@ CREATE TABLE IF NOT EXISTS server_reviews (
   content TEXT NOT NULL,
   playtime_hours INTEGER,
   helpful_count INTEGER DEFAULT 0,
-  is_verified BOOLEAN DEFAULT false, -- verified if user has voted for this server
+  is_verified BOOLEAN DEFAULT false,
   ip_address TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
--- Indexes for efficient queries
+-- Indexes
 CREATE INDEX IF NOT EXISTS idx_reviews_server ON server_reviews(server_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_reviews_rating ON server_reviews(server_id, rating);
-CREATE INDEX IF NOT EXISTS idx_reviews_username ON server_reviews(username);
 
--- View for server rating stats
+-- View for rating stats
 CREATE OR REPLACE VIEW server_rating_stats AS
 SELECT 
   server_id,
@@ -35,41 +33,22 @@ SELECT
 FROM server_reviews
 GROUP BY server_id;
 
--- Function to get review distribution
+-- Function for review distribution
 CREATE OR REPLACE FUNCTION get_review_distribution(server_uuid TEXT)
-RETURNS TABLE (
-  rating INTEGER,
-  count BIGINT,
-  percentage NUMERIC
-) AS $$
-DECLARE
-  total BIGINT;
+RETURNS TABLE (rating INTEGER, count BIGINT, percentage NUMERIC)
+AS $$
+DECLARE total BIGINT;
 BEGIN
   SELECT COUNT(*) INTO total FROM server_reviews WHERE server_id = server_uuid;
-  
   RETURN QUERY
-  SELECT 
-    r.rating,
-    COUNT(*)::BIGINT as count,
-    ROUND(COUNT(*) * 100.0 / NULLIF(total, 0), 1) as percentage
-  FROM server_reviews r
-  WHERE r.server_id = server_uuid
-  GROUP BY r.rating
-  ORDER BY r.rating DESC;
+  SELECT r.rating, COUNT(*)::BIGINT, ROUND(COUNT(*) * 100.0 / NULLIF(total, 0), 1)
+  FROM server_reviews r WHERE r.server_id = server_uuid GROUP BY r.rating ORDER BY r.rating DESC;
 END;
 $$ LANGUAGE plpgsql;
 
--- Update trigger for updated_at
+-- Update trigger
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = now();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+RETURNS TRIGGER AS $$BEGIN NEW.updated_at = now(); RETURN NEW; END;$$ LANGUAGE plpgsql;
 
 DROP TRIGGER IF EXISTS update_reviews_updated_at ON server_reviews;
-CREATE TRIGGER update_reviews_updated_at
-  BEFORE UPDATE ON server_reviews
-  FOR EACH ROW
-  EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_reviews_updated_at BEFORE UPDATE ON server_reviews FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
