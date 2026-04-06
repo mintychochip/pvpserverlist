@@ -1,0 +1,113 @@
+name: Deploy to Oracle Cloud (Hot Deploy)
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+env:
+  SERVER_HOST: 167.234.214.164
+  SERVER_USER: opc
+  DEPLOY_PATH: /home/opc/gambit
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        working-directory: ./gambit
+        run: ./gradlew build --stacktrace -x test
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" | base64 -d > ~/.ssh/gambit_deploy_key
+          chmod 600 ~/.ssh/gambit_deploy_key
+          cat >> ~/.ssh/config << EOF
+          Host gambit-server
+            HostName ${{ env.SERVER_HOST }}
+            User ${{ env.SERVER_USER }}
+            IdentityFile ~/.ssh/gambit_deploy_key
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+          EOF
+
+      - name: Ensure server directories exist
+        run: |
+          ssh gambit-server "mkdir -p ${{ env.DEPLOY_PATH }}/{scripts,maps,bbmodel,model_work,src/main/resources}"
+
+      - name: Deploy JAR (hot reload)
+        run: |
+          # Find the built JAR (Gradle puts it in gambit/build/libs/)
+          JAR_FILE=$(ls gambit/build/libs/*.jar | grep -v plain | head -1)
+          echo "Deploying: $JAR_FILE"
+          # Check if Java process is running
+          if ssh gambit-server "pgrep -f 'java.*gambit'" > /dev/null 2>&1; then
+            echo "Server running - hot deploying..."
+            # Copy new JAR with .new suffix first
+            scp "$JAR_FILE" gambit-server:${{ env.DEPLOY_PATH }}/gambit.jar.new
+            # Atomic swap via ssh
+            ssh gambit-server "cd ${{ env.DEPLOY_PATH }} && mv gambit.jar.new gambit.jar"
+            # Graceful restart of Java process only (not VM)
+            ssh gambit-server "pkill -f 'java.*gambit' && sleep 2 && cd ${{ env.DEPLOY_PATH }} && nohup java -jar gambit.jar > server.log 2>&1 &"
+          else
+            echo "Server not running - starting fresh..."
+            scp "$JAR_FILE" gambit-server:${{ env.DEPLOY_PATH }}/gambit.jar
+            ssh gambit-server "cd ${{ env.DEPLOY_PATH }} && nohup java -jar gambit.jar > server.log 2>&1 &"
+          fi
+
+      - name: Deploy scripts
+        run: |
+          if [ -d gambit/scripts ]; then
+            scp -r gambit/scripts/* gambit-server:${{ env.DEPLOY_PATH }}/scripts/
+          fi
+
+      - name: Deploy maps
+        run: |
+          if [ -d gambit/maps ]; then
+            scp -r gambit/maps/* gambit-server:${{ env.DEPLOY_PATH }}/maps/
+          fi
+
+      - name: Deploy bbmodel
+        run: |
+          if [ -d gambit/bbmodel ]; then
+            scp -r gambit/bbmodel/* gambit-server:${{ env.DEPLOY_PATH }}/bbmodel/
+          fi
+
+      - name: Deploy model_work
+        run: |
+          if [ -d gambit/model_work ]; then
+            scp -r gambit/model_work/* gambit-server:${{ env.DEPLOY_PATH }}/model_work/
+          fi
+
+      - name: Deploy resources
+        run: |
+          if [ -d gambit/src/main/resources ]; then
+            ssh gambit-server "mkdir -p ${{ env.DEPLOY_PATH }}/src/main/resources"
+            scp -r gambit/src/main/resources/* gambit-server:${{ env.DEPLOY_PATH }}/src/main/resources/
+          fi
+
+      - name: Deploy ops.json
+        run: |
+          echo '["070ca46b-c98e-499b-ad2e-c9dc91dbd42f"]' | ssh gambit-server "cat > ${{ env.DEPLOY_PATH }}/ops.json"
+
+      - name: Verify deployment
+        run: |
+          sleep 10
+          if ssh gambit-server "pgrep -f 'java.*gambit'" > /dev/null 2>&1; then
+            echo "✅ Server is running!"
+            ssh gambit-server "tail -20 ${{ env.DEPLOY_PATH }}/server.log"
+          else
+            echo "❌ Server failed to start"
+            ssh gambit-server "tail -50 ${{ env.DEPLOY_PATH }}/server.log"
+            exit 1
+          fi
