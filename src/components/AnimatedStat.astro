@@ -1,0 +1,61 @@
+---
+// Animated counter that counts up when visible
+// Uses client-side JavaScript for the animation
+
+interface Props {
+  value: number;
+  suffix?: string;
+  label: string;
+  color: string;
+}
+
+const { value, suffix = "", label, color } = Astro.props;
+---
+
+<div class="animated-stat text-center" data-value={value} data-suffix={suffix}>
+  <div class="stat-value text-4xl md:text-5xl font-black tabular-nums" style={`color: ${color}`}>
+    0{suffix}
+  </div>
+  <div class="text-xs text-[#8892b0] uppercase tracking-wider mt-1">
+    {label}
+  </div>
+</div>
+
+<script>
+  // Animate counters when they come into view
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const stat = entry.target;
+        const value = parseInt(stat.dataset.value || '0');
+        const suffix = stat.dataset.suffix || '';
+        const valueEl = stat.querySelector('.stat-value');
+        
+        if (!valueEl) return;
+        
+        const duration = 2000; // 2 seconds
+        const steps = 60;
+        const increment = value / steps;
+        let current = 0;
+        
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= value) {
+            valueEl.textContent = value.toLocaleString() + suffix;
+            clearInterval(timer);
+          } else {
+            valueEl.textContent = Math.floor(current).toLocaleString() + suffix;
+          }
+        }, duration / steps);
+        
+        // Stop observing once animated
+        observer.unobserve(stat);
+      }
+    });
+  }, { threshold: 0.5 });
+  
+  // Observe all animated stats
+  document.querySelectorAll('.animated-stat').forEach(stat => {
+    observer.observe(stat);
+  });
+</script>

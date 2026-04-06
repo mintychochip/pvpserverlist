@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://guildpost.tech/sitemap.xml
+
+# Crawl rate
+Crawl-delay: 1
+
+# Disallow admin or private areas (when added)
+# Disallow: /admin/
+# Disallow: /api/

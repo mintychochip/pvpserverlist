@@ -1,0 +1,8 @@
+{
+  "name": "analytics",
+  "version": "1.0.0",
+  "description": "Server analytics API",
+  "entrypoint": "index.ts",
+  "import_map": null,
+  "declarations": []
+}

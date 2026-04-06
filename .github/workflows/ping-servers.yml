@@ -1,0 +1,45 @@
+name: Ping Minecraft Servers
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Every 5 minutes
+  workflow_dispatch:      # Manual trigger for testing
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    name: Ping Servers
+    
+    steps:
+      - name: Call Ping Function
+        run: |
+          echo "Pinging Minecraft servers..."
+          response=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
+            -X POST \
+            "https://wpxutsdbiampnxfgkjwq.supabase.co/functions/v1/ping-servers" \
+            -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
+            -H "Content-Type: application/json")
+          
+          # Extract HTTP code
+          http_code=$(echo "$response" | grep "HTTP_CODE:" | cut -d":" -f2)
+          body=$(echo "$response" | grep -v "HTTP_CODE:")
+          
+          echo "Response: $body"
+          echo "HTTP Code: $http_code"
+          
+          if [ "$http_code" != "200" ]; then
+            echo "::error::Ping function returned HTTP $http_code"
+            exit 1
+          fi
+          
+          # Parse and display results
+          online=$(echo "$body" | grep -o '"online":[0-9]*' | cut -d":" -f2)
+          offline=$(echo "$body" | grep -o '"offline":[0-9]*' | cut -d":" -f2)
+          pinged=$(echo "$body" | grep -o '"pinged":[0-9]*' | cut -d":" -f2)
+          
+          echo "✅ Pinged: $pinged servers"
+          echo "🟢 Online: $online"
+          echo "🔴 Offline: $offline"
+          
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

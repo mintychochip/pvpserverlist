@@ -1,0 +1,340 @@
+---
+// GuildPost Astro - Main Homepage
+// Static site with client-side Supabase data fetching
+
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import AnimatedStat from '../components/AnimatedStat.astro';
+
+// Inline Arrow SVG component
+const ArrowIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`;
+
+// Game categories data
+const gameCategories = [
+  {
+    id: "minecraft",
+    name: "Minecraft",
+    description: "PvP, Survival, Skyblock, Factions & more",
+    iconColor: "#00f5d4",
+    serverCount: 2189,
+    href: "/minecraft",
+    featured: true,
+  },
+  {
+    id: "rust",
+    name: "Rust",
+    description: "Coming soon",
+    iconColor: "#ff3864",
+    serverCount: 0,
+    href: "#",
+    featured: false,
+  },
+  {
+    id: "cs2",
+    name: "CS2",
+    description: "Coming soon",
+    iconColor: "#9d4edd",
+    serverCount: 0,
+    href: "#",
+    featured: false,
+  },
+];
+---
+
+<Layout 
+  title="GuildPost - Find Your Server | Minecraft, Rust, CS2 Server List"
+  description="Discover the best game servers on GuildPost. Browse 2,000+ Minecraft servers including PvP, Survival, Skyblock, Factions, SMP & more. Find your next multiplayer home."
+  url="https://guildpost.tech"
+  keywords="minecraft servers, server list, minecraft multiplayer, game servers, pvp servers, survival servers, skyblock, factions, smp, rust servers, cs2 servers"
+>
+  <div class="min-h-screen bg-[#0a0a0f]">
+    <Header />
+
+    <!-- Hero Section -->
+    <section class="px-4 py-20 md:py-32">
+      <div class="max-w-6xl mx-auto text-center">
+        <h1 class="text-5xl md:text-7xl font-black mb-6">
+          <span class="text-white">Find Your</span>
+          <br />
+          <span class="text-[#ff3864]">SERVER</span>
+        </h1>
+        <p class="text-[#8892b0] text-xl md:text-2xl max-w-2xl mx-auto mb-12">
+          The ultimate directory for game servers. 
+          From Minecraft to Rust, discover your next multiplayer home.
+        </p>
+
+        <!-- Animated Stats -->
+        <div 
+          class="flex justify-center gap-8 md:gap-16 mb-8 py-6 px-8 bg-[#12121a] border border-[#2a2a3a] max-w-2xl mx-auto"
+          style="clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%)"
+        >
+          <AnimatedStat value={2189} label="Servers" color="#00f5d4" />
+          <AnimatedStat value={50} suffix="+" label="Game Modes" color="#00f5d4" />
+          <AnimatedStat value={0} label="Fake Reviews" color="#ff3864" />
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-wrap justify-center gap-4">
+          <a
+            href="/minecraft"
+            class="inline-flex items-center gap-2 bg-[#00f5d4] text-[#0a0a0f] px-8 py-4 font-bold text-lg hover:bg-[#00d4b8] transition-colors"
+            style="clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)"
+          >
+            Browse Minecraft
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a
+            href="/submit"
+            class="inline-flex items-center gap-2 border-2 border-[#2a2a3a] text-white px-8 py-4 font-bold text-lg hover:border-[#00f5d4] hover:text-[#00f5d4] transition-colors"
+            style="clip-path: polygon(0 0, 90% 0, 100% 30%, 100% 100%, 10% 100%, 0 70%)"
+          >
+            Add Your Server
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game Categories -->
+    <section class="px-4 py-16 border-t border-[#1a1a25]">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold text-white mb-8 text-center">
+          Browse by Game
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {gameCategories.map((game) => (
+            <a
+              href={game.href}
+              class={`group p-8 border-2 transition-all ${
+                game.featured
+                  ? "border-[#00f5d4] bg-[#00f5d4]/5 hover:bg-[#00f5d4]/10"
+                  : "border-[#2a2a3a] opacity-60 hover:opacity-100 hover:border-[#3a3a4a]"
+              }`}
+              style="clip-path: polygon(5% 0, 100% 0, 100% 95%, 95% 100%, 0 100%, 0 5%)"
+            >
+              <div class="mb-4" style={`color: ${game.iconColor}`}>
+                {game.id === 'minecraft' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                )}
+                {game.id === 'rust' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                )}
+                {game.id === 'cs2' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6"/><path d="m16 16 4 4"/><path d="m19 21 2-2"/></svg>
+                )}
+              </div>
+              <h3 class="text-2xl font-bold text-white mb-2">
+                {game.name}
+              </h3>
+              <p class="text-[#8892b0] mb-4">
+                {game.description}
+              </p>
+              {game.serverCount > 0 && (
+                <p class="text-[#00f5d4] font-bold">
+                  {game.serverCount.toLocaleString()} servers
+                </p>
+              )}
+              {game.featured && (
+                <div class="mt-4 flex items-center gap-2 text-[#00f5d4]">
+                  <span class="text-sm font-medium">Explore</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Minecraft Servers - Client Side Fetched -->
+    <section class="px-4 py-16 border-t border-[#1a1a25]">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-3xl font-bold text-white">
+            Featured Minecraft Servers
+          </h2>
+          <a 
+            href="/minecraft" 
+            class="text-[#00f5d4] hover:underline flex items-center gap-2"
+          >
+            View All
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <!-- Server grid - populated client-side -->
+        <div id="featured-servers" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Loading state -->
+          <div class="col-span-full text-center py-12 text-[#8892b0]">
+            Loading servers...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why GuildPost -->
+    <section class="px-4 py-16 border-t border-[#1a1a25]">
+      <div class="max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold text-white mb-12 text-center">
+          Why GuildPost?
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center mx-auto mb-4 text-2xl">
+              🎮
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">
+              Multi-Game Support
+            </h3>
+            <p class="text-[#8892b0]">
+              Starting with Minecraft, expanding to Rust, CS2, and more.
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-16 h-16 bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center mx-auto mb-4 text-2xl">
+              👥
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">
+              Community Driven
+            </h3>
+            <p class="text-[#8892b0]">
+              Real player votes and reviews. No pay-to-win placement.
+            </p>
+          </div>
+
+          <div class="text-center">
+            <div class="w-16 h-16 bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center mx-auto mb-4 text-2xl">
+              📊
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">
+              Live Status
+            </h3>
+            <p class="text-[#8892b0]">
+              Real-time player counts and latency. Know before you join.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="px-4 py-16 border-t border-[#1a1a25]">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-white mb-4">
+          Ready to Find Your Server?
+        </h2>
+        <p class="text-[#8892b0] mb-8">
+          Join thousands of players discovering their next favorite server.
+        </p>
+        <a
+          href="/minecraft"
+          class="inline-flex items-center gap-2 bg-[#ff3864] text-white px-8 py-4 font-bold text-lg hover:bg-[#e63357] transition-colors"
+          style="clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)"
+        >
+          Start Browsing
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="px-4 py-8 border-t border-[#2a2a3a]">
+      <div class="max-w-6xl mx-auto text-center text-[#8892b0]">
+        <p>
+          Built for the community. Not for profit. 
+          <a href="https://github.com/mintychochip/guildpost" class="text-[#00f5d4] hover:underline ml-2">
+            Open source
+          </a>
+        </p>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<!-- Client-side script to fetch servers -->
+<script>
+  import { createClient } from '@supabase/supabase-js';
+  
+  const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.FUiWKe-SwTnKEQFmVzN4L46E5gP2qXl1MnEkrzjWfSw';
+  
+  async function loadServers() {
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    const { data: servers, error } = await supabase
+      .from('servers')
+      .select('id, ip, port, name, description, version, tags, verified, vote_count, icon, banner')
+      .order('vote_count', { ascending: false })
+      .limit(6);
+    
+    if (error) {
+      console.error('Error loading servers:', error);
+      document.getElementById('featured-servers').innerHTML = `
+        <div class="col-span-full text-center py-12 text-[#8892b0]">
+          Error loading servers. Please try again.
+        </div>
+      `;
+      return;
+    }
+    
+    if (!servers || servers.length === 0) {
+      document.getElementById('featured-servers').innerHTML = `
+        <div class="col-span-full text-center py-12 text-[#8892b0]">
+          No servers found.
+        </div>
+      `;
+      return;
+    }
+    
+    // Render servers
+    const container = document.getElementById('featured-servers');
+    container.innerHTML = servers.map(server => `
+      <a href="/servers/${server.id}" class="block p-5 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] transition-colors group rounded-lg">
+        <div class="flex items-start gap-4 mb-4">
+          ${server.icon ? `
+            <img src="${server.icon}" alt="" class="w-14 h-14 rounded bg-[#1a1a25]" loading="lazy" />
+          ` : `
+            <div class="w-14 h-14 rounded bg-[#1a1a25] flex items-center justify-center">
+              <span class="text-[#00f5d4] text-2xl">⛏</span>
+            </div>
+          `}
+          <div class="flex-1 min-w-0">
+            <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate text-lg">
+              ${server.name}
+            </h3>
+            <p class="text-sm text-[#8892b0] font-mono truncate">${server.ip}:${server.port}</p>
+          </div>
+        </div>
+        
+        <!-- Stats Row -->
+        <div class="flex items-center gap-4 mb-3 text-sm">
+          <span class="flex items-center gap-1 ${server.players_online > 0 ? 'text-green-500' : 'text-[#8892b0]'}">
+            <span class="w-1.5 h-1.5 rounded-full ${server.players_online > 0 ? 'bg-green-500' : 'bg-gray-500'}"></span>
+            ${server.players_online || 0}/${server.max_players || '?'} online
+          </span>
+          <span class="flex items-center gap-1 text-[#ff3864]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+            ${server.vote_count || 0} votes
+          </span>
+        </div>
+        
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-1">
+          ${(server.tags || []).slice(0, 3).map(tag => `
+            <span class="text-xs px-2 py-1 bg-[#1a1a25] text-[#8892b0] rounded">${tag}</span>
+          `).join('')}
+          ${server.version ? `<span class="text-xs px-2 py-1 bg-[#00f5d4]/10 text-[#00f5d4] rounded">${server.version}</span>` : ''}
+        </div>
+      </a>
+    `).join('');
+  }
+  
+  // Load servers when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadServers);
+  } else {
+    loadServers();
+  }
+</script>

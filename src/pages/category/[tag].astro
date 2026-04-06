@@ -1,0 +1,269 @@
+---
+// Category Page - Filter servers by tag
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+// Pre-render all known categories at build time
+export async function getStaticPaths() {
+  const categories = [
+    'pvp', 'survival', 'skyblock', 'factions', 'smp', 'minigames', 
+    'prison', 'bedwars', 'lifesteal', 'kitpvp', 'creative', 'towny',
+    'parkour', 'hardcore', 'anarchy', 'roleplay', 'economy', 'vanilla'
+  ];
+  return categories.map(tag => ({
+    params: { tag }
+  }));
+}
+
+const { tag } = Astro.params;
+const formattedTag = tag ? tag.charAt(0).toUpperCase() + tag.slice(1) : '';
+---
+
+<Layout 
+  title={`${formattedTag} Minecraft Servers`}
+  description={`Find the best ${formattedTag} Minecraft servers. Browse top-rated ${tag} servers with live status and player counts on GuildPost.`}
+  url={`https://guildpost.tech/category/${tag}`}
+  keywords={`${tag} minecraft servers, ${tag} server list, minecraft ${tag}, best ${tag} servers, minecraft multiplayer`}
+>
+  <div class="min-h-screen bg-[#0a0a0f]">
+    <Header />
+    
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm text-[#8892b0] mb-6">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <a href="/minecraft" class="hover:text-white transition-colors">Minecraft</a>
+        <span>/</span>
+        <span class="text-white capitalize">{tag}</span>
+      </nav>
+
+      <h1 class="text-4xl md:text-5xl font-black text-white mb-4 capitalize">
+        {formattedTag} Servers
+      </h1>
+      <p class="text-[#8892b0] text-lg mb-8 max-w-2xl">
+        Discover the best Minecraft {tag} servers. Browse by player count, 
+        votes, and features to find your next multiplayer home.
+      </p>
+
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <a href="/minecraft" class="px-4 py-2 bg-[#12121a] border border-[#2a2a3a] text-[#8892b0] hover:text-white hover:border-[#00f5d4] transition-colors text-sm">
+          ← All Categories
+        </a>
+        <select id="sort-select" class="px-4 py-2 bg-[#12121a] border border-[#2a2a3a] text-white text-sm rounded-none focus:outline-none focus:border-[#00f5d4]">
+          <option value="votes">Sort by Votes</option>
+          <option value="players">Sort by Players</option>
+          <option value="name">Sort by Name</option>
+        </select>
+      </div>
+
+      <!-- Servers Grid -->
+      <div id="servers-grid" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="col-span-full text-center py-12 text-[#8892b0]">
+          <div class="w-12 h-12 border-4 border-[#2a2a3a] border-t-[#00f5d4] rounded-full animate-spin mx-auto mb-4"></div>
+          Loading {tag} servers...
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination" class="flex justify-center gap-2 mt-8 hidden">
+        <button id="prev-btn" class="px-4 py-2 bg-[#12121a] border border-[#2a2a3a] text-[#8892b0] hover:text-white hover:border-[#00f5d4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          ← Previous
+        </button>
+        <span id="page-info" class="px-4 py-2 text-[#8892b0]">Page 1</span>
+        <button id="next-btn" class="px-4 py-2 bg-[#12121a] border border-[#2a2a3a] text-[#8892b0] hover:text-white hover:border-[#00f5d4] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          Next →
+        </button>
+      </div>
+
+      <!-- No Results -->
+      <div id="no-results" class="hidden text-center py-16">
+        <div class="w-16 h-16 bg-[#2a2a3a] text-[#8892b0] rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <h2 class="text-xl font-bold text-white mb-2">No servers found</h2>
+        <p class="text-[#8892b0] mb-4">No servers match the "{tag}" category.</p>
+        <a href="/minecraft" class="text-[#00f5d4] hover:underline">
+          Browse all categories
+        </a>
+      </div>
+    </main>
+
+    <footer class="px-4 py-8 border-t border-[#2a2a3a] mt-12">
+      <div class="max-w-6xl mx-auto text-center text-[#8892b0]">
+        <p>
+          Built for the community. 
+          <a href="https://github.com/mintychochip/guildpost" class="text-[#00f5d4] hover:underline ml-2">Open source</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<script define:vars={{ tag }}>
+  import { createClient } from '@supabase/supabase-js';
+  
+  const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.FUiWKe-SwTnKEQFmVzN4L46E5gP2qXl1MnEkrzjWfSw';
+  
+  let currentPage = 1;
+  const perPage = 12;
+  let totalServers = 0;
+  let currentSort = 'votes';
+  
+  async function loadServers() {
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    // Get servers with this tag
+    const { data: servers, error, count } = await supabase
+      .from('servers')
+      .select('id, ip, port, name, description, version, tags, verified, vote_count, icon, banner, players_online, max_players, status, ping_ms', { count: 'exact' })
+      .contains('tags', [tag.toLowerCase()])
+      .order(currentSort === 'votes' ? 'vote_count' : currentSort === 'players' ? 'players_online' : 'name', { ascending: false })
+      .range((currentPage - 1) * perPage, currentPage * perPage - 1);
+    
+    const grid = document.getElementById('servers-grid');
+    const pagination = document.getElementById('pagination');
+    const noResults = document.getElementById('no-results');
+    
+    if (error) {
+      grid.innerHTML = `<div class="col-span-full text-center py-12 text-[#8892b0]">Error loading servers. Please try again.</div>`;
+      return;
+    }
+    
+    totalServers = count || 0;
+    
+    if (!servers || servers.length === 0) {
+      grid.classList.add('hidden');
+      noResults.classList.remove('hidden');
+      pagination.classList.add('hidden');
+      return;
+    }
+    
+    // Render servers with enhanced cards
+    grid.innerHTML = servers.map(server => {
+      const isOnline = server.status === 'online';
+      const playerCount = server.players_online || 0;
+      const maxPlayers = server.max_players || 0;
+      
+      return `
+      <a href="/servers/${server.id}" class="block p-5 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] transition-colors group rounded-lg">
+        <div class="flex items-start gap-4 mb-4">
+          ${server.icon ? `
+            <div class="relative">
+              <img src="${server.icon}" alt="" class="w-14 h-14 rounded bg-[#1a1a25]" loading="lazy" />
+              <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} border-2 border-[#12121a]"></span>
+            </div>
+          ` : `
+            <div class="relative">
+              <div class="w-14 h-14 rounded bg-[#1a1a25] flex items-center justify-center">
+                <span class="text-[#00f5d4] text-2xl">⛏</span>
+              </div>
+              <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} border-2 border-[#12121a]"></span>
+            </div>
+          `}
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate text-lg">
+                ${server.name}
+              </h3>
+              ${isOnline 
+                ? `<span class="px-2 py-0.5 bg-green-500/20 text-green-500 text-xs font-bold rounded">ONLINE</span>`
+                : `<span class="px-2 py-0.5 bg-red-500/20 text-red-500 text-xs font-bold rounded">OFFLINE</span>`
+              }
+            </div>
+            <p class="text-sm text-[#8892b0] font-mono truncate">${server.ip}:${server.port}</p>
+          </div>
+        </div>
+        
+        <!-- Stats Row -->
+        <div class="flex items-center gap-4 mb-3 text-sm">
+          <span class="flex items-center gap-1 ${isOnline ? 'text-green-500' : 'text-[#8892b0]'}">
+            <span class="w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-500'}"></span>
+            ${isOnline ? `${playerCount}/${maxPlayers}` : 'Offline'}
+          </span>
+          <span class="flex items-center gap-1 ${server.ping_ms && server.ping_ms < 100 ? 'text-green-500' : server.ping_ms && server.ping_ms < 200 ? 'text-yellow-500' : 'text-[#8892b0]'}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            ${server.ping_ms ? `${server.ping_ms}ms` : '—'}
+          </span>
+          <span class="flex items-center gap-1 text-[#ff3864]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+            ${server.vote_count || 0}
+          </span>
+        </div>
+        
+        ${server.description ? `
+          <p class="text-[#8892b0] text-sm line-clamp-2 mb-3">${server.description.slice(0, 100)}...</p>
+        ` : ''}
+        
+        <!-- Tags -->
+        <div class="flex flex-wrap gap-1">
+          ${(server.tags || []).slice(0, 3).map(t => `
+            <span class="text-xs px-2 py-1 bg-[#1a1a25] text-[#8892b0] rounded">${t}</span>
+          `).join('')}
+          ${server.version ? `<span class="text-xs px-2 py-1 bg-[#00f5d4]/10 text-[#00f5d4] rounded">${server.version}</span>` : ''}
+        </div>
+      </a>
+    `}).join('');
+    
+    // Update pagination
+    const totalPages = Math.ceil(totalServers / perPage);
+    document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`;
+    document.getElementById('prev-btn').disabled = currentPage === 1;
+    document.getElementById('next-btn').disabled = currentPage >= totalPages;
+    
+    if (totalPages > 1) {
+      pagination.classList.remove('hidden');
+    }
+    
+    // Add JSON-LD for this category
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": servers.map((server, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "VideoGame",
+          "name": server.name,
+          "description": server.description,
+          "url": `https://guildpost.tech/servers/${server.id}`
+        }
+      }))
+    };
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+  }
+  
+  // Event listeners
+  document.getElementById('sort-select')?.addEventListener('change', (e) => {
+    currentSort = e.target.value;
+    currentPage = 1;
+    loadServers();
+  });
+  
+  document.getElementById('prev-btn')?.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      loadServers();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+  
+  document.getElementById('next-btn')?.addEventListener('click', () => {
+    currentPage++;
+    loadServers();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  
+  // Load on mount
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadServers);
+  } else {
+    loadServers();
+  }
+</script>

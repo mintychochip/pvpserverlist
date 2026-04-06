@@ -1,0 +1,114 @@
+---
+interface Props {
+  name: string;
+  game: string;
+  mode?: string;
+  map?: string;
+  players: number;
+  maxPlayers: number;
+  ip: string;
+  port: number;
+  status: 'online' | 'offline';
+  country?: string;
+  description?: string;
+  bannerUrl?: string;
+}
+
+const {
+  name,
+  game,
+  mode,
+  map,
+  players,
+  maxPlayers,
+  ip,
+  port,
+  status,
+  country = 'US',
+  description,
+  bannerUrl,
+} = Astro.props;
+
+const playerPercentage = Math.round((players / maxPlayers) * 100);
+const isFull = players >= maxPlayers;
+const isEmpty = players === 0;
+---
+
+<div class="gp-card group hover:border-gp-cyan/50 transition-all duration-300">
+  <!-- Banner -->
+  <div class="relative h-32 -mx-6 -mt-6 mb-4 overflow-hidden rounded-t-xl bg-gp-bg">
+    {bannerUrl ? (
+      <img src={bannerUrl} alt={name} class="w-full h-full object-cover" />
+    ) : (
+      <div class="w-full h-full bg-gradient-to-br from-gp-cyan/10 to-gp-pink/10 flex items-center justify-center">
+        <span class="text-gp-muted text-sm font-medium uppercase tracking-wider">{game}</span>
+      </div>
+    )}
+    <div class="absolute top-3 right-3">
+      <span class={`px-2 py-1 rounded text-xs font-medium ${
+        status === 'online' 
+          ? 'bg-gp-cyan/20 text-gp-cyan' 
+          : 'bg-gp-pink/20 text-gp-pink'
+      }`}>
+        {status === 'online' ? '● Online' : '○ Offline'}
+      </span>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="space-y-3">
+    <div class="flex items-start justify-between gap-2">
+      <h3 class="font-bold text-gp-white text-lg leading-tight">{name}</h3>
+      <span class="text-2xl" title={country}>🇺🇸</span>
+    </div>
+
+    {description && (
+      <p class="text-gp-muted text-sm line-clamp-2">{description}</p>
+    )}
+
+    <!-- Game Info -->
+    <div class="flex flex-wrap gap-2">
+      {mode && (
+        <span class="px-2 py-1 bg-gp-bg rounded text-xs text-gp-cyan font-medium">
+          {mode}
+        </span>
+      )}
+      {map && (
+        <span class="px-2 py-1 bg-gp-bg rounded text-xs text-gp-muted font-medium">
+          {map}
+        </span>
+      )}
+    </div>
+
+    <!-- Players Bar -->
+    <div class="space-y-1">
+      <div class="flex items-center justify-between text-sm">
+        <span class="text-gp-muted">Players</span>
+        <span class={`font-medium ${
+          isFull ? 'text-gp-pink' : isEmpty ? 'text-gp-muted' : 'text-gp-cyan'
+        }`}>
+          {players.toLocaleString()} / {maxPlayers.toLocaleString()}
+        </span>
+      </div>
+      <div class="h-2 bg-gp-bg rounded-full overflow-hidden">
+        <div 
+          class={`h-full rounded-full transition-all duration-500 ${
+            isFull ? 'bg-gp-pink' : 'bg-gp-cyan'
+          }`}
+          style={`width: ${playerPercentage}%`}
+        />
+      </div>
+    </div>
+
+    <!-- Connect -->
+    <div class="pt-2 flex items-center justify-between">
+      <code class="text-xs text-gp-muted bg-gp-bg px-2 py-1 rounded">{ip}:{port}</code>
+      <button 
+        class="text-sm font-medium text-gp-cyan hover:text-gp-white transition-colors"
+        onclick={`navigator.clipboard.writeText('${ip}:${port}')`}
+      >
+        Copy IP
+      </button>
+    </div>
+  </div>
+</div>

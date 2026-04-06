@@ -1,0 +1,82 @@
+---
+const navItems = [
+  { label: 'Minecraft', href: '/minecraft' },
+  { label: 'Categories', href: '/minecraft#categories' },
+  { label: 'Add Server', href: '/submit', highlight: true },
+];
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0f]/90 backdrop-blur-md border-b border-[#2a2a3a]">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 bg-[#00f5d4] rounded-lg flex items-center justify-center group-hover:bg-[#00d4b8] transition-colors">
+          <span class="text-[#0a0a0f] font-bold text-lg">G</span>
+        </div>
+        <span class="text-xl font-bold text-white">Guild<span class="text-[#00f5d4]">Post</span></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-6">
+        {navItems.map((item) => (
+          <a 
+            href={item.href} 
+            class={`transition-colors duration-200 font-medium ${
+              item.highlight 
+                ? 'px-4 py-2 bg-[#00f5d4] text-[#0a0a0f] rounded-lg hover:bg-[#00d4b8]' 
+                : 'text-[#8892b0] hover:text-white'
+            }`}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- CTA & Mobile Menu -->
+      <div class="flex items-center gap-4">
+        <a 
+          href="/minecraft" 
+          class="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-[#ff3864] text-white font-medium rounded-lg hover:bg-[#e63357] transition-colors text-sm"
+        >
+          Browse Servers
+        </a>
+        
+        <!-- Mobile menu button -->
+        <button 
+          id="mobile-menu-btn" 
+          class="md:hidden p-2 text-[#8892b0] hover:text-white"
+          aria-label="Toggle menu"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-[#2a2a3a]">
+      <nav class="flex flex-col gap-3">
+        <a href="/minecraft" class="text-[#8892b0] hover:text-white transition-colors font-medium">
+          Minecraft Servers
+        </a>
+        <a href="/submit" class="text-[#00f5d4] hover:text-[#00d4b8] transition-colors font-medium">
+          + Add Your Server
+        </a>
+        <a href="/minecraft" class="px-4 py-2 bg-[#ff3864] text-white font-medium rounded-lg hover:bg-[#e63357] transition-colors text-center text-sm">
+          Browse All Servers
+        </a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+</script>

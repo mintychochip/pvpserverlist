@@ -1,0 +1,8 @@
+{
+  "name": "vote",
+  "version": "1.0.0",
+  "description": "Votifier-compatible voting endpoint",
+  "entrypoint": "index.ts",
+  "import_map": null,
+  "declarations": []
+}

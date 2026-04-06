@@ -1,0 +1,432 @@
+---
+// Server Submission Page
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+---
+
+<Layout 
+  title="Add Your Minecraft Server - GuildPost"
+  description="Submit your Minecraft server to GuildPost. Get listed and reach thousands of players looking for servers like yours."
+  url="https://guildpost.tech/submit"
+  keywords="submit minecraft server, add server, list server, minecraft server submission, server directory"
+>
+  <div class="min-h-screen bg-[#0a0a0f]">
+    <Header />
+    
+    <main class="max-w-4xl mx-auto px-4 py-8">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm text-[#8892b0] mb-6">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-white">Add Server</span>
+      </nav>
+
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-black text-white mb-4">
+          Add Your <span class="text-[#00f5d4]">Server</span>
+        </h1>
+        <p class="text-[#8892b0] text-lg max-w-xl mx-auto">
+          Submit your Minecraft server to reach thousands of players. 
+          It's free and takes less than 2 minutes.
+        </p>
+      </div>
+
+      <!-- Benefits -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+        <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+          <div class="w-10 h-10 bg-[#00f5d4]/20 text-[#00f5d4] rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3 class="text-white font-bold mb-1">Get Players</h3>
+          <p class="text-sm text-[#8892b0]">Reach thousands of active Minecraft players</p>
+        </div>
+        <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+          <div class="w-10 h-10 bg-[#00f5d4]/20 text-[#00f5d4] rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <h3 class="text-white font-bold mb-1">SEO Boost</h3>
+          <p class="text-sm text-[#8892b0]">Your server gets its own page that ranks on Google</p>
+        </div>
+        <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+          <div class="w-10 h-10 bg-[#00f5d4]/20 text-[#00f5d4] rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <h3 class="text-white font-bold mb-1">Free Forever</h3>
+          <p class="text-sm text-[#8892b0]">Basic listing is 100% free, no hidden fees</p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <form id="submit-form" class="space-y-6">
+        <!-- Server Name -->
+        <div>
+          <label for="name" class="block text-white font-medium mb-2">
+            Server Name <span class="text-[#ff3864]">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="name" 
+            name="name" 
+            required
+            maxlength="50"
+            placeholder="e.g., Hypixel Network"
+            class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] text-white placeholder-[#8892b0] rounded-lg focus:outline-none focus:border-[#00f5d4] transition-colors"
+          />
+          <p class="text-xs text-[#8892b0] mt-1">Max 50 characters. Be descriptive but concise.</p>
+        </div>
+
+        <!-- Server Address -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="ip" class="block text-white font-medium mb-2">
+              IP Address <span class="text-[#ff3864]">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="ip" 
+              name="ip" 
+              required
+              placeholder="e.g., play.hypixel.net"
+              class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] text-white placeholder-[#8892b0] rounded-lg focus:outline-none focus:border-[#00f5d4] transition-colors"
+            />
+          </div>
+          <div>
+            <label for="port" class="block text-white font-medium mb-2">
+              Port
+            </label>
+            <input 
+              type="number" 
+              id="port" 
+              name="port" 
+              value="25565"
+              min="1"
+              max="65535"
+              class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] text-white placeholder-[#8892b0] rounded-lg focus:outline-none focus:border-[#00f5d4] transition-colors"
+            />
+            <p class="text-xs text-[#8892b0] mt-1">Default is 25565</p>
+          </div>
+        </div>
+
+        <!-- Version -->
+        <div>
+          <label for="version" class="block text-white font-medium mb-2">
+            Minecraft Version
+          </label>
+          <select 
+            id="version" 
+            name="version"
+            class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] text-white rounded-lg focus:outline-none focus:border-[#00f5d4] transition-colors"
+          >
+            <option value="">Any / Cross-Version</option>
+            <option value="1.21">1.21</option>
+            <option value="1.20.x">1.20.x</option>
+            <option value="1.19.x">1.19.x</option>
+            <option value="1.18.x">1.18.x</option>
+            <option value="1.17.x">1.17.x</option>
+            <option value="1.16.x">1.16.x</option>
+            <option value="1.8.x">1.8.x (PvP)</option>
+          </select>
+        </div>
+
+        <!-- Edition -->
+        <div>
+          <label class="block text-white font-medium mb-2">
+            Edition <span class="text-[#ff3864]">*</span>
+          </label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2 px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="radio" name="edition" value="java" required class="accent-[#00f5d4]" />
+              <span class="text-white">Java Edition</span>
+            </label>
+            <label class="flex items-center gap-2 px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="radio" name="edition" value="bedrock" class="accent-[#00f5d4]" />
+              <span class="text-white">Bedrock Edition</span>
+            </label>
+            <label class="flex items-center gap-2 px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="radio" name="edition" value="both" class="accent-[#00f5d4]" />
+              <span class="text-white">Both</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Game Modes -->
+        <div>
+          <label class="block text-white font-medium mb-2">
+            Game Modes <span class="text-[#ff3864]">*</span>
+            <span class="text-sm font-normal text-[#8892b0] ml-2">(Select all that apply)</span>
+          </label>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="PvP" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">PvP</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="Survival" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">Survival</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="Skyblock" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">Skyblock</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="Factions" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">Factions</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="SMP" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">SMP</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="Minigames" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">Minigames</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="Prison" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">Prison</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="Creative" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">Creative</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="Bedwars" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">Bedwars</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="KitPvP" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">KitPvP</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="Lifesteal" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">Lifesteal</span>
+            </label>
+            <label class="flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded cursor-pointer hover:border-[#00f5d4] transition-colors">
+              <input type="checkbox" name="tags" value="Towny" class="accent-[#00f5d4]" />
+              <span class="text-sm text-white">Towny</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="description" class="block text-white font-medium mb-2">
+            Description <span class="text-[#ff3864]">*</span>
+          </label>
+          <textarea 
+            id="description" 
+            name="description" 
+            required
+            rows="4"
+            maxlength="500"
+            placeholder="Describe your server. What makes it unique? What can players expect?"
+            class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] text-white placeholder-[#8892b0] rounded-lg focus:outline-none focus:border-[#00f5d4] transition-colors resize-none"
+          ></textarea>
+          <p class="text-xs text-[#8892b0] mt-1">Max 500 characters. <span id="char-count">0</span>/500</p>
+        </div>
+
+        <!-- Website -->
+        <div>
+          <label for="website" class="block text-white font-medium mb-2">
+            Website / Discord Link
+          </label>
+          <input 
+            type="url" 
+            id="website" 
+            name="website"
+            placeholder="https://..."
+            class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] text-white placeholder-[#8892b0] rounded-lg focus:outline-none focus:border-[#00f5d4] transition-colors"
+          />
+        </div>
+
+        <!-- Votifier Public Key -->
+        <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+          <label for="votifier_key" class="block text-white font-medium mb-2 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/><path d="M12 21V3"/></svg>
+            Votifier Public Key (Optional)
+          </label>
+          <p class="text-sm text-[#8892b0] mb-3">
+            Paste your Votifier public key to enable vote rewards. Players will receive rewards automatically when they vote.
+          </p>
+          <textarea 
+            id="votifier_key" 
+            name="votifier_key"
+            rows="3"
+            placeholder="-----BEGIN PUBLIC KEY-----&#10;MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...&#10;-----END PUBLIC KEY-----"
+            class="w-full px-4 py-3 bg-[#0a0a0f] border border-[#2a2a3a] text-white placeholder-[#8892b0] rounded-lg focus:outline-none focus:border-[#00f5d4] transition-colors font-mono text-sm"
+          ></textarea>
+          <p class="text-xs text-[#8892b0] mt-2">
+            Found in your Votifier config at <code class="bg-[#1a1a25] px-1 rounded">plugins/Votifier/rsa/public.key</code>
+          </p>
+        </div>
+
+        <!-- Discord Webhook -->
+        <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+          <label for="discord_webhook" class="block text-white font-medium mb-2 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5865F2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Discord Vote Notifications (Optional)
+          </label>
+          <p class="text-sm text-[#8892b0] mb-3">
+            Get notified in Discord when someone votes for your server.
+          </p>
+          <input 
+            type="url" 
+            id="discord_webhook" 
+            name="discord_webhook"
+            placeholder="https://discord.com/api/webhooks/..."
+            class="w-full px-4 py-3 bg-[#0a0a0f] border border-[#2a2a3a] text-white placeholder-[#8892b0] rounded-lg focus:outline-none focus:border-[#5865F2] transition-colors"
+          />
+          <p class="text-xs text-[#8892b0] mt-2">
+            Create a webhook in your Discord server settings → Integrations → Webhooks
+          </p>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-4">
+          <button 
+            type="submit"
+            id="submit-btn"
+            class="w-full md:w-auto px-8 py-4 bg-[#00f5d4] text-[#0a0a0f] font-bold text-lg hover:bg-[#00d4b8] transition-colors rounded-lg flex items-center justify-center gap-2"
+          >
+            <span id="btn-text">Submit Server</span>
+            <svg id="btn-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <div id="btn-spinner" class="hidden w-5 h-5 border-2 border-[#0a0a0f]/30 border-t-[#0a0a0f] rounded-full animate-spin"></div>
+          </button>
+          <p class="text-xs text-[#8892b0] mt-3">
+            By submitting, you agree that this is your server or you have permission to list it.
+          </p>
+        </div>
+      </form>
+
+      <!-- Success Message -->
+      <div id="success-message" class="hidden text-center py-12">
+        <div class="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-2">Server Submitted!</h2>
+        <p class="text-[#8892b0] mb-6">Your server has been added to GuildPost. It will appear in the listing shortly.</p>
+        <div class="flex justify-center gap-4">
+          <a href="/minecraft" class="px-6 py-3 bg-[#12121a] border border-[#2a2a3a] text-white hover:border-[#00f5d4] transition-colors rounded-lg">
+            Browse Servers
+          </a>
+          <button onclick="resetForm()" class="px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold hover:bg-[#00d4b8] transition-colors rounded-lg">
+            Add Another
+          </button>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div id="error-message" class="hidden p-4 bg-[#ff3864]/10 border border-[#ff3864]/30 rounded-lg mb-6">
+        <div class="flex items-start gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#ff3864] flex-shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
+          <div>
+            <h3 class="text-white font-medium">Submission Failed</h3>
+            <p id="error-text" class="text-[#8892b0] text-sm">Please try again.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="px-4 py-8 border-t border-[#2a2a3a] mt-12">
+      <div class="max-w-6xl mx-auto text-center text-[#8892b0]">
+        <p>
+          Built for the community. 
+          <a href="https://github.com/mintychochip/guildpost" class="text-[#00f5d4] hover:underline ml-2">Open source</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+  
+  const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.FUiWKe-SwTnKEQFmVzN4L46E5gP2qXl1MnEkrzjWfSw';
+  
+  // Character count
+  const descField = document.getElementById('description');
+  const charCount = document.getElementById('char-count');
+  descField?.addEventListener('input', () => {
+    charCount.textContent = descField.value.length;
+  });
+  
+  // Form submission
+  const form = document.getElementById('submit-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('btn-text');
+  const btnIcon = document.getElementById('btn-icon');
+  const btnSpinner = document.getElementById('btn-spinner');
+  const successMsg = document.getElementById('success-message');
+  const errorMsg = document.getElementById('error-message');
+  const errorText = document.getElementById('error-text');
+  
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    btnText.textContent = 'Submitting...';
+    btnIcon.classList.add('hidden');
+    btnSpinner.classList.remove('hidden');
+    errorMsg.classList.add('hidden');
+    
+    const formData = new FormData(form);
+    const tags = formData.getAll('tags');
+    
+    const serverData = {
+      name: formData.get('name'),
+      ip: formData.get('ip'),
+      port: parseInt(formData.get('port')) || 25565,
+      version: formData.get('version') || null,
+      edition: formData.get('edition'),
+      tags: tags.length > 0 ? tags : ['Survival'],
+      description: formData.get('description'),
+      website: formData.get('website') || null,
+      votifier_key: formData.get('votifier_key')?.trim() || null,
+      discord_webhook: formData.get('discord_webhook')?.trim() || null,
+      verified: false,
+      vote_count: 0,
+      created_at: new Date().toISOString()
+    };
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    const { data, error } = await supabase
+      .from('servers')
+      .insert([serverData])
+      .select();
+    
+    if (error) {
+      console.error('Error submitting server:', error);
+      errorMsg.classList.remove('hidden');
+      errorText.textContent = error.message || 'Failed to submit. Please try again.';
+      
+      // Reset button
+      submitBtn.disabled = false;
+      btnText.textContent = 'Submit Server';
+      btnIcon.classList.remove('hidden');
+      btnSpinner.classList.add('hidden');
+      return;
+    }
+    
+    // Show success
+    form.classList.add('hidden');
+    successMsg.classList.remove('hidden');
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  
+  // Reset form function
+  window.resetForm = () => {
+    form.reset();
+    form.classList.remove('hidden');
+    successMsg.classList.add('hidden');
+    errorMsg.classList.add('hidden');
+    submitBtn.disabled = false;
+    btnText.textContent = 'Submit Server';
+    btnIcon.classList.remove('hidden');
+    btnSpinner.classList.add('hidden');
+    charCount.textContent = '0';
+  };
+</script>

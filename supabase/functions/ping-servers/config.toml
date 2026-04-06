@@ -1,0 +1,8 @@
+{
+  "name": "ping-servers",
+  "version": "1.0.0",
+  "description": "Minecraft server status pinger",
+  "entrypoint": "index.ts",
+  "import_map": null,
+  "declarations": []
+}

@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-[#0a0a0f] text-white antialiased;
+  }
+}
+
+@layer components {
+  .gp-container {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  .text-gp-cyan {
+    color: #00f5d4;
+  }
+  
+  .text-gp-pink {
+    color: #ff3864;
+  }
+}

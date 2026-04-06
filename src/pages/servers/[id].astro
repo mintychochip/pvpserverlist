@@ -1,0 +1,686 @@
+---
+// Server Detail Page - Dynamic client-side rendering
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+
+// Pre-render all server IDs at build time (for SEO)
+export async function getStaticPaths() {
+  // Return a range of IDs - actual data fetched client-side
+  // In production, you'd fetch all server IDs from Supabase at build time
+  return Array.from({ length: 3000 }, (_, i) => ({
+    params: { id: (i + 1).toString() }
+  }));
+}
+
+const { id } = Astro.params;
+---
+
+<Layout 
+  title="Loading Server..." 
+  description="View detailed information about this Minecraft server on GuildPost."
+  url={`https://guildpost.tech/servers/${id}`}
+>
+  <div class="min-h-screen bg-[#0a0a0f]">
+    <Header />
+    
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm text-[#8892b0] mb-6" id="breadcrumb">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <a href="/minecraft" class="hover:text-white transition-colors">Minecraft</a>
+        <span>/</span>
+        <span class="text-white" id="breadcrumb-name">Loading...</span>
+      </nav>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="text-center py-20">
+        <div class="w-16 h-16 border-4 border-[#2a2a3a] border-t-[#00f5d4] rounded-full animate-spin mx-auto mb-4"></div>
+        <p class="text-[#8892b0]">Loading server details...</p>
+      </div>
+
+      <!-- Server Content -->
+      <div id="server-content" class="hidden">
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row gap-6 mb-8">
+          <div id="server-icon-container" class="w-24 h-24 rounded-lg bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <span class="text-[#00f5d4] text-4xl">⛏</span>
+          </div>
+          <div class="flex-1">
+            <div class="flex flex-wrap items-center gap-3 mb-2">
+              <h1 id="server-name" class="text-3xl md:text-4xl font-black text-white"></h1>
+              <span id="verified-badge" class="hidden px-2 py-1 bg-[#00f5d4]/20 text-[#00f5d4] text-xs font-bold rounded">
+                ✓ VERIFIED
+              </span>
+            </div>
+            <div class="flex flex-wrap items-center gap-4 text-[#8892b0]">
+              <span id="server-address" class="font-mono text-lg"></span>
+              <button id="copy-ip-btn" class="px-3 py-1 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] hover:text-white transition-colors text-sm flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                Copy IP
+              </button>
+              <span id="server-status" class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-gray-500"></span>
+                <span>Checking...</span>
+              </span>
+            </div>
+          </div>
+          <div class="flex flex-col gap-3">
+            <!-- Vote Section -->
+            <div id="vote-section" class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+              <div id="vote-input-area">
+                <label class="block text-sm text-[#8892b0] mb-2">Enter your Minecraft username:</label>
+                <input 
+                  type="text" 
+                  id="voter-username" 
+                  placeholder="Notch"
+                  class="w-full px-3 py-2 bg-[#0a0a0f] border border-[#2a2a3a] text-white rounded mb-3 focus:outline-none focus:border-[#ff3864]"
+                />
+                <button id="vote-btn" class="w-full px-4 py-3 bg-[#ff3864] text-white font-bold hover:bg-[#e63357] transition-colors flex items-center justify-center gap-2 rounded">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                  Vote (<span id="vote-count">0</span>)
+                </button>
+                <p class="text-xs text-[#8892b0] mt-2 text-center">
+                  You can vote once every 24 hours
+                </p>
+              </div>
+              
+              <!-- Votifier Status -->
+              <div id="votifier-status" class="hidden mt-3 pt-3 border-t border-[#2a2a3a]">
+                <div class="flex items-center gap-2 text-sm">
+                  <span id="votifier-icon" class="text-green-500">●</span>
+                  <span id="votifier-text" class="text-[#8892b0]">Vote rewards enabled</span>
+                </div>
+              </div>
+              
+              <!-- Vote Message -->
+              <div id="vote-message" class="hidden mt-3 p-3 rounded text-sm"></div>
+            </div>
+            
+            <a id="join-btn" href="#" class="px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold hover:bg-[#00d4b8] transition-colors text-center rounded">
+              Join Server
+            </a>
+          </div>
+        </div>
+
+        <!-- Banner -->
+        <div id="banner-container" class="hidden mb-8 rounded-lg overflow-hidden border border-[#2a2a3a]">
+          <img id="server-banner" src="" alt="" class="w-full h-48 md:h-64 object-cover" />
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Main Content -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Analytics Chart -->
+            <section class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-white">Player Activity</h2>
+                <div class="flex gap-2">
+                  <button onclick="loadChart(24)" class="px-3 py-1 text-sm bg-[#2a2a3a] text-white hover:bg-[#3a3a4a] rounded transition-colors chart-btn active" data-hours="24">24h</button>
+                  <button onclick="loadChart(168)" class="px-3 py-1 text-sm bg-[#1a1a25] text-[#8892b0] hover:bg-[#2a2a3a] rounded transition-colors chart-btn" data-hours="168">7d</button>
+                </div>
+              </div>
+              
+              <!-- Stats Summary -->
+              <div class="grid grid-cols-3 gap-4 mb-4">
+                <div class="text-center p-3 bg-[#0a0a0f] rounded">
+                  <p class="text-xs text-[#8892b0]">Peak (24h)</p>
+                  <p id="stat-peak" class="text-xl font-bold text-[#00f5d4]">—</p>
+                </div>
+                <div class="text-center p-3 bg-[#0a0a0f] rounded">
+                  <p class="text-xs text-[#8892b0]">Average</p>
+                  <p id="stat-avg" class="text-xl font-bold text-white">—</p>
+                </div>
+                <div class="text-center p-3 bg-[#0a0a0f] rounded">
+                  <p class="text-xs text-[#8892b0]">Uptime</p>
+                  <p id="stat-uptime" class="text-xl font-bold text-green-500">—</p>
+                </div>
+              </div>
+              
+              <!-- Chart Canvas -->
+              <div class="relative h-48 bg-[#0a0a0f] rounded-lg overflow-hidden">
+                <canvas id="player-chart" class="w-full h-full"></canvas>
+                <div id="chart-loading" class="absolute inset-0 flex items-center justify-center text-[#8892b0]">
+                  Loading analytics...
+                </div>
+                <div id="chart-error" class="hidden absolute inset-0 flex items-center justify-center text-[#ff3864]">
+                  Failed to load chart
+                </div>
+              </div>
+              <p class="text-xs text-[#8892b0] mt-2 text-center">Player count over time (30-minute intervals)</p>
+            </section>
+
+            <!-- Description -->
+            <section class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+              <h2 class="text-xl font-bold text-white mb-4">About</h2>
+              <p id="server-description" class="text-[#8892b0] leading-relaxed whitespace-pre-line"></p>
+            </section>
+
+            <!-- Tags -->
+            <section class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+              <h2 class="text-xl font-bold text-white mb-4">Game Modes</h2>
+              <div id="server-tags" class="flex flex-wrap gap-2"></div>
+            </section>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="space-y-6">
+            <!-- Stats -->
+            <section class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+              <h2 class="text-xl font-bold text-white mb-4">Server Stats</h2>
+              <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                  <span class="text-[#8892b0]">Version</span>
+                  <span id="server-version" class="text-white font-medium">-</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-[#8892b0]">Players Online</span>
+                  <span id="player-count" class="text-white font-medium">-</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-[#8892b0]">Votes</span>
+                  <span id="sidebar-vote-count" class="text-[#ff3864] font-bold">0</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-[#8892b0]">Status</span>
+                  <span id="sidebar-status" class="text-gray-500">Unknown</span>
+                </div>
+              </div>
+            </section>
+
+            <!-- Share -->
+            <section class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+              <h2 class="text-xl font-bold text-white mb-4">Share</h2>
+              <div class="flex gap-2">
+                <button onclick="shareTwitter()" class="flex-1 py-2 bg-[#1da1f2] text-white text-sm font-medium hover:opacity-90 transition-opacity rounded">
+                  Twitter
+                </button>
+                <button onclick="shareDiscord()" class="flex-1 py-2 bg-[#5865F2] text-white text-sm font-medium hover:opacity-90 transition-opacity rounded">
+                  Discord
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div id="error-state" class="hidden text-center py-20">
+        <div class="w-16 h-16 bg-[#ff3864]/20 text-[#ff3864] rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></svg>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-2">Server Not Found</h2>
+        <p class="text-[#8892b0] mb-6">This server doesn't exist or has been removed.</p>
+        <a href="/minecraft" class="inline-flex items-center gap-2 text-[#00f5d4] hover:underline">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          Browse All Servers
+        </a>
+      </div>
+    </main>
+
+    <footer class="px-4 py-8 border-t border-[#2a2a3a] mt-12">
+      <div class="max-w-6xl mx-auto text-center text-[#8892b0]">
+        <p>
+          Built for the community. 
+          <a href="https://github.com/mintychochip/guildpost" class="text-[#00f5d4] hover:underline ml-2">Open source</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+  
+  const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.FUiWKe-SwTnKEQFmVzN4L46E5gP2qXl1MnEkrzjWfSw';
+  
+  const serverId = window.location.pathname.split('/').pop();
+  let serverData = null;
+  
+  // Generate simple browser fingerprint
+  function getFingerprint() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = 'top';
+    ctx.font = '14px Arial';
+    ctx.fillText('GuildPost Vote', 2, 2);
+    
+    const data = [
+      navigator.userAgent,
+      navigator.language,
+      screen.colorDepth,
+      screen.width + 'x' + screen.height,
+      new Date().getTimezoneOffset(),
+      canvas.toDataURL(),
+      !!window.sessionStorage,
+      !!window.localStorage
+    ].join('|');
+    
+    // Simple hash
+    let hash = 0;
+    for (let i = 0; i < data.length; i++) {
+      const char = data.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return hash.toString(36);
+  }
+  
+  const browserFingerprint = getFingerprint();
+  
+  async function loadServer() {
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    const { data: server, error } = await supabase
+      .from('servers')
+      .select('*')
+      .eq('id', serverId)
+      .single();
+    
+    if (error || !server) {
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('error-state').classList.remove('hidden');
+      return;
+    }
+    
+    serverData = server;
+    
+    // Update page title and meta
+    document.title = `${server.name} | GuildPost`;
+    const metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.content = `${server.description?.slice(0, 150)}... - View ${server.name} on GuildPost`;
+    
+    // Update JSON-LD
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": server.name,
+      "description": server.description,
+      "applicationCategory": "GameServer",
+      "operatingSystem": "Minecraft",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    };
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+    
+    // Populate content
+    document.getElementById('breadcrumb-name').textContent = server.name;
+    document.getElementById('server-name').textContent = server.name;
+    document.getElementById('server-address').textContent = `${server.ip}:${server.port}`;
+    document.getElementById('server-description').textContent = server.description || 'No description available.';
+    document.getElementById('server-version').textContent = server.version || 'Any';
+    document.getElementById('vote-count').textContent = server.vote_count || 0;
+    document.getElementById('sidebar-vote-count').textContent = server.vote_count || 0;
+    
+    // Verified badge
+    if (server.verified) {
+      document.getElementById('verified-badge').classList.remove('hidden');
+    }
+    
+    // Icon
+    if (server.icon) {
+      document.getElementById('server-icon-container').innerHTML = 
+        `<img src="${server.icon}" alt="" class="w-full h-full object-cover" />`;
+    }
+    
+    // Banner
+    if (server.banner) {
+      document.getElementById('banner-container').classList.remove('hidden');
+      document.getElementById('server-banner').src = server.banner;
+    }
+    
+    // Tags
+    if (server.tags && server.tags.length > 0) {
+      document.getElementById('server-tags').innerHTML = server.tags.map(tag => `
+        <a href="/category/${tag.toLowerCase()}" class="px-3 py-1 bg-[#1a1a25] text-[#8892b0] hover:bg-[#00f5d4]/20 hover:text-[#00f5d4] transition-colors rounded text-sm">
+          ${tag}
+        </a>
+      `).join('');
+    } else {
+      document.getElementById('server-tags').innerHTML = '<span class="text-[#8892b0]">No tags</span>';
+    }
+    
+    // Join button link
+    document.getElementById('join-btn').href = `minecraft://?addServer=${server.name}|${server.ip}:${server.port}`;
+    
+    // Copy IP button
+    document.getElementById('copy-ip-btn').addEventListener('click', () => {
+      navigator.clipboard.writeText(`${server.ip}:${server.port}`);
+      const btn = document.getElementById('copy-ip-btn');
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Copied!`;
+      setTimeout(() => {
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg> Copy IP`;
+      }, 2000);
+    });
+    
+    // Votifier status indicator
+    if (server.votifier_key) {
+      document.getElementById('votifier-status').classList.remove('hidden');
+    }
+    
+    // Vote button
+    document.getElementById('vote-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('vote-btn');
+      const usernameInput = document.getElementById('voter-username');
+      const messageDiv = document.getElementById('vote-message');
+      const username = usernameInput.value.trim();
+      
+      if (!username) {
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'mt-3 p-3 rounded text-sm bg-[#ff3864]/10 border border-[#ff3864]/30 text-[#ff3864]';
+        messageDiv.textContent = 'Please enter your Minecraft username';
+        return;
+      }
+      
+      // Validate username (Minecraft usernames: 3-16 chars, alphanumeric + underscore)
+      if (!/^[a-zA-Z0-9_]{3,16}$/.test(username)) {
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'mt-3 p-3 rounded text-sm bg-[#ff3864]/10 border border-[#ff3864]/30 text-[#ff3864]';
+        messageDiv.textContent = 'Invalid Minecraft username (3-16 letters, numbers, underscores)';
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.innerHTML = `<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div> Voting...`;
+      messageDiv.classList.add('hidden');
+      
+      try {
+        // Call the vote API
+        const response = await fetch('https://wpxutsdbiampnxfgkjwq.supabase.co/functions/v1/vote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            serverId: server.id,
+            username: username,
+            address: 'web',
+            fingerprint: browserFingerprint
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+          // Success
+          const newCount = (server.vote_count || 0) + 1;
+          document.getElementById('vote-count').textContent = newCount;
+          document.getElementById('sidebar-vote-count').textContent = newCount;
+          server.vote_count = newCount;
+          
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Voted!`;
+          btn.classList.remove('bg-[#ff3864]');
+          btn.classList.add('bg-green-600');
+          
+          messageDiv.classList.remove('hidden');
+          messageDiv.className = 'mt-3 p-3 rounded text-sm bg-green-500/10 border border-green-500/30 text-green-500';
+          messageDiv.textContent = result.message || 'Vote recorded successfully!';
+          
+          // Store vote timestamp locally for cooldown
+          const cooldownKey = `vote_${server.id}_${username.toLowerCase()}`;
+          localStorage.setItem(cooldownKey, Date.now().toString());
+          
+          // Reset after 3 seconds
+          setTimeout(() => {
+            btn.disabled = false;
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg> Vote (${newCount})`;
+            btn.classList.remove('bg-green-600');
+            btn.classList.add('bg-[#ff3864]');
+          }, 3000);
+          
+        } else if (response.status === 429) {
+          // Cooldown
+          btn.disabled = false;
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg> Vote (${server.vote_count || 0})`;
+          
+          messageDiv.classList.remove('hidden');
+          messageDiv.className = 'mt-3 p-3 rounded text-sm bg-yellow-500/10 border border-yellow-500/30 text-yellow-500';
+          messageDiv.textContent = result.message || 'You already voted recently!';
+          
+        } else {
+          throw new Error(result.message || 'Vote failed');
+        }
+        
+      } catch (err) {
+        console.error('Vote error:', err);
+        btn.disabled = false;
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg> Vote (${server.vote_count || 0})`;
+        
+        messageDiv.classList.remove('hidden');
+        messageDiv.className = 'mt-3 p-3 rounded text-sm bg-[#ff3864]/10 border border-[#ff3864]/30 text-[#ff3864]';
+        messageDiv.textContent = err.message || 'Failed to vote. Try again.';
+      }
+    });
+    
+    // Check local cooldown on load
+    const usernameInput = document.getElementById('voter-username');
+    usernameInput.addEventListener('input', () => {
+      const username = usernameInput.value.trim().toLowerCase();
+      if (username) {
+        const cooldownKey = `vote_${server.id}_${username}`;
+        const lastVote = localStorage.getItem(cooldownKey);
+        if (lastVote) {
+          const hoursSince = (Date.now() - parseInt(lastVote)) / (1000 * 60 * 60);
+          if (hoursSince < 24) {
+            const hoursLeft = Math.ceil(24 - hoursSince);
+            const messageDiv = document.getElementById('vote-message');
+            messageDiv.classList.remove('hidden');
+            messageDiv.className = 'mt-3 p-3 rounded text-sm bg-yellow-500/10 border border-yellow-500/30 text-yellow-500';
+            messageDiv.textContent = `You voted ${Math.floor(hoursSince)}h ago. Wait ${hoursLeft} more hour${hoursLeft !== 1 ? 's' : ''}.`;
+          }
+        }
+      }
+    });
+    
+    // Check server status (simplified - would need actual Minecraft ping API)
+    document.getElementById('server-status').innerHTML = `
+      <span class="w-2 h-2 rounded-full bg-green-500"></span>
+      <span class="text-green-500">Online</span>
+    `;
+    document.getElementById('sidebar-status').innerHTML = `<span class="text-green-500">● Online</span>`;
+    document.getElementById('player-count').textContent = '?';
+    
+    // Show content
+    document.getElementById('loading-state').classList.add('hidden');
+    document.getElementById('server-content').classList.remove('hidden');
+  }
+  
+  // Share functions
+  window.shareTwitter = () => {
+    const text = `Check out ${serverData?.name} on GuildPost!`;
+    const url = window.location.href;
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+  };
+  
+  window.shareDiscord = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert('Link copied to clipboard! Paste it in Discord.');
+  };
+  
+  // Load server on mount
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadServer);
+  } else {
+    loadServer();
+  }
+  
+  // Chart loading function
+  window.loadChart = async function(hours = 24) {
+    const loading = document.getElementById('chart-loading');
+    const error = document.getElementById('chart-error');
+    const canvas = document.getElementById('player-chart');
+    
+    // Update button states
+    document.querySelectorAll('.chart-btn').forEach(btn => {
+      if (parseInt(btn.dataset.hours) === hours) {
+        btn.classList.add('bg-[#2a2a3a]', 'text-white');
+        btn.classList.remove('bg-[#1a1a25]', 'text-[#8892b0]');
+      } else {
+        btn.classList.remove('bg-[#2a2a3a]', 'text-white');
+        btn.classList.add('bg-[#1a1a25]', 'text-[#8892b0]');
+      }
+    });
+    
+    loading.classList.remove('hidden');
+    error.classList.add('hidden');
+    
+    try {
+      const response = await fetch(
+        `https://wpxutsdbiampnxfgkjwq.supabase.co/functions/v1/analytics?serverId=${serverId}&hours=${hours}`
+      );
+      
+      if (!response.ok) throw new Error('Failed to fetch');
+      
+      const data = await response.json();
+      
+      // Update stats
+      if (data.history && data.history.length > 0) {
+        const maxPlayers = Math.max(...data.history.map(h => h.max_players));
+        const avgPlayers = Math.round(data.history.reduce((a, h) => a + parseFloat(h.avg_players), 0) / data.history.length);
+        
+        document.getElementById('stat-peak').textContent = maxPlayers;
+        document.getElementById('stat-avg').textContent = avgPlayers;
+        document.getElementById('stat-uptime').textContent = data.uptime?.uptime_percent 
+          ? `${Math.round(data.uptime.uptime_percent)}%` 
+          : '—';
+        
+        // Draw chart
+        drawChart(canvas, data.history);
+      } else {
+        document.getElementById('stat-peak').textContent = '—';
+        document.getElementById('stat-avg').textContent = '—';
+        document.getElementById('stat-uptime').textContent = '—';
+        
+        // Show "no data" on canvas
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#8892b0';
+        ctx.font = '14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('No data yet - check back in a few hours', canvas.width / 2, canvas.height / 2);
+      }
+      
+      loading.classList.add('hidden');
+      
+    } catch (err) {
+      console.error('Chart error:', err);
+      loading.classList.add('hidden');
+      error.classList.remove('hidden');
+    }
+  };
+  
+  // Simple canvas chart drawing
+  function drawChart(canvas, history) {
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    
+    // Set canvas size
+    canvas.width = canvas.offsetWidth * dpr;
+    canvas.height = canvas.offsetHeight * dpr;
+    ctx.scale(dpr, dpr);
+    
+    const width = canvas.offsetWidth;
+    const height = canvas.offsetHeight;
+    const padding = { top: 20, right: 20, bottom: 30, left: 40 };
+    const chartWidth = width - padding.left - padding.right;
+    const chartHeight = height - padding.top - padding.bottom;
+    
+    // Clear
+    ctx.clearRect(0, 0, width, height);
+    
+    // Find min/max for scaling
+    const maxPlayers = Math.max(...history.map(h => h.max_players), 1);
+    const minPlayers = Math.min(...history.map(h => h.min_players), 0);
+    const range = maxPlayers - minPlayers || 1;
+    
+    // Draw grid lines
+    ctx.strokeStyle = '#2a2a3a';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const y = padding.top + (chartHeight / 4) * i;
+      ctx.beginPath();
+      ctx.moveTo(padding.left, y);
+      ctx.lineTo(width - padding.right, y);
+      ctx.stroke();
+      
+      // Y-axis labels
+      ctx.fillStyle = '#8892b0';
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(Math.round(maxPlayers - (range / 4) * i).toString(), padding.left - 5, y + 3);
+    }
+    
+    // Draw the area chart
+    ctx.beginPath();
+    ctx.moveTo(padding.left, padding.top + chartHeight);
+    
+    history.forEach((point, i) => {
+      const x = padding.left + (chartWidth / (history.length - 1)) * i;
+      const y = padding.top + chartHeight - ((point.avg_players - minPlayers) / range) * chartHeight;
+      
+      if (i === 0) {
+        ctx.lineTo(x, y);
+      } else {
+        // Smooth curve
+        const prevX = padding.left + (chartWidth / (history.length - 1)) * (i - 1);
+        const prevPoint = history[i - 1];
+        const prevY = padding.top + chartHeight - ((prevPoint.avg_players - minPlayers) / range) * chartHeight;
+        const cpX = (prevX + x) / 2;
+        ctx.bezierCurveTo(cpX, prevY, cpX, y, x, y);
+      }
+    });
+    
+    ctx.lineTo(width - padding.right, padding.top + chartHeight);
+    ctx.closePath();
+    
+    // Gradient fill
+    const gradient = ctx.createLinearGradient(0, padding.top, 0, height - padding.bottom);
+    gradient.addColorStop(0, 'rgba(0, 245, 212, 0.3)');
+    gradient.addColorStop(1, 'rgba(0, 245, 212, 0.05)');
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    
+    // Draw the line
+    ctx.beginPath();
+    history.forEach((point, i) => {
+      const x = padding.left + (chartWidth / (history.length - 1)) * i;
+      const y = padding.top + chartHeight - ((point.avg_players - minPlayers) / range) * chartHeight;
+      
+      if (i === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        const prevX = padding.left + (chartWidth / (history.length - 1)) * (i - 1);
+        const prevPoint = history[i - 1];
+        const prevY = padding.top + chartHeight - ((prevPoint.avg_players - minPlayers) / range) * chartHeight;
+        const cpX = (prevX + x) / 2;
+        ctx.bezierCurveTo(cpX, prevY, cpX, y, x, y);
+      }
+    });
+    ctx.strokeStyle = '#00f5d4';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Draw time labels (first, middle, last)
+    ctx.fillStyle = '#8892b0';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    
+    const times = [0, Math.floor(history.length / 2), history.length - 1];
+    times.forEach(i => {
+      const x = padding.left + (chartWidth / (history.length - 1)) * i;
+      const date = new Date(history[i].time_bucket);
+      const label = date.toLocaleTimeString('en-US', { hour: 'numeric', hour12: true });
+      ctx.fillText(label, x, height - 10);
+    });
+  }
+  
+  // Load chart after server loads
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => loadChart(24), 500);
+  });
+</script>
