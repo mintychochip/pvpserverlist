@@ -1,0 +1,155 @@
+---
+// Reviews Component for Server Detail Page
+const { serverId, reviews = [] } = Astro.props;
+---
+
+<div class="mt-8 p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-xl font-bold text-white">Reviews</h2>
+    <button 
+      id="write-review-btn"
+      class="px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors text-sm"
+    >
+      Write a Review
+    </button>
+  </div>
+
+  <!-- Review Form -->
+  <div id="review-form" class="hidden mb-6 p-4 bg-[#0a0a0f] rounded-lg">
+    <h3 class="font-bold text-white mb-4">Write Your Review</h3>
+    <div class="space-y-4">
+      <div>
+        <label class="text-[#8892b0] text-sm block mb-2">Your Name</label>
+        <input 
+          type="text" 
+          id="reviewer-name" 
+          class="w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded text-white text-sm"
+          placeholder="Minecraft username"
+        />
+      </div>
+      <div>
+        <label class="text-[#8892b0] text-sm block mb-2">Rating</label>
+        <div class="flex gap-2" id="star-rating">
+          {[1,2,3,4,5].map(star => (
+            <button 
+              class="star-btn text-2xl text-[#2a2a3a] hover:text-yellow-500 transition-colors"
+              data-rating={star}
+            >
+              ★
+            </button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <label class="text-[#8892b0] text-sm block mb-2">Review</label>
+        <textarea 
+          id="review-text" 
+          rows="3"
+          class="w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded text-white text-sm resize-none"
+          placeholder="Share your experience with this server..."
+        ></textarea>
+      </div>
+      <div class="flex gap-2">
+        <button id="submit-review" class="px-4 py-2 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded text-sm">
+          Submit Review
+        </button>
+        <button id="cancel-review" class="px-4 py-2 bg-[#1a1a25] text-white rounded text-sm">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews List -->
+  <div id="reviews-list" class="space-y-4">
+    {reviews.length === 0 ? (
+      <p class="text-[#8892b0] text-center py-8">No reviews yet. Be the first to review!</p>
+    ) : (
+      reviews.map(review => (
+        <div class="p-4 bg-[#0a0a0f] rounded-lg">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-white">{review.reviewer_name}</span>
+              <span class="text-yellow-500">{'★'.repeat(review.rating)}{'☆'.repeat(5-review.rating)}</span>
+            </div>
+            <span class="text-[#8892b0] text-xs">{new Date(review.created_at).toLocaleDateString()}</span>
+          </div>
+          <p class="text-[#8892b0] text-sm">{review.review_text}</p>
+        </div>
+      ))
+    )}
+  </div>
+</div>
+
+<script define:vars={{ serverId }}>
+  let selectedRating = 0;
+  
+  // Star rating
+  document.querySelectorAll('.star-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedRating = parseInt(btn.dataset.rating);
+      updateStars();
+    });
+    
+    btn.addEventListener('mouseenter', () => {
+      const hoverRating = parseInt(btn.dataset.rating);
+      document.querySelectorAll('.star-btn').forEach((b, i) => {
+        b.classList.toggle('text-yellow-500', i < hoverRating);
+        b.classList.toggle('text-[#2a2a3a]', i >= hoverRating);
+      });
+    });
+  });
+  
+  document.getElementById('star-rating')?.addEventListener('mouseleave', updateStars);
+  
+  function updateStars() {
+    document.querySelectorAll('.star-btn').forEach((btn, i) => {
+      btn.classList.toggle('text-yellow-500', i < selectedRating);
+      btn.classList.toggle('text-[#2a2a3a]', i >= selectedRating);
+    });
+  }
+  
+  // Toggle form
+  document.getElementById('write-review-btn')?.addEventListener('click', () => {
+    document.getElementById('review-form').classList.remove('hidden');
+    document.getElementById('write-review-btn').classList.add('hidden');
+  });
+  
+  document.getElementById('cancel-review')?.addEventListener('click', () => {
+    document.getElementById('review-form').classList.add('hidden');
+    document.getElementById('write-review-btn').classList.remove('hidden');
+  });
+  
+  // Submit review
+  document.getElementById('submit-review')?.addEventListener('click', async () => {
+    const name = document.getElementById('reviewer-name').value;
+    const text = document.getElementById('review-text').value;
+    
+    if (!name || !selectedRating) {
+      showToast('Please enter your name and rating', 'error');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/servers/${serverId}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reviewer_name: name,
+          rating: selectedRating,
+          review_text: text
+        })
+      });
+      
+      if (response.ok) {
+        showToast('Review submitted! Pending approval.', 'success');
+        document.getElementById('review-form').classList.add('hidden');
+        document.getElementById('write-review-btn').classList.remove('hidden');
+      } else {
+        showToast('Failed to submit review', 'error');
+      }
+    } catch (err) {
+      showToast('Error submitting review', 'error');
+    }
+  });
+</script>

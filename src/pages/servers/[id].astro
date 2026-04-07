@@ -2,6 +2,7 @@
 // Server Detail Page - Server-side rendered with Cloudflare
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
+import Reviews from '../../components/Reviews.astro';
 
 const { id } = Astro.params;
 
@@ -11,6 +12,8 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 let server = null;
 let relatedServers = [];
+let reviews = [];
+let uptimeStats = null;
 let error = null;
 
 try {
@@ -26,15 +29,36 @@ try {
     const data = await response.json();
     server = data[0] || null;
     
-    // Fetch related servers (same tags)
-    if (server && server.tags && server.tags.length > 0) {
-      const tag = server.tags[0];
-      const relatedResponse = await fetch(
-        `${supabaseUrl}/rest/v1/servers?tags=cs.{${tag}}&id=neq.${id}&limit=4&select=*`,
+    if (server) {
+      // Fetch related servers (same tags)
+      if (server.tags && server.tags.length > 0) {
+        const tag = server.tags[0];
+        const relatedResponse = await fetch(
+          `${supabaseUrl}/rest/v1/servers?tags=cs.{${tag}}&id=neq.${id}&limit=4&select=*`,
+          { headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` }}
+        );
+        if (relatedResponse.ok) {
+          relatedServers = await relatedResponse.json();
+        }
+      }
+      
+      // Fetch reviews
+      const reviewsRes = await fetch(
+        `${supabaseUrl}/rest/v1/server_reviews?server_id=eq.${id}&is_approved=eq.true&order=created_at.desc&limit=5`,
         { headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` }}
       );
-      if (relatedResponse.ok) {
-        relatedServers = await relatedResponse.json();
+      if (reviewsRes.ok) {
+        reviews = await reviewsRes.json();
+      }
+      
+      // Fetch uptime stats
+      const uptimeRes = await fetch(
+        `${supabaseUrl}/rest/v1/server_uptime_stats?server_id=eq.${id}`,
+        { headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` }}
+      );
+      if (uptimeRes.ok) {
+        const uptimeData = await uptimeRes.json();
+        uptimeStats = uptimeData[0] || null;
       }
     }
   } else {
@@ -222,6 +246,47 @@ const isOnline = server.status === 'online';
             </button>
           </div>
 
+          <!-- Uptime Stats -->
+          {uptimeStats && uptimeStats.uptime_percentage && (
+            <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+              <h3 class="font-bold text-white mb-3">Uptime (24h)</h3>
+              <div class="flex items-center gap-3">
+                <div class="flex-1">
+                  <div class="flex justify-between text-sm mb-1">
+                    <span class="text-[#8892b0]">Reliability</span>
+                    <span class="text-green-500 font-bold">{uptimeStats.uptime_percentage}%</span>
+                  </div>
+                  <div class="h-2 bg-[#1a1a25] rounded-full overflow-hidden">
+                    <div 
+                      class="h-full bg-gradient-to-r from-green-500 to-[#00f5d4] rounded-full"
+                      style={`width: ${uptimeStats.uptime_percentage}%`}
+                    />
+                  </div>
+                </div>
+              </div>
+              <p class="text-[#8892b0] text-xs mt-2">
+                Online for {uptimeStats.online_checks} of {uptimeStats.total_checks} checks
+              </p>
+            </div>
+          )}
+
+          <!-- Ratings -->
+          {server.rating_count > 0 && (
+            <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+              <h3 class="font-bold text-white mb-2">Rating</h3>
+              <div class="flex items-center gap-2">
+                <span class="text-3xl font-bold text-yellow-500">{server.rating_average}</span>
+                <div>
+                  <div class="text-yellow-500 text-lg">
+                    {'★'.repeat(Math.round(server.rating_average))}
+                    {'☆'.repeat(5 - Math.round(server.rating_average))}
+                  </div>
+                  <p class="text-[#8892b0] text-xs">{server.rating_count} reviews</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <!-- Server Info -->
           <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
             <h3 class="font-bold text-white mb-3">Server Information</h3>
@@ -278,6 +343,9 @@ const isOnline = server.status === 'online';
           </div>
         </div>
       </div>
+      
+      <!-- Reviews Section -->
+      <Reviews serverId={id} reviews={reviews} />
     </main>
   </div>
 </Layout>
