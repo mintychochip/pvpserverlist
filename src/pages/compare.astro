@@ -1,0 +1,197 @@
+---
+// Server Comparison Page
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+
+// Get server IDs from query params
+const params = new URL(Astro.request.url).searchParams;
+const serverIds = params.get('servers')?.split(',') || [];
+
+// Fetch server data server-side
+const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.35hrTSgxQnICpLOY3g6W3eNxxe7DKCc3q165tyb0Ieo';
+
+let servers = [];
+let error = null;
+
+if (serverIds.length > 0) {
+  try {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/servers?id=in.(${serverIds.join(',')})&select=*`,
+      {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`
+        }
+      }
+    );
+    
+    if (response.ok) {
+      servers = await response.json();
+    } else {
+      error = 'Failed to fetch servers';
+    }
+  } catch (e) {
+    error = e.message;
+  }
+}
+---
+
+<Layout 
+  title={`Compare ${servers.length} Servers | GuildPost`}
+  description="Compare Minecraft servers side-by-side. View player counts, votes, versions, and more."
+  url="https://guildpost.tech/compare"
+>
+  <div class="min-h-screen bg-[#0a0a0f]">
+    <Header />
+    
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <h1 class="text-4xl font-black text-white mb-4">Compare Servers</h1>
+      
+      {servers.length === 0 ? (
+        <div class="text-center py-12">
+          <p class="text-[#8892b0] mb-4">Select servers to compare from the server list.</p>
+          <a href="/minecraft" class="inline-block px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#00d4b8] transition-colors">
+            Browse Servers
+          </a>
+        </div>
+      ) : (
+        <>
+          <p class="text-[#8892b0] mb-8">Comparing {servers.length} server{servers.length !== 1 ? 's' : ''}</p>
+          
+          <!-- Comparison Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-[#2a2a3a]">
+                  <th class="text-left p-4 text-[#8892b0] font-medium">Feature</th>
+                  {servers.map(server => (
+                    <th class="text-left p-4 text-white font-bold min-w-[200px]">
+                      <a href={`/servers/${server.id}`} class="hover:text-[#00f5d4] transition-colors">
+                        {server.name}
+                      </a>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Icon -->
+                <tr class="border-b border-[#2a2a3a]">
+                  <td class="p-4 text-[#8892b0]">Icon</td>
+                  {servers.map(server => (
+                    <td class="p-4">
+                      <div class="w-16 h-16 bg-[#1a1a25] rounded-lg flex items-center justify-center">
+                        {server.icon ? (
+                          <img src={server.icon} alt="" class="w-full h-full object-cover rounded-lg" />
+                        ) : (
+                          <span class="text-[#00f5d4] text-2xl">⛏</span>
+                        )}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                
+                <!-- Status -->
+                <tr class="border-b border-[#2a2a3a]">
+                  <td class="p-4 text-[#8892b0]">Status</td>
+                  {servers.map(server => (
+                    <td class="p-4">
+                      <span class={server.status === 'online' ? 'text-green-500' : 'text-gray-500'}>
+                        {server.status === 'online' ? '● Online' : '○ Offline'}
+                      </span>
+                    </td>
+                  ))}
+                </tr>
+                
+                <!-- Players -->
+                <tr class="border-b border-[#2a2a3a]">
+                  <td class="p-4 text-[#8892b0]">Players</td>
+                  {servers.map(server => (
+                    <td class="p-4 text-white">
+                      <span class="text-[#00f5d4] font-bold">{server.players_online || 0}</span>
+                      <span class="text-[#8892b0]"> / {server.max_players || '?'}</span>
+                    </td>
+                  ))}
+                </tr>
+                
+                <!-- Votes -->
+                <tr class="border-b border-[#2a2a3a]">
+                  <td class="p-4 text-[#8892b0]">Votes</td>
+                  {servers.map(server => (
+                    <td class="p-4">
+                      <span class="text-[#ff3864] font-bold">▲ {server.vote_count || 0}</span>
+                    </td>
+                  ))}
+                </tr>
+                
+                <!-- Version -->
+                <tr class="border-b border-[#2a2a3a]">
+                  <td class="p-4 text-[#8892b0]">Version</td>
+                  {servers.map(server => (
+                    <td class="p-4 text-white">{server.version || 'Any'}</td>
+                  ))}
+                </tr>
+                
+                <!-- IP -->
+                <tr class="border-b border-[#2a2a3a]">
+                  <td class="p-4 text-[#8892b0]">Address</td>
+                  {servers.map(server => (
+                    <td class="p-4">
+                      <code class="text-[#8892b0] text-sm">{server.ip}:{server.port}</code>
+                    </td>
+                  ))}
+                </tr>
+                
+                <!-- Tags -->
+                <tr class="border-b border-[#2a2a3a]">
+                  <td class="p-4 text-[#8892b0]">Tags</td>
+                  {servers.map(server => (
+                    <td class="p-4">
+                      <div class="flex flex-wrap gap-1">
+                        {server.tags?.map(tag => (
+                          <span class="px-2 py-1 bg-[#1a1a25] text-[#8892b0] rounded text-xs">{tag}</span>
+                        ))}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+                
+                <!-- Actions -->
+                <tr>
+                  <td class="p-4 text-[#8892b0]">Actions</td>
+                  {servers.map(server => (
+                    <td class="p-4">
+                      <div class="space-y-2">
+                        <a 
+                          href={`/servers/${server.id}`}
+                          class="block px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white text-center rounded-lg text-sm transition-colors"
+                        >
+                          View Details
+                        </a>
+                        <a 
+                          href={`minecraft://${server.ip}:${server.port}`}
+                          class="block px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold text-center rounded-lg text-sm transition-colors"
+                        >
+                          Join Server
+                        </a>
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Add More Button -->
+          {servers.length < 4 && (
+            <div class="mt-8 text-center">
+              <a href="/minecraft" class="inline-block px-6 py-3 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white font-bold rounded-lg transition-colors">
+                + Add Server to Compare
+              </a>
+            </div>
+          )}
+        </>
+      )}
+    </main>
+  </div>
+</Layout>
