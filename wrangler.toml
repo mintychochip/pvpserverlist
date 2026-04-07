@@ -1,0 +1,20 @@
+name = "guildpost-api"
+main = "functions/api/[[path]].js"
+compatibility_date = "2024-04-06"
+
+# Node.js compatibility
+compatibility_flags = ["nodejs_compat"]
+
+[ai]
+binding = "AI"
+
+[[kv_namespaces]]
+binding = "CLICK_ANALYTICS"
+id = "your_kv_namespace_id"
+
+[vars]
+SUPABASE_URL = "https://wpxutsdbiampnxfgkjwq.supabase.co"
+# SUPABASE_SERVICE_KEY should be set as a secret
+
+# Secrets (set these with wrangler secret put)
+# wrangler secret put SUPABASE_SERVICE_KEY
