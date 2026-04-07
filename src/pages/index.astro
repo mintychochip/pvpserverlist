@@ -91,6 +91,21 @@ const gameCategories = [
             Add Your Server
           </a>
         </div>
+        
+        <!-- Surprise Me Button -->
+        <div class="mt-6">
+          <button
+            id="surprise-btn"
+            class="inline-flex items-center gap-2 text-[#8892b0] hover:text-[#ff3864] transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+            🎲 Surprise Me - Random Server
+          </button>
+        </div>
       </div>
     </section>
 
@@ -337,4 +352,53 @@ const gameCategories = [
   } else {
     loadServers();
   }
+  
+  // Surprise Me - Random Server
+  const surpriseBtn = document.getElementById('surprise-btn');
+  surpriseBtn?.addEventListener('click', async () => {
+    surpriseBtn.innerHTML = `
+      <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+        <line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
+      Finding random server...
+    `;
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    // Get count first
+    const { count } = await supabase
+      .from('servers')
+      .select('*', { count: 'exact', head: true });
+    
+    if (!count) {
+      showToast('No servers available', 'error');
+      return;
+    }
+    
+    // Get random offset
+    const randomOffset = Math.floor(Math.random() * count);
+    
+    // Fetch random server
+    const { data: servers } = await supabase
+      .from('servers')
+      .select('id, name')
+      .range(randomOffset, randomOffset)
+      .limit(1);
+    
+    if (servers && servers.length > 0) {
+      window.location.href = `/servers/${servers[0].id}`;
+    } else {
+      surpriseBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
+        🎲 Surprise Me - Random Server
+      `;
+      showToast('Try again!', 'error');
+    }
+  });
 </script>
