@@ -92,7 +92,7 @@ async function callGemma(messages: any[], apiKey: string) {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   const env = (locals as any)?.runtime?.env || {};
-  const apiKey = env.GEMMA_API_KEY || env.GEMINI_API_KEY;
+  const apiKey = env.GEMINI_API_KEY;
 
   try {
     const { message, history = [] } = await request.json();
