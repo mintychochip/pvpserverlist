@@ -60,7 +60,7 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
     
     // Fetch player count history
     const pingResponse = await fetch(
-      `${supabaseUrl}/rest/v1/server_ping_history?server_id=eq.${encodeURIComponent(id)}&created_at=gte.${startDate.toISOString()}&order=created_at.asc&select=players_online,max_players,status,created_at`,
+      `${supabaseUrl}/rest/v1/server_ping_history?server_id=eq.${encodeURIComponent(id)}&pinged_at=gte.${startDate.toISOString()}&order=pinged_at.asc&select=players_online,max_players,pinged_at`,
       {
         headers: {
           'apikey': supabaseKey,
@@ -116,7 +116,7 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
     const uptimePercentage = Math.round(uptimeData * 100);
     
     // Process player data for chart (aggregate by interval)
-    const playerChartData = aggregateData(playerHistory, intervalMinutes, 'players_online');
+    const playerChartData = aggregateData(playerHistory, intervalMinutes, 'players_online', 'pinged_at');
     
     // Process vote data for chart (aggregate by day)
     const voteChartData = aggregateVotesByDay(votes);
@@ -168,8 +168,8 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
       raw_data: {
         ping_count: playerHistory.length,
         vote_count: votes.length,
-        first_ping: playerHistory.length > 0 ? playerHistory[0].created_at : null,
-        last_ping: playerHistory.length > 0 ? playerHistory[playerHistory.length - 1].created_at : null
+        first_ping: playerHistory.length > 0 ? (playerHistory[0].pinged_at || playerHistory[0].created_at) : null,
+        last_ping: playerHistory.length > 0 ? (playerHistory[playerHistory.length - 1].pinged_at || playerHistory[playerHistory.length - 1].created_at) : null
       }
     }), {
       headers: { 
@@ -189,22 +189,22 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
 };
 
 // Aggregate data points by time interval
-function aggregateData(data: any[], intervalMinutes: number, valueKey: string) {
+function aggregateData(data: any[], intervalMinutes: number, valueKey: string, timestampKey: string = 'pinged_at') {
   if (!data || data.length === 0) return [];
   
   const intervals: { [key: string]: { values: number[], timestamp: Date } } = {};
   
   data.forEach(item => {
-    if (!item.created_at) return;
+    if (!item[timestampKey]) return;
     
-    const date = new Date(item.created_at);
+    const date = new Date(item[timestampKey]);
     const intervalKey = getIntervalKey(date, intervalMinutes);
     
     if (!intervals[intervalKey]) {
       intervals[intervalKey] = { values: [], timestamp: date };
     }
     
-    if (item.status === 'online' && item[valueKey] !== null) {
+    if (item[valueKey] !== null && item[valueKey] !== undefined) {
       intervals[intervalKey].values.push(item[valueKey]);
     }
   });
@@ -255,8 +255,9 @@ function calculateRankHistory(history: any[], currentVotes: number) {
   // This is a simplified rank estimation
   // In production, you'd calculate actual rank against all servers
   history.forEach(item => {
-    if (!item.created_at) return;
-    const date = new Date(item.created_at);
+    const timestamp = item.pinged_at || item.created_at;
+    if (!timestamp) return;
+    const date = new Date(timestamp);
     const dayKey = date.toISOString().split('T')[0];
     
     if (!dailyData[dayKey]) {
