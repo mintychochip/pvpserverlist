@@ -21,27 +21,34 @@ if (!SUPABASE_SERVICE_KEY || !GEMINI_API_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-// Gemini embedding API
+// Gemini embedding API - uses gemini-embedding-001 model
 async function generateEmbedding(text) {
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        content: { parts: [{ text }] },
-        taskType: 'RETRIEVAL_DOCUMENT'
-      })
-    }
-  );
+  const model = 'models/gemini-embedding-001';
+  const url = `https://generativelanguage.googleapis.com/v1beta/${model}:embedContent?key=${GEMINI_API_KEY}`;
+  
+  console.log(`   Generating embedding with ${model}...`);
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      content: { parts: [{ text }] }
+    })
+  });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Gemini API error: ${error}`);
+    const errorText = await response.text();
+    throw new Error(`Gemini API error: ${errorText.substring(0, 200)}`);
   }
 
   const data = await response.json();
-  return data.embedding?.values;
+  const values = data.embedding?.values;
+  
+  if (!values || values.length === 0) {
+    throw new Error('Empty embedding returned');
+  }
+  
+  return values;
 }
 
 async function processServers() {
@@ -58,11 +65,6 @@ async function processServers() {
     return;
   }
   
-  // Check total status
-  const { data: status } = await supabase
-    .from('servers')
-    .select('id', { count: 'exact', head: true });
-  
   console.log(`📊 Total servers: ${count}`);
   console.log(`📊 Servers without embeddings: ${servers?.length || 0}\n`);
   
@@ -75,6 +77,7 @@ async function processServers() {
   
   let processed = 0;
   let failed = 0;
+  let skipped = 0;
   
   for (const server of servers) {
     try {
@@ -86,36 +89,39 @@ async function processServers() {
       ].filter(Boolean).join('. ');
       
       if (!text || text.length < 5) {
-        console.log(`⏭️  Skipping ${server.name} - no content`);
+        console.log(`⏭️  Skipping ${server.id} - no content`);
+        skipped++;
         continue;
       }
       
-      console.log(`🤖 [${processed + 1}/${servers.length}] ${server.name}`);
+      console.log(`🤖 [${processed + failed + skipped + 1}/${servers.length}] ${server.name?.substring(0, 40)}...`);
       
       const embedding = await generateEmbedding(text);
       
-      if (!embedding || embedding.length !== 3072) {
-        console.error(`   ❌ Wrong embedding size: ${embedding?.length}`);
+      if (!embedding || embedding.length === 0) {
+        console.error(`   ❌ Empty embedding returned`);
         failed++;
         continue;
       }
       
-      // Update server with embedding
+      console.log(`   📐 Dimensions: ${embedding.length}`);
+      
+      // Update server with embedding - store as JSON array string
       const { error: updateError } = await supabase
         .from('servers')
-        .update({ embedding: JSON.stringify(embedding) })
+        .update({ embedding: embedding })
         .eq('id', server.id);
       
       if (updateError) {
         console.error(`   ❌ Failed to update:`, updateError.message);
         failed++;
       } else {
-        console.log(`   ✅ Updated (dim: ${embedding.length})`);
+        console.log(`   ✅ Updated`);
         processed++;
       }
       
-      // Rate limiting - Gemini has limits
-      await new Promise(r => setTimeout(r, 200));
+      // Rate limiting - be nice to the API
+      await new Promise(r => setTimeout(r, 300));
       
     } catch (err) {
       console.error(`   ❌ Error:`, err.message);
@@ -125,20 +131,50 @@ async function processServers() {
     }
   }
   
-  console.log(`\n🎉 Done! Processed: ${processed}, Failed: ${failed}`);
+  console.log(`\n🎉 Done! Processed: ${processed}, Failed: ${failed}, Skipped: ${skipped}`);
+  
+  // Show final status
+  const { data: status } = await supabase
+    .from('servers')
+    .select('embedding', { count: 'exact' });
+  
+  const withEmb = status?.filter(s => s.embedding).length || 0;
+  const total = status?.length || 0;
+  console.log(`📊 Total embeddings in DB: ${withEmb}/${total}`);
 }
 
 // Test embedding
 async function testEmbedding() {
-  console.log('🧪 Testing Gemini embedding...');
+  console.log('🧪 Testing Gemini embedding...\n');
   
   try {
-    const embedding = await generateEmbedding("Minecraft PvP survival server");
-    console.log(`✅ Gemini works! Dimensions: ${embedding.length}`);
+    const embedding = await generateEmbedding("Minecraft PvP survival server with factions and economy");
+    console.log(`\n✅ Gemini works! Dimensions: ${embedding.length}`);
     console.log(`   Sample values: ${embedding.slice(0, 5).map(v => v.toFixed(4)).join(', ')}...`);
+    return true;
   } catch (err) {
-    console.error('❌ Gemini test failed:', err.message);
+    console.error(`\n❌ Gemini test failed:`, err.message);
     process.exit(1);
+  }
+}
+
+// Show status
+async function showStatus() {
+  const { data, error, count } = await supabase
+    .from('servers')
+    .select('embedding', { count: 'exact' });
+  
+  if (error) {
+    console.error('❌ Error:', error.message);
+    return;
+  }
+  
+  const withEmb = data?.filter(s => s.embedding).length || 0;
+  const total = count || data?.length || 0;
+  console.log(`📊 Embedding status: ${withEmb}/${total} servers have embeddings`);
+  
+  if (withEmb < total) {
+    console.log(`   Run without --status to generate embeddings for ${total - withEmb} remaining servers`);
   }
 }
 
@@ -146,13 +182,7 @@ async function testEmbedding() {
 if (process.argv.includes('--test')) {
   testEmbedding();
 } else if (process.argv.includes('--status')) {
-  const { data, error } = await supabase
-    .from('servers')
-    .select('id, embedding', { count: 'exact' });
-  
-  const withEmb = data?.filter(s => s.embedding).length || 0;
-  const total = data?.length || 0;
-  console.log(`📊 Embedding status: ${withEmb}/${total} servers have embeddings`);
+  showStatus();
 } else {
   testEmbedding().then(() => processServers());
 }

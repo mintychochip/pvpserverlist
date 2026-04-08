@@ -1,0 +1,375 @@
+---
+// IntentSearchWizard - Multi-phase guided server discovery
+// Replaces the simple search bar with progressive intent collection
+
+export interface Props {
+  id?: string;
+  inline?: boolean;
+}
+
+const { id = 'intent-wizard', inline = false } = Astro.props;
+---
+
+<div id={id} class:list={["intent-wizard", { "inline-mode": inline, "overlay-mode": !inline }]}>
+  <!-- Progress Bar -->
+  <div class="wizard-progress">
+    <div class="progress-track">
+      <div class="progress-fill" id={`${id}-progress`}></div>
+    </div>
+    <div class="progress-steps">
+      <span class="step active" data-step="1">Game</span>
+      <span class="step" data-step="2">Mode</span>
+      <span class="step" data-step="3">Features</span>
+      <span class="step" data-step="4">Size</span>
+      <span class="step" data-step="5">Results</span>
+    </div>
+  </div>
+
+  <!-- Phase 1: Game Selection -->
+  <div class="wizard-phase active" data-phase="1">
+    <div class="phase-header">
+      <h3 class="phase-title">What game are you looking for?</h3>
+      <p class="phase-subtitle">Select your game to find the perfect server</p>
+    </div>
+    <div class="game-grid">
+      <button class="game-card featured" data-game="minecraft" data-name="Minecraft">
+        <div class="game-icon minecraft"></div>
+        <div class="game-info">
+          <h4>Minecraft</h4>
+          <span class="badge live">1,000+ servers</span>
+        </div>
+        <div class="game-arrow">→</div>
+      </button>
+      <button class="game-card disabled" data-game="rust" disabled>
+        <div class="game-icon rust"></div>
+        <div class="game-info"><h4>Rust</h4><span class="badge soon">Coming Soon</span></div>
+      </button>
+      <button class="game-card disabled" data-game="cs2" disabled>
+        <div class="game-icon cs2"></div>
+        <div class="game-info"><h4>CS2</h4><span class="badge soon">Coming Soon</span></div>
+      </button>
+      <button class="game-card more" data-game="more">
+        <div class="game-icon more-games">+</div>
+        <div class="game-info"><h4>More Games</h4><span class="badge">Request</span></div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Phase 2: Core Experience -->
+  <div class="wizard-phase" data-phase="2">
+    <div class="phase-header">
+      <button class="back-btn" data-back="1">← Back</button>
+      <h3 class="phase-title">What gameplay style?</h3>
+      <p class="phase-subtitle">Choose your core experience</p>
+    </div>
+    <div class="experience-grid">
+      <button class="exp-card" data-exp="survival"><span class="exp-icon">🛡️</span><h4>Survival</h4><p>Build, survive, explore</p></button>
+      <button class="exp-card" data-exp="pvp"><span class="exp-icon">⚔️</span><h4>PvP Focused</h4><p>Combat, competitive</p></button>
+      <button class="exp-card" data-exp="skyblock"><span class="exp-icon">🏝️</span><h4>Skyblock</h4><p>Island, economy</p></button>
+      <button class="exp-card" data-exp="factions"><span class="exp-icon">🏰</span><h4>Factions</h4><p>Raiding wars</p></button>
+      <button class="exp-card" data-exp="creative"><span class="exp-icon">🎨</span><h4>Creative</h4><p>Build freely</p></button>
+      <button class="exp-card" data-exp="minigames"><span class="exp-icon">🎲</span><h4>Minigames</h4><p>Quick fun</p></button>
+      <button class="exp-card" data-exp="hardcore"><span class="exp-icon">🔥</span><h4>Hardcore</h4><p>Death = ban</p></button>
+      <button class="exp-card" data-exp="modded"><span class="exp-icon">⚙️</span><h4>Modded</h4><p>Forge/Fabric</p></button>
+      <button class="exp-card" data-exp="smp"><span class="exp-icon">🤝</span><h4>SMP</h4><p>Vanilla, social</p></button>
+      <button class="exp-card" data-exp="prison"><span class="exp-icon">⛓️</span><h4>Prison</h4><p>Rank up</p></button>
+      <button class="exp-card" data-exp="rp"><span class="exp-icon">🎭</span><h4>Roleplay</h4><p>Stories, lore</p></button>
+      <button class="exp-card skip" data-exp="any"><span class="exp-icon">🎲</span><h4>Any Mode</h4><p>No preference</p></button>
+    </div>
+  </div>
+
+  <!-- Phase 3: Features -->
+  <div class="wizard-phase" data-phase="3">
+    <div class="phase-header">
+      <button class="back-btn" data-back="2">← Back</button>
+      <h3 class="phase-title">What features matter?</h3>
+      <p class="phase-subtitle">Select all that apply (optional)</p>
+    </div>
+    <div class="features-grid">
+      <button class="feature-chip" data-feature="economy"><span>💰</span> Economy</button>
+      <button class="feature-chip" data-feature="claims"><span>🏠</span> Land Claims</button>
+      <button class="feature-chip" data-feature="community"><span>👥</span> Active Discord</button>
+      <button class="feature-chip" data-feature="anticheat"><span>🔒</span> Anti-Cheat</button>
+      <button class="feature-chip" data-feature="mmo"><span>🏛️</span> McMMO</button>
+      <button class="feature-chip" data-feature="events"><span>🌍</span> Events</button>
+      <button class="feature-chip" data-feature="bedrock"><span>📱</span> Bedrock</button>
+      <button class="feature-chip" data-feature="voice"><span>🎤</span> Voice Chat</button>
+      <button class="feature-chip" data-feature="custom"><span>🧙</span> Custom Items</button>
+      <button class="feature-chip" data-feature="shops"><span>🏪</span> Player Shops</button>
+      <button class="feature-chip" data-feature="towny"><span>🏘️</span> Towny</button>
+      <button class="feature-chip" data-feature="quests"><span>📜</span> Quests</button>
+      <button class="feature-chip" data-feature="crates"><span>🎁</span> Crates</button>
+      <button class="feature-chip" data-feature="kits"><span>🎒</span> Starter Kits</button>
+      <button class="feature-chip" data-feature="parkour"><span>🏃</span> Parkour</button>
+      <button class="feature-chip" data-feature="vanilla"><span>🌿</span> Vanilla+</button>
+    </div>
+    <div class="phase-actions">
+      <button class="continue-btn" id={`${id}-continue-btn`} data-next="4">Continue <span class="arrow">→</span></button>
+      <button class="skip-btn" data-skip="4">Skip →</button>
+    </div>
+  </div>
+
+  <!-- Phase 4: Size -->
+  <div class="wizard-phase" data-phase="4">
+    <div class="phase-header">
+      <button class="back-btn" data-back="3">← Back</button>
+      <h3 class="phase-title">What community size?</h3>
+      <p class="phase-subtitle">Pick your preferred player count</p>
+    </div>
+    <div class="size-options">
+      <button class="size-card" data-size="small">
+        <span class="size-icon">🌱</span>
+        <h4>Small</h4>
+        <p class="size-range">1-50 online</p>
+        <p class="size-desc">Tight-knit, you'll know everyone</p>
+      </button>
+      <button class="size-card" data-size="medium">
+        <span class="size-icon">🌳</span>
+        <h4>Medium</h4>
+        <p class="size-range">50-200 online</p>
+        <p class="size-desc">Active but not overwhelming</p>
+      </button>
+      <button class="size-card" data-size="large">
+        <span class="size-icon">🌲</span>
+        <h4>Large</h4>
+        <p class="size-range">200+ online</p>
+        <p class="size-desc">Always busy, massive scale</p>
+      </button>
+      <button class="size-card skip" data-size="any">
+        <span class="size-icon">🎲</span>
+        <h4>Any Size</h4>
+        <p class="size-range">No preference</p>
+        <p class="size-desc">Best matches regardless</p>
+      </button>
+    </div>
+  </div>
+
+  <!-- Phase 5: Review & Results -->
+  <div class="wizard-phase" data-phase="5">
+    <div class="phase-header">
+      <button class="back-btn" data-back="4">← Back</button>
+      <h3 class="phase-title">Find your server</h3>
+      <p class="phase-subtitle">Review and search</p>
+    </div>
+    <div class="review-card">
+      <h4>Your Search</h4>
+      <div class="review-tags" id={`${id}-review-tags`}></div>
+      <div class="review-query" id={`${id}-review-query`}></div>
+      <button class="edit-btn" data-edit="1">Edit Selections</button>
+    </div>
+    <button class="search-btn" id={`${id}-search-btn`}>
+      <span class="btn-icon">🔍</span>
+      <span class="btn-text">Find My Server</span>
+    </button>
+    <div class="results-container" id={`${id}-results`}></div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/styles/intent-wizard.css" />
+
+<script define:vars={{ wizardId: id }}>
+  (function() {
+    const id = wizardId;
+    const wizard = document.getElementById(id);
+    if (!wizard) return;
+
+    // State
+    const state = {
+      game: null,
+      experience: null,
+      features: [],
+      size: null,
+      currentPhase: 1
+    };
+
+    const FEATURE_LABELS = {
+      economy: '💰 Economy', claims: '🏠 Land Claims', community: '👥 Discord',
+      anticheat: '🔒 Anti-Cheat', mmo: '🏛️ McMMO', events: '🌍 Events',
+      bedrock: '📱 Bedrock', voice: '🎤 Voice', custom: '🧙 Custom',
+      shops: '🏪 Shops', towny: '🏘️ Towny', quests: '📜 Quests',
+      crates: '🎁 Crates', kits: '🎒 Kits', parkour: '🏃 Parkour', vanilla: '🌿 Vanilla'
+    };
+
+    const EXP_LABELS = {
+      survival: '🛡️ Survival', pvp: '⚔️ PvP', skyblock: '🏝️ Skyblock',
+      factions: '🏰 Factions', creative: '🎨 Creative', minigames: '🎲 Minigames',
+      hardcore: '🔥 Hardcore', modded: '⚙️ Modded', smp: '🤝 SMP',
+      prison: '⛓️ Prison', rp: '🎭 RP', any: '🎲 Any'
+    };
+
+    const SIZE_LABELS = { small: '🌱 Small', medium: '🌳 Medium', large: '🌲 Large', any: '🎲 Any' };
+
+    function updateProgress() {
+      const fill = document.getElementById(`${id}-progress`);
+      const steps = wizard.querySelectorAll('.progress-steps .step');
+      const pct = (state.currentPhase / 5) * 100;
+      if (fill) fill.style.width = `${pct}%`;
+      steps.forEach((s, i) => {
+        s.classList.toggle('active', i + 1 === state.currentPhase);
+        s.classList.toggle('completed', i + 1 < state.currentPhase);
+      });
+    }
+
+    function showPhase(n) {
+      wizard.querySelectorAll('.wizard-phase').forEach(p => p.classList.remove('active'));
+      const target = wizard.querySelector(`[data-phase="${n}"]`);
+      if (target) target.classList.add('active');
+      state.currentPhase = n;
+      updateProgress();
+      if (n === 5) renderReview();
+    }
+
+    function renderReview() {
+      const tagsContainer = document.getElementById(`${id}-review-tags`);
+      const queryContainer = document.getElementById(`${id}-review-query`);
+      if (!tagsContainer || !queryContainer) return;
+
+      const tags = [];
+      if (state.game) tags.push(`🎮 ${state.game}`);
+      if (state.experience && state.experience !== 'any') tags.push(EXP_LABELS[state.experience]);
+      state.features.forEach(f => tags.push(FEATURE_LABELS[f]));
+      if (state.size && state.size !== 'any') tags.push(SIZE_LABELS[state.size]);
+
+      tagsContainer.innerHTML = tags.map(t => `<span class="review-tag">${t}</span>`).join('');
+
+      const parts = [];
+      if (state.game) parts.push(state.game);
+      if (state.experience && state.experience !== 'any') parts.push(EXP_LABELS[state.experience].split(' ').slice(1).join(' '));
+      if (state.features.length) parts.push('with ' + state.features.map(f => FEATURE_LABELS[f].split(' ').slice(1).join(' ')).join(', '));
+      if (state.size && state.size !== 'any') parts.push(SIZE_LABELS[state.size].split(' ').slice(1).join(' ') + ' community');
+
+      queryContainer.textContent = parts.length ? `Looking for: ${parts.join(', ')}` : 'Show me any Minecraft server';
+    }
+
+    async function doSearch() {
+      const btn = document.getElementById(`${id}-search-btn`);
+      const results = document.getElementById(`${id}-results`);
+      if (!btn || !results) return;
+
+      btn.disabled = true;
+      btn.querySelector('.btn-text').textContent = 'Searching...';
+
+      const queryParts = [];
+      if (state.game) queryParts.push(state.game);
+      if (state.experience && state.experience !== 'any') queryParts.push(state.experience);
+      if (state.features.length) queryParts.push(state.features.join(' '));
+      if (state.size && state.size !== 'any') queryParts.push(state.size + ' server');
+      const query = queryParts.join(' ') || 'minecraft server';
+
+      results.innerHTML = '<div class="loading-state"><div class="loading-spinner"></div><p>Searching...</p></div>';
+
+      try {
+        const res = await fetch('/api/search/semantic', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query, limit: 9 })
+        });
+        const data = await res.json();
+
+        if (data.results?.length) {
+          results.innerHTML = `
+            <div class="results-header">
+              <h3>Found ${data.results.length} servers</h3>
+              <a href="/minecraft?q=${encodeURIComponent(query)}" class="view-all">View all →</a>
+            </div>
+            <div class="results-grid">
+              ${data.results.map(s => `
+                <a href="/servers/${s.id}" class="server-card">
+                  <div class="server-header">
+                    <div class="server-icon">${s.icon ? `<img src="${s.icon}" alt="" />` : '⛏️'}</div>
+                    <div class="server-title">
+                      <h4>${s.name}</h4>
+                      <p>${s.ip}:${s.port}</p>
+                    </div>
+                  </div>
+                  <div class="server-meta">
+                    <span class="status-dot ${s.status || 'offline'}"></span>
+                    <span class="player-count">${s.players_online || 0}/${s.max_players || '?'} online</span>
+                    <span class="vote-count">▲ ${s.vote_count || 0}</span>
+                  </div>
+                  ${s.tags?.length ? `<div class="server-tags">${s.tags.slice(0, 3).map(t => `<span class="server-tag">${t}</span>`).join('')}</div>` : ''}
+                </a>
+              `).join('')}
+            </div>
+          `;
+        } else {
+          results.innerHTML = `
+            <div class="empty-state">
+              <h4>No exact matches</h4>
+              <p>Try adjusting your preferences or <a href="/minecraft">browse all servers</a></p>
+            </div>
+          `;
+        }
+      } catch (e) {
+        results.innerHTML = '<div class="empty-state"><h4>Search failed</h4><p>Please try again</p></div>';
+      }
+
+      btn.disabled = false;
+      btn.querySelector('.btn-text').textContent = 'Find My Server';
+    }
+
+    // Event Listeners
+    wizard.querySelectorAll('[data-game]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        state.game = btn.dataset.game;
+        showPhase(2);
+      });
+    });
+
+    wizard.querySelectorAll('[data-exp]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.experience = btn.dataset.exp;
+        wizard.querySelectorAll('[data-exp]').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        setTimeout(() => showPhase(3), 200);
+      });
+    });
+
+    wizard.querySelectorAll('[data-feature]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const f = btn.dataset.feature;
+        if (state.features.includes(f)) {
+          state.features = state.features.filter(x => x !== f);
+          btn.classList.remove('selected');
+        } else {
+          state.features.push(f);
+          btn.classList.add('selected');
+        }
+      });
+    });
+
+    wizard.querySelectorAll('[data-size]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.size = btn.dataset.size;
+        wizard.querySelectorAll('[data-size]').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        setTimeout(() => showPhase(5), 200);
+      });
+    });
+
+    wizard.querySelectorAll('[data-back]').forEach(btn => {
+      btn.addEventListener('click', () => showPhase(parseInt(btn.dataset.back)));
+    });
+
+    wizard.querySelectorAll('[data-skip]').forEach(btn => {
+      btn.addEventListener('click', () => showPhase(parseInt(btn.dataset.skip)));
+    });
+
+    wizard.querySelectorAll('[data-edit]').forEach(btn => {
+      btn.addEventListener('click', () => showPhase(parseInt(btn.dataset.edit)));
+    });
+
+    const continueBtn = document.getElementById(`${id}-continue-btn`);
+    if (continueBtn) {
+      continueBtn.addEventListener('click', () => showPhase(4));
+    }
+
+    const searchBtn = document.getElementById(`${id}-search-btn`);
+    if (searchBtn) {
+      searchBtn.addEventListener('click', doSearch);
+    }
+
+    updateProgress();
+  })();
+</script>
