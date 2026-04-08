@@ -12,3 +12,4 @@ dist/
 
 # Documentation
 README_*.md
+supabase/migrations/

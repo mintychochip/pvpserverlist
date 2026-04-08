@@ -1,0 +1,327 @@
+---
+// Server Events Calendar - Discover upcoming server events
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const categories = [
+  { id: 'all', name: 'All Events', icon: '📅' },
+  { id: 'tournament', name: 'Tournaments', icon: '🏆' },
+  { id: 'drop', name: 'Drops/Giveaways', icon: '🎁' },
+  { id: 'update', name: 'Server Updates', icon: '🚀' },
+  { id: 'pvp', name: 'PvP Events', icon: '⚔️' },
+  { id: 'building', name: 'Building Contests', icon: '🏗️' },
+  { id: 'social', name: 'Social Events', icon: '🎉' },
+  { id: 'other', name: 'Other', icon: '✨' },
+];
+---
+
+<Layout 
+  title="Server Events - Upcoming Minecraft Events | GuildPost"
+  description="Discover upcoming events on Minecraft servers. Tournaments, drops, building contests, PvP events and more."
+  url="https://guildpost.tech/events"
+  keywords="minecraft events, server events, tournaments, drops, building contests, pvp events"
+>
+  <div class="min-h-screen bg-[#0a0a0f]">
+    <Header />
+    
+    <main class="pt-20 pb-16">
+      <!-- Header -->
+      <div class="max-w-6xl mx-auto px-4 py-12">
+        <nav class="flex items-center gap-2 text-sm text-[#8892b0] mb-6">
+          <a href="/" class="hover:text-white transition-colors">Home</a>
+          <span>/</span>
+          <span class="text-white">Events</span>
+        </nav>
+
+        <div class="text-center mb-12">
+          <h1 class="text-4xl md:text-5xl font-black text-white mb-4">
+            Server <span class="text-[#00f5d4]">Events</span>
+          </h1>
+          <p class="text-[#8892b0] text-lg max-w-2xl mx-auto">
+            Discover upcoming tournaments, drops, contests, and special events on Minecraft servers.
+          </p>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="flex flex-wrap justify-center gap-2 mb-8">
+          {categories.map((cat) => (
+            <button 
+              class="category-btn px-4 py-2 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-[#8892b0] hover:border-[#00f5d4] hover:text-white transition-all text-sm flex items-center gap-2"
+              data-category={cat.id}
+            >
+              <span>{cat.icon}</span>
+              {cat.name}
+            </button>
+          ))}
+        </div>
+
+        <!-- Create Event CTA -->
+        <div class="flex justify-center mb-12">
+          <a 
+            href="/dashboard?tab=events"
+            class="px-6 py-3 bg-[#ff3864] hover:bg-[#e63357] text-white font-bold rounded-lg transition-colors flex items-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Create Event
+          </a>
+        </div>
+
+        <!-- Events List -->
+        <div id="events-container" class="space-y-4">
+          <div class="text-center py-16">
+            <div class="w-16 h-16 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </div>
+            <p class="text-[#8892b0]">Loading events...</p>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="no-events" class="hidden text-center py-16">
+          <div class="w-16 h-16 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">No events found</h3>
+          <p class="text-[#8892b0] mb-4">Try a different category or check back later.</p>
+          <button id="clear-filter-btn" class="px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors">
+            Show All Events
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>
+
+<script>
+  import { createClient } from '@supabase/supabase-js';
+  
+  const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.35hrTSgxQnICpLOY3g6W3eNxxe7DKCc3q165tyb0Ieo';
+  
+  let currentCategory = 'all';
+  
+  function getCategoryIcon(category: string) {
+    const icons: {[key: string]: string} = {
+      tournament: '🏆',
+      drop: '🎁',
+      update: '🚀',
+      pvp: '⚔️',
+      building: '🏗️',
+      social: '🎉',
+      other: '✨'
+    };
+    return icons[category] || '📅';
+  }
+  
+  function getCategoryLabel(category: string) {
+    const labels: {[key: string]: string} = {
+      tournament: 'Tournament',
+      drop: 'Drop/Giveaway',
+      update: 'Server Update',
+      pvp: 'PvP Event',
+      building: 'Building Contest',
+      social: 'Social Event',
+      other: 'Event'
+    };
+    return labels[category] || 'Event';
+  }
+  
+  function formatTimeUntil(startDate: string) {
+    const now = new Date();
+    const start = new Date(startDate);
+    const diff = start.getTime() - now.getTime();
+    
+    if (diff < 0) return 'Started';
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (days > 0) return `${days}d ${hours}h`;
+    return `${hours}h`;
+  }
+  
+  async function loadEvents() {
+    const container = document.getElementById('events-container');
+    const noEvents = document.getElementById('no-events');
+    
+    if (!container) return;
+    
+    container.innerHTML = `
+      <div class="text-center py-16">
+        <div class="w-16 h-16 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div class="animate-spin w-8 h-8 border-2 border-[#00f5d4] border-t-transparent rounded-full"></div>
+        </div>
+        <p class="text-[#8892b0]">Loading events...</p>
+      </div>
+    `;
+    
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    
+    let query = supabase
+      .from('server_events')
+      .select('*, servers(name, ip, port, icon)')
+      .gte('start_time', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      .order('start_time', { ascending: true })
+      .limit(50);
+    
+    if (currentCategory !== 'all') {
+      query = query.eq('category', currentCategory);
+    }
+    
+    const { data: events, error } = await query;
+    
+    if (error) {
+      container.innerHTML = `
+        <div class="text-center py-16">
+          <div class="w-16 h-16 bg-[#ff3864]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ff3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2">Failed to load events</h3>
+          <p class="text-[#8892b0]">Please try again later.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    if (!events || events.length === 0) {
+      container.innerHTML = '';
+      noEvents?.classList.remove('hidden');
+      return;
+    }
+    
+    noEvents?.classList.add('hidden');
+    
+    container.innerHTML = events.map(event => {
+      const startTime = new Date(event.start_time);
+      const isLive = new Date() >= startTime && (!event.end_time || new Date() < new Date(event.end_time));
+      
+      return `
+        <div class="p-6 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] rounded-xl transition-all group">
+          <div class="flex flex-col md:flex-row md:items-start gap-4">
+            <!-- Event Icon/Time -->
+            <div class="flex-shrink-0 w-16 h-16 bg-[#0a0a0f] rounded-lg flex flex-col items-center justify-center border border-[#2a2a3a]">
+              <span class="text-2xl">${getCategoryIcon(event.category)}</span>
+              ${isLive 
+                ? '<span class="text-[10px] text-red-500 font-bold mt-1">LIVE</span>'
+                : `<span class="text-[10px] text-[#00f5d4] mt-1">${formatTimeUntil(event.start_time)}</span>`
+              }
+            </div>
+            
+            <!-- Event Info -->
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="px-2 py-1 bg-[#00f5d4]/10 text-[#00f5d4] text-xs rounded font-medium">
+                  ${getCategoryLabel(event.category)}
+                </span>
+                ${event.featured ? '<span class="px-2 py-1 bg-[#ff3864]/10 text-[#ff3864] text-xs rounded font-medium">FEATURED</span>' : ''}
+              </div>
+              
+              <h3 class="text-xl font-bold text-white group-hover:text-[#00f5d4] transition-colors mb-2">
+                ${event.title}
+              </h3>
+              
+              <p class="text-[#8892b0] text-sm mb-3 line-clamp-2">${event.description || 'No description provided.'}</p>
+              
+              <div class="flex flex-wrap items-center gap-4 text-sm">
+                <div class="flex items-center gap-2 text-[#8892b0]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  ${startTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                  ${event.end_time ? ` - ${new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}` : ''}
+                </div>
+                
+                <a href="/servers/${event.server_id}" class="flex items-center gap-2 text-[#00f5d4] hover:text-white transition-colors">
+                  ${event.servers?.icon ? `<img src="${event.servers.icon}" alt="" class="w-5 h-5 rounded">` : '<span>⛏</span>'}
+                  <span>${event.servers?.name || 'Unknown Server'}</span>
+                </a>
+                
+                ${event.prizes ? `
+                  <div class="flex items-center gap-2 text-[#ffd700]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="8" r="7"></circle>
+                      <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                    </svg>
+                    <span>${event.prizes}</span>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+            
+            <!-- Join Button -->
+            <div class="flex-shrink-0">
+              <a 
+                href="/servers/${event.server_id}"
+                class="px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors flex items-center gap-2"
+              >
+                Join Server
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  
+  // Category filter handlers
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const category = btn.getAttribute('data-category');
+      if (!category) return;
+      
+      currentCategory = category;
+      
+      // Update active state
+      document.querySelectorAll('.category-btn').forEach(b => {
+        b.classList.remove('border-[#00f5d4]', 'text-white');
+        b.classList.add('border-[#2a2a3a]', 'text-[#8892b0]');
+      });
+      btn.classList.remove('border-[#2a2a3a]', 'text-[#8892b0]');
+      btn.classList.add('border-[#00f5d4]', 'text-white');
+      
+      loadEvents();
+    });
+  });
+  
+  // Clear filter
+  document.getElementById('clear-filter-btn')?.addEventListener('click', () => {
+    currentCategory = 'all';
+    document.querySelectorAll('.category-btn').forEach(b => {
+      b.classList.remove('border-[#00f5d4]', 'text-white');
+      b.classList.add('border-[#2a2a3a]', 'text-[#8892b0]');
+    });
+    document.querySelector('[data-category="all"]')?.classList.add('border-[#00f5d4]', 'text-white');
+    loadEvents();
+  });
+  
+  // Load events on mount
+  loadEvents();
+  
+  // Auto-refresh every 5 minutes
+  setInterval(loadEvents, 5 * 60 * 1000);
+</script>
