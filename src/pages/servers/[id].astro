@@ -576,17 +576,30 @@ const isOnline = server.status === 'online';
     
     try {
       // Fetch ping history from uptime API
-      const response = await fetch(`/api/servers/${serverId}/uptime`);
+      const days = period === '24h' ? 1 : period === '7d' ? 7 : 30;
+      const response = await fetch(`/api/servers/${serverId}/uptime?days=${days}`);
       const data = await response.json();
       
-      if (data.history && data.history.length > 0) {
-        drawChart(data.history, period);
+      if (data.raw_data && data.raw_data.length > 0) {
+        drawChart(data.raw_data, period);
+        updateStats(data, period);
+      } else if (data.chart_data && data.chart_data.length > 0) {
+        // Use daily aggregated data for chart
+        drawDailyChart(data.chart_data);
         updateStats(data, period);
       } else {
-        // Fallback: generate mock data if no history
-        const mockData = generateMockHistory(period);
-        drawChart(mockData, period);
-        updateStats({ uptime_percentage: 100, avg_players: server.players_online || 0 }, period);
+        // Fallback: show "no data" state
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#8892b0';
+          ctx.font = '14px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('No ping data yet - check back soon!', canvas.width / 2, canvas.height / 2);
+        }
+        // Show current server stats
+        document.getElementById('avg-players').textContent = '0';
+        document.getElementById('uptime-stat').textContent = 'N/A';
       }
     } catch (err) {
       console.error('Analytics load error:', err);
@@ -594,14 +607,84 @@ const isOnline = server.status === 'online';
       if (canvas) {
         const ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#8892b0';
+        ctx.fillStyle = '#ff3864';
         ctx.font = '12px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('No data available', canvas.width / 2, canvas.height / 2);
+        ctx.fillText('Error loading analytics', canvas.width / 2, canvas.height / 2);
       }
     } finally {
       if (loadingEl) loadingEl.style.display = 'none';
     }
+  }
+  
+  // Draw chart from daily aggregated data
+  function drawDailyChart(chartData) {
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width = canvas.offsetWidth * 2;
+    const height = canvas.height = canvas.offsetHeight * 2;
+    ctx.scale(2, 2);
+    
+    const displayWidth = width / 2;
+    const displayHeight = height / 2;
+    
+    ctx.clearRect(0, 0, displayWidth, displayHeight);
+    
+    if (chartData.length < 2) {
+      ctx.fillStyle = '#8892b0';
+      ctx.font = '14px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Not enough data yet', displayWidth / 2, displayHeight / 2);
+      return;
+    }
+    
+    // Get player values
+    const players = chartData.map(d => d.avg_players || 0);
+    const maxPlayers = Math.max(...players, 1);
+    const minPlayers = Math.min(...players, 0);
+    const range = maxPlayers - minPlayers || 1;
+    
+    // Draw gradient fill
+    const gradient = ctx.createLinearGradient(0, 0, 0, displayHeight);
+    gradient.addColorStop(0, 'rgba(0, 245, 212, 0.3)');
+    gradient.addColorStop(1, 'rgba(0, 245, 212, 0)');
+    
+    ctx.beginPath();
+    ctx.moveTo(0, displayHeight);
+    
+    chartData.forEach((d, i) => {
+      const x = (i / (chartData.length - 1)) * displayWidth;
+      const y = displayHeight - ((d.avg_players - minPlayers) / range) * (displayHeight * 0.7) - 20;
+      ctx.lineTo(x, y);
+    });
+    
+    ctx.lineTo(displayWidth, displayHeight);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    
+    // Draw line
+    ctx.beginPath();
+    ctx.strokeStyle = '#00f5d4';
+    ctx.lineWidth = 2;
+    
+    chartData.forEach((d, i) => {
+      const x = (i / (chartData.length - 1)) * displayWidth;
+      const y = displayHeight - ((d.avg_players - minPlayers) / range) * (displayHeight * 0.7) - 20;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    
+    ctx.stroke();
+    
+    // Labels
+    ctx.fillStyle = '#8892b0';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(`${maxPlayers} avg players`, 5, 15);
+    ctx.textAlign = 'right';
+    ctx.fillText(`${minPlayers} avg players`, displayWidth - 5, displayHeight - 5);
   }
   
   // Generate mock history for demo
@@ -696,25 +779,37 @@ const isOnline = server.status === 'online';
     ctx.fillText(`${minPlayers} players`, displayWidth - 5, displayHeight - 5);
   }
   
-  // Update stats display
+  // Update stats display from API data
   function updateStats(data, period) {
     const avgEl = document.getElementById('avg-players');
     const peakEl = document.getElementById('peak-players');
     const uptimeEl = document.getElementById('uptime-stat');
     
-    if (avgEl && data.avg_players !== undefined) {
-      avgEl.textContent = Math.round(data.avg_players);
-    } else if (avgEl && data.history) {
-      const avg = data.history.reduce((sum, h) => sum + (h.players_online || 0), 0) / data.history.length;
+    // Use averages from API response
+    if (avgEl && data.averages && data.averages.players_online !== undefined) {
+      avgEl.textContent = data.averages.players_online;
+    } else if (avgEl && data.raw_data && data.raw_data.length > 0) {
+      // Calculate from raw data
+      const avg = data.raw_data.reduce((sum, h) => sum + (h.players_online || 0), 0) / data.raw_data.length;
       avgEl.textContent = Math.round(avg);
     }
     
-    if (peakEl && data.peak_players) {
-      peakEl.textContent = data.peak_players;
+    // Peak players from current server data (passed from Astro)
+    if (peakEl) {
+      peakEl.textContent = server.players_online || 0;
     }
     
-    if (uptimeEl && data.uptime_percentage !== undefined) {
-      uptimeEl.textContent = `${data.uptime_percentage}%`;
+    // Uptime percentage from API
+    if (uptimeEl && data.uptime && data.uptime.percentage !== undefined) {
+      uptimeEl.textContent = `${data.uptime.percentage}%`;
+      // Color based on uptime
+      if (data.uptime.percentage >= 95) {
+        uptimeEl.className = 'text-lg font-bold text-green-500';
+      } else if (data.uptime.percentage >= 80) {
+        uptimeEl.className = 'text-lg font-bold text-yellow-500';
+      } else {
+        uptimeEl.className = 'text-lg font-bold text-[#ff3864]';
+      }
     }
   }
   
