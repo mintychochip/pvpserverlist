@@ -128,6 +128,12 @@ const categories = [
                     <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="votes" data-server-id={server.id}>
                       Votes
                     </button>
+                    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="gallery" data-server-id={server.id}>
+                      Gallery
+                    </button>
+                    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="staff" data-server-id={server.id}>
+                      Staff
+                    </button>
                   </div>
                   
                   <!-- Overview Tab -->
@@ -587,6 +593,346 @@ const categories = [
                   <div class="tab-content hidden" data-tab="votes" data-server-id={server.id}>
                     <div class="p-8 bg-[#0a0a0f] rounded text-center">
                       <p class="text-[#8892b0]">🗳️ Vote tracking coming soon</p>
+                    </div>
+                  </div>
+                  
+                  <!-- Blog Tab -->
+                  <div class="tab-content hidden" data-tab="blog" data-server-id={server.id}>
+                    <div class="blog-tab-content" data-server-id={server.id}>
+                      <div class="flex justify-between items-center mb-4">
+                        <div>
+                          <h3 class="text-lg font-bold text-white">📰 Server Blog</h3>
+                          <p class="text-[#8892b0] text-sm">Create news, updates, and announcements</p>
+                        </div>
+                        <button 
+                          class="create-post-btn px-4 py-2 bg-[#ff3864] hover:bg-[#e63357] text-white font-bold rounded-lg transition-colors flex items-center gap-2"
+                          data-server-id={server.id}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                          </svg>
+                          New Post
+                        </button>
+                      </div>
+                      
+                      <!-- Create/Edit Post Form -->
+                      <div class="create-post-form hidden mb-6 p-6 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg" data-server-id={server.id}>
+                        <h4 class="text-md font-bold text-white mb-4" id="post-form-title-{server.id}">Create New Post</h4>
+                        <form class="space-y-4" data-server-id={server.id}>
+                          <input type="hidden" name="post_id" value="">
+                          
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label class="block text-sm font-medium text-[#8892b0] mb-1">Title *</label>
+                              <input 
+                                type="text" 
+                                name="title"
+                                placeholder="Post title"
+                                class="w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white placeholder-[#8892b0] focus:outline-none focus:border-[#00f5d4]"
+                                required
+                              >
+                            </div>
+                            <div>
+                              <label class="block text-sm font-medium text-[#8892b0] mb-1">Category</label>
+                              <select 
+                                name="category"
+                                class="w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:outline-none focus:border-[#00f5d4]"
+                              >
+                                <option value="news">📰 News</option>
+                                <option value="update">🔄 Update</option>
+                                <option value="patch">📦 Patch Notes</option>
+                                <option value="event">🎉 Event</option>
+                                <option value="announcement">📢 Announcement</option>
+                                <option value="other">📝 Other</option>
+                              </select>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <label class="block text-sm font-medium text-[#8892b0] mb-1">Author</label>
+                            <input 
+                              type="text" 
+                              name="author"
+                              placeholder="Author name (default: Server Admin)"
+                              class="w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white placeholder-[#8892b0] focus:outline-none focus:border-[#00f5d4]"
+                            >
+                          </div>
+                          
+                          <div>
+                            <label class="block text-sm font-medium text-[#8892b0] mb-1">Summary <span class="text-xs">(optional, shown in previews)</span></label>
+                            <input 
+                              type="text" 
+                              name="summary"
+                              placeholder="Brief summary of the post"
+                              maxlength="500"
+                              class="w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white placeholder-[#8892b0] focus:outline-none focus:border-[#00f5d4]"
+                            >
+                          </div>
+                          
+                          <div>
+                            <label class="block text-sm font-medium text-[#8892b0] mb-1">Content * <span class="text-xs">(supports HTML for rich text)</span></label>
+                            <div class="border border-[#2a2a3a] rounded-lg overflow-hidden">
+                              <!-- Simple toolbar -->
+                              <div class="flex flex-wrap gap-1 p-2 bg-[#1a1a25] border-b border-[#2a2a3a]">
+                                <button type="button" class="rich-text-btn px-2 py-1 text-xs bg-[#12121a] hover:bg-[#2a2a3a] text-[#8892b0] rounded" data-command="bold"><b>B</b></button>
+                                <button type="button" class="rich-text-btn px-2 py-1 text-xs bg-[#12121a] hover:bg-[#2a2a3a] text-[#8892b0] rounded" data-command="italic"><i>I</i></button>
+                                <button type="button" class="rich-text-btn px-2 py-1 text-xs bg-[#12121a] hover:bg-[#2a2a3a] text-[#8892b0] rounded" data-command="underline"><u>U</u></button>
+                                <span class="w-px h-5 bg-[#2a2a3a] mx-1"></span>
+                                <button type="button" class="rich-text-btn px-2 py-1 text-xs bg-[#12121a] hover:bg-[#2a2a3a] text-[#8892b0] rounded" data-command="insertUnorderedList">• List</button>
+                                <button type="button" class="rich-text-btn px-2 py-1 text-xs bg-[#12121a] hover:bg-[#2a2a3a] text-[#8892b0] rounded" data-command="insertOrderedList">1. List</button>
+                                <span class="w-px h-5 bg-[#2a2a3a] mx-1"></span>
+                                <button type="button" class="rich-text-btn px-2 py-1 text-xs bg-[#12121a] hover:bg-[#2a2a3a] text-[#8892b0] rounded" data-command="formatBlock" data-value="H2">H2</button>
+                                <button type="button" class="rich-text-btn px-2 py-1 text-xs bg-[#12121a] hover:bg-[#2a2a3a] text-[#8892b0] rounded" data-command="formatBlock" data-value="H3">H3</button>
+                              </div>
+                              <textarea 
+                                name="content"
+                                rows="10"
+                                placeholder="Write your post content here... (HTML supported)"
+                                class="w-full px-3 py-2 bg-[#12121a] text-white placeholder-[#8892b0] focus:outline-none resize-none font-mono text-sm"
+                                required
+                              ></textarea>
+                            </div>
+                          </div>
+                          
+                          <div class="flex gap-4 items-center">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" name="is_pinned" class="w-4 h-4 accent-[#00f5d4]">
+                              <span class="text-[#8892b0] text-sm">📌 Pin this post</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                              <input type="checkbox" name="is_published" checked class="w-4 h-4 accent-[#00f5d4]">
+                              <span class="text-[#8892b0] text-sm">📢 Publish immediately</span>
+                            </label>
+                          </div>
+                          
+                          <div class="flex gap-3 pt-4 border-t border-[#2a2a3a]">
+                            <button 
+                              type="submit"
+                              class="flex-1 px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors"
+                            >
+                              Save Post
+                            </button>
+                            <button 
+                              type="button"
+                              class="cancel-post-btn px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] font-medium rounded-lg transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                      
+                      <!-- Posts List -->
+                      <div class="posts-list" data-server-id={server.id}>
+                        <div class="text-center py-8 text-[#8892b0]">
+                          <p>Loading posts...</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Gallery Tab -->
+                  <div class="tab-content hidden" data-tab="gallery" data-server-id={server.id}>
+                    <div class="gallery-container" data-server-id={server.id}>
+                      <div class="flex justify-between items-center mb-4">
+                        <div>
+                          <h3 class="text-lg font-bold text-white">Screenshot Gallery</h3>
+                          <p class="text-[#8892b0] text-sm">Showcase your server's best builds, spawn areas, and events</p>
+                        </div>
+                        <button 
+                          class="upload-screenshots-btn px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors flex items-center gap-2"
+                          data-server-id={server.id}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                          </svg>
+                          Upload
+                        </button>
+                      </div>
+                      
+                      <!-- Upload Form -->
+                      <div class="upload-screenshots-form hidden mb-6 p-6 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg" data-server-id={server.id}>
+                        <h4 class="text-md font-bold text-white mb-4">Upload Screenshots</h4>
+                        <form class="space-y-4" data-server-id={server.id}>
+                          <div>
+                            <label class="block text-sm text-[#8892b0] mb-2">Select Images (JPG, PNG, WebP, GIF - Max 5MB each)</label>
+                            <input 
+                              type="file" 
+                              name="screenshots"
+                              accept="image/jpeg,image/png,image/webp,image/gif"
+                              multiple
+                              class="screenshots-file-input w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#00f5d4] file:text-[#0a0a0f] hover:file:bg-[#00d4b8]"
+                            />
+                            <p class="text-xs text-[#8892b0] mt-2">You can select up to 10 images at once</p>
+                          </div>
+                          
+                          <div class="screenshot-previews grid grid-cols-2 md:grid-cols-4 gap-3 hidden"></div>
+                          
+                          <div class="upload-progress hidden">
+                            <div class="h-2 bg-[#2a2a3a] rounded-full overflow-hidden">
+                              <div class="progress-fill h-full bg-[#00f5d4] rounded-full transition-all" style="width: 0%"></div>
+                            </div>
+                            <p class="progress-text text-sm text-[#8892b0] mt-2">Uploading...</p>
+                          </div>
+                          
+                          <div class="flex gap-3">
+                            <button 
+                              type="submit"
+                              class="submit-screenshots px-6 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors disabled:opacity-50"
+                              disabled
+                            >
+                              Upload
+                            </button>
+                            <button 
+                              type="button"
+                              class="cancel-screenshots-btn px-6 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] font-medium rounded-lg transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                      
+                      <!-- Gallery Grid -->
+                      <div class="screenshots-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" data-server-id={server.id}>
+                        <div class="col-span-full text-center py-8">
+                          <div class="animate-spin w-6 h-6 border-2 border-[#00f5d4] border-t-transparent rounded-full mx-auto"></div>
+                          <p class="text-[#8892b0] text-sm mt-2">Loading screenshots...</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Staff Tab -->
+                  <div class="tab-content hidden" data-tab="staff" data-server-id={server.id}>
+                    <div class="staff-container" data-server-id={server.id}>
+                      <div class="flex justify-between items-center mb-4">
+                        <div>
+                          <h3 class="text-lg font-bold text-white">Staff Team</h3>
+                          <p class="text-[#8892b0] text-sm">Manage your server's staff members</p>
+                        </div>
+                        <button 
+                          class="add-staff-btn px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors flex items-center gap-2"
+                          data-server-id={server.id}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                          </svg>
+                          Add Staff
+                        </button>
+                      </div>
+                      
+                      <!-- Add Staff Form -->
+                      <div class="add-staff-form hidden mb-6 p-6 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg" data-server-id={server.id}>
+                        <h4 class="text-md font-bold text-white mb-4">Add New Staff Member</h4>
+                        <form class="space-y-4" data-server-id={server.id}>
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label class="block text-sm font-medium text-[#8892b0] mb-1">Minecraft Username *</label>
+                              <input 
+                                type="text" 
+                                name="minecraft_username"
+                                placeholder="Notch"
+                                minlength="3"
+                                maxlength="16"
+                                required
+                                class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                              />
+                            </div>
+                            <div>
+                              <label class="block text-sm font-medium text-[#8892b0] mb-1">Role *</label>
+                              <select 
+                                name="role"
+                                required
+                                class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                              >
+                                <option value="">Select role</option>
+                                <option value="owner">👑 Owner</option>
+                                <option value="admin">⚔️ Admin</option>
+                                <option value="developer">💻 Developer</option>
+                                <option value="moderator">🛡️ Moderator</option>
+                                <option value="helper">🤝 Helper</option>
+                                <option value="builder">🏗️ Builder</option>
+                                <option value="content_creator">🎬 Content Creator</option>
+                              </select>
+                            </div>
+                          </div>
+                          
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label class="block text-sm font-medium text-[#8892b0] mb-1">Display Name (optional)</label>
+                              <input 
+                                type="text" 
+                                name="display_name"
+                                placeholder="Nickname or preferred name"
+                                maxlength="32"
+                                class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                              />
+                            </div>
+                            <div>
+                              <label class="block text-sm font-medium text-[#8892b0] mb-1">Discord Username (optional)</label>
+                              <input 
+                                type="text" 
+                                name="discord_username"
+                                placeholder="username#0000"
+                                maxlength="32"
+                                class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                              />
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <label class="block text-sm font-medium text-[#8892b0] mb-1">Bio (optional)</label>
+                            <textarea 
+                              name="bio"
+                              rows="2"
+                              placeholder="Short description of their role or expertise"
+                              maxlength="500"
+                              class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors resize-none"
+                            ></textarea>
+                            <p class="text-xs text-[#8892b0] mt-1">Max 500 characters</p>
+                          </div>
+                          
+                          <div>
+                            <label class="block text-sm font-medium text-[#8892b0] mb-1">Custom Avatar URL (optional)</label>
+                            <input 
+                              type="url" 
+                              name="avatar_url"
+                              placeholder="https://example.com/avatar.png"
+                              class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                            />
+                            <p class="text-xs text-[#8892b0] mt-1">Leave empty to use Minecraft skin avatar</p>
+                          </div>
+                          
+                          <div class="flex gap-3 pt-2">
+                            <button 
+                              type="submit"
+                              class="px-6 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors"
+                            >
+                              Add Staff Member
+                            </button>
+                            <button 
+                              type="button"
+                              class="cancel-add-staff-btn px-6 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] font-medium rounded-lg transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                      
+                      <!-- Staff List -->
+                      <div class="staff-list" data-server-id={server.id}>
+                        <div class="text-center py-8">
+                          <div class="w-12 h-12 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-3">
+                            <div class="animate-spin w-6 h-6 border-2 border-[#00f5d4] border-t-transparent rounded-full"></div>
+                          </div>
+                          <p class="text-[#8892b0] text-sm">Loading staff members...</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1412,6 +1758,323 @@ const categories = [
     return stars;
   }
   
+  // Gallery Tab Functionality
+  document.querySelectorAll('.tab-btn[data-tab="gallery"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const serverId = btn.getAttribute('data-server-id');
+      if (serverId) {
+        loadGallery(serverId);
+      }
+    });
+  });
+  
+  // Upload screenshots button handlers
+  document.querySelectorAll('.upload-screenshots-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const serverId = btn.getAttribute('data-server-id');
+      const form = document.querySelector(`.upload-screenshots-form[data-server-id="${serverId}"]`);
+      form?.classList.remove('hidden');
+      btn.classList.add('hidden');
+    });
+  });
+  
+  // Cancel upload button handlers
+  document.querySelectorAll('.cancel-screenshots-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const form = btn.closest('.upload-screenshots-form');
+      const serverId = form?.getAttribute('data-server-id');
+      const uploadBtn = document.querySelector(`.upload-screenshots-btn[data-server-id="${serverId}"]`);
+      const formElement = form?.querySelector('form');
+      const previews = form?.querySelector('.screenshot-previews');
+      const submitBtn = form?.querySelector('.submit-screenshots') as HTMLButtonElement;
+      
+      form?.classList.add('hidden');
+      uploadBtn?.classList.remove('hidden');
+      formElement?.reset();
+      if (previews) {
+        previews.innerHTML = '';
+        previews.classList.add('hidden');
+      }
+      if (submitBtn) submitBtn.disabled = true;
+    });
+  });
+  
+  // File input change handler for previews
+  document.querySelectorAll('.screenshots-file-input').forEach(input => {
+    input.addEventListener('change', (e) => {
+      const fileInput = e.target as HTMLInputElement;
+      const form = fileInput.closest('form');
+      const previews = form?.querySelector('.screenshot-previews');
+      const submitBtn = form?.querySelector('.submit-screenshots') as HTMLButtonElement;
+      
+      if (!previews) return;
+      
+      const files = Array.from(fileInput.files || []);
+      
+      if (files.length === 0) {
+        previews.innerHTML = '';
+        previews.classList.add('hidden');
+        if (submitBtn) submitBtn.disabled = true;
+        return;
+      }
+      
+      // Show previews
+      previews.classList.remove('hidden');
+      previews.innerHTML = files.map((file, i) => `
+        <div class="relative aspect-video rounded-lg overflow-hidden bg-[#12121a] border border-[#2a2a3a]">
+          <img src="${URL.createObjectURL(file)}" alt="Preview ${i + 1}" class="w-full h-full object-cover">
+          <div class="absolute bottom-0 left-0 right-0 p-1 bg-black/50 text-white text-xs truncate">
+            ${file.name}
+          </div>
+        </div>
+      `).join('');
+      
+      if (submitBtn) submitBtn.disabled = false;
+    });
+  });
+  
+  // Screenshot form submission
+  document.querySelectorAll('.upload-screenshots-form form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const serverId = form.getAttribute('data-server-id');
+      if (!serverId) return;
+      
+      const formContainer = form.closest('.upload-screenshots-form');
+      const progressContainer = formContainer?.querySelector('.upload-progress');
+      const progressFill = formContainer?.querySelector('.progress-fill') as HTMLElement;
+      const progressText = formContainer?.querySelector('.progress-text');
+      const submitBtn = form.querySelector('.submit-screenshots') as HTMLButtonElement;
+      const cancelBtn = form.querySelector('.cancel-screenshots-btn') as HTMLButtonElement;
+      const fileInput = form.querySelector('.screenshots-file-input') as HTMLInputElement;
+      
+      const files = Array.from(fileInput.files || []);
+      if (files.length === 0) {
+        showToast('Please select files to upload', 'error');
+        return;
+      }
+      
+      // Disable buttons and show progress
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Uploading...';
+      }
+      if (cancelBtn) cancelBtn.disabled = true;
+      if (progressContainer) progressContainer.classList.remove('hidden');
+      
+      const formData = new FormData();
+      files.forEach((file, i) => {
+        formData.append(`screenshot_${i}`, file);
+      });
+      
+      try {
+        // Simulate progress
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+          progress = Math.min(progress + 10, 90);
+          if (progressFill) progressFill.style.width = `${progress}%`;
+        }, 200);
+        
+        const response = await fetch(`/api/servers/${serverId}/screenshots`, {
+          method: 'POST',
+          body: formData
+        });
+        
+        clearInterval(progressInterval);
+        if (progressFill) progressFill.style.width = '100%';
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Upload failed');
+        }
+        
+        showToast(`Uploaded ${data.count} screenshot${data.count !== 1 ? 's' : ''}!`, 'success');
+        
+        // Reset form and hide it
+        form.reset();
+        const previews = formContainer?.querySelector('.screenshot-previews');
+        if (previews) {
+          previews.innerHTML = '';
+          previews.classList.add('hidden');
+        }
+        formContainer?.classList.add('hidden');
+        const uploadBtn = document.querySelector(`.upload-screenshots-btn[data-server-id="${serverId}"]`);
+        uploadBtn?.classList.remove('hidden');
+        
+        // Reload gallery
+        loadGallery(serverId);
+        
+      } catch (err: any) {
+        showToast(err.message || 'Upload failed', 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Upload';
+        }
+        if (cancelBtn) cancelBtn.disabled = false;
+        if (progressContainer) progressContainer.classList.add('hidden');
+        if (progressFill) progressFill.style.width = '0%';
+      }
+    });
+  });
+  
+  // Load gallery for a server
+  async function loadGallery(serverId: string) {
+    const grid = document.querySelector(`.screenshots-grid[data-server-id="${serverId}"]`);
+    if (!grid) return;
+    
+    try {
+      const response = await fetch(`/api/servers/${serverId}/screenshots`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to load gallery');
+      }
+      
+      const screenshots = data.screenshots || [];
+      
+      if (screenshots.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-8">
+            <div class="w-12 h-12 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </div>
+            <p class="text-[#8892b0] text-sm">No screenshots yet</p>
+            <p class="text-[#8892b0] text-xs mt-1">Upload screenshots to showcase your server</p>
+          </div>
+        `;
+        return;
+      }
+      
+      grid.innerHTML = screenshots.map((screenshot: any) => `
+        <div class="gallery-item relative aspect-video rounded-lg overflow-hidden group border border-[#2a2a3a] hover:border-[#00f5d4] transition-all" data-screenshot-id="${screenshot.id}">
+          <img src="${screenshot.url}" alt="${screenshot.caption || 'Screenshot'}" class="w-full h-full object-cover">
+          ${screenshot.caption ? `
+            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+              <p class="text-white text-xs truncate">${screenshot.caption}</p>
+            </div>
+          ` : ''}
+          <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <button 
+              onclick="viewScreenshot('${screenshot.url}', '${screenshot.caption || ''}')"
+              class="p-2 bg-[#00f5d4] text-[#0a0a0f] rounded-lg hover:bg-[#00d4b8] transition-colors"
+              title="View"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+            <button 
+              onclick="deleteScreenshot('${serverId}', '${screenshot.id}')"
+              class="p-2 bg-[#ff3864] text-white rounded-lg hover:bg-[#e63357] transition-colors"
+              title="Delete"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+    } catch (err: any) {
+      console.error('Gallery load error:', err);
+      grid.innerHTML = `
+        <div class="col-span-full text-center py-8">
+          <p class="text-[#ff3864] text-sm">Failed to load gallery</p>
+          <button onclick="loadGallery('${serverId}')" class="mt-2 px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded-lg text-sm">
+            Retry
+          </button>
+        </div>
+      `;
+    }
+  }
+  
+  // View screenshot in lightbox
+  (window as any).viewScreenshot = function(url: string, caption: string) {
+    let lightbox = document.getElementById('screenshot-lightbox');
+    if (!lightbox) {
+      lightbox = document.createElement('div');
+      lightbox.id = 'screenshot-lightbox';
+      lightbox.className = 'fixed inset-0 bg-black/95 z-50 flex items-center justify-center';
+      lightbox.innerHTML = `
+        <button onclick="closeScreenshotLightbox()" class="absolute top-4 right-4 p-2 text-white hover:text-[#00f5d4]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <div class="max-w-5xl max-h-[80vh] mx-auto px-4">
+          <img id="screenshot-lightbox-img" src="" alt="" class="max-w-full max-h-[70vh] object-contain rounded-lg">
+          <p id="screenshot-lightbox-caption" class="text-white text-center mt-4"></p>
+        </div>
+      `;
+      document.body.appendChild(lightbox);
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') (window as any).closeScreenshotLightbox();
+      });
+    }
+    
+    const img = document.getElementById('screenshot-lightbox-img') as HTMLImageElement;
+    const captionEl = document.getElementById('screenshot-lightbox-caption');
+    
+    if (img) {
+      img.src = url;
+      img.alt = caption || 'Screenshot';
+    }
+    if (captionEl) {
+      captionEl.textContent = caption || '';
+      captionEl.style.display = caption ? 'block' : 'none';
+    }
+    
+    lightbox.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  };
+  
+  (window as any).closeScreenshotLightbox = function() {
+    const lightbox = document.getElementById('screenshot-lightbox');
+    if (lightbox) {
+      lightbox.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  };
+  
+  // Delete screenshot
+  (window as any).deleteScreenshot = async function(serverId: string, screenshotId: string) {
+    if (!confirm('Are you sure you want to delete this screenshot?')) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`/api/servers/${serverId}/screenshots`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ screenshot_id: screenshotId })
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Delete failed');
+      }
+      
+      showToast('Screenshot deleted', 'success');
+      loadGallery(serverId);
+      
+    } catch (err: any) {
+      showToast(err.message || 'Delete failed', 'error');
+    }
+  };
+  
   // Global function for voting
   (window as any).voteReview = async function(reviewId: string, isHelpful: boolean) {
     const username = prompt('Enter your Minecraft username to vote:');
@@ -1437,4 +2100,587 @@ const categories = [
       showToast('Failed to vote', 'error');
     }
   };
+  
+  // ============ STAFF MANAGEMENT ============
+  
+  // Staff Tab Click Handler
+  document.querySelectorAll('.tab-btn[data-tab="staff"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const serverId = btn.getAttribute('data-server-id');
+      if (serverId) {
+        loadStaff(serverId);
+      }
+    });
+  });
+  
+  // Add Staff Button Handlers
+  document.querySelectorAll('.add-staff-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const serverId = btn.getAttribute('data-server-id');
+      const form = document.querySelector(`.add-staff-form[data-server-id="${serverId}"]`);
+      form?.classList.remove('hidden');
+      btn.classList.add('hidden');
+    });
+  });
+  
+  // Cancel Add Staff Button Handlers
+  document.querySelectorAll('.cancel-add-staff-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const form = btn.closest('.add-staff-form');
+      const serverId = form?.getAttribute('data-server-id');
+      const addBtn = document.querySelector(`.add-staff-btn[data-server-id="${serverId}"]`);
+      
+      form?.classList.add('hidden');
+      addBtn?.classList.remove('hidden');
+      
+      // Reset form
+      const formElement = form?.querySelector('form');
+      formElement?.reset();
+    });
+  });
+  
+  // Staff Form Submission
+  document.querySelectorAll('.add-staff-form form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const serverId = form.getAttribute('data-server-id');
+      if (!serverId) return;
+      
+      const formData = new FormData(form as HTMLFormElement);
+      const minecraftUsername = formData.get('minecraft_username') as string;
+      const role = formData.get('role') as string;
+      const displayName = formData.get('display_name') as string;
+      const bio = formData.get('bio') as string;
+      const avatarUrl = formData.get('avatar_url') as string;
+      const discordUsername = formData.get('discord_username') as string;
+      
+      // Validation
+      if (!minecraftUsername || !role) {
+        showToast('Minecraft username and role are required', 'error');
+        return;
+      }
+      
+      if (!/^[a-zA-Z0-9_]{3,16}$/.test(minecraftUsername)) {
+        showToast('Invalid Minecraft username (3-16 chars, letters/numbers/underscores)', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/api/servers/${serverId}/staff`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            minecraft_username: minecraftUsername.trim(),
+            role,
+            display_name: displayName?.trim() || null,
+            bio: bio?.trim() || null,
+            avatar_url: avatarUrl?.trim() || null,
+            discord_username: discordUsername?.trim() || null,
+            owner_email: 'owner@example.com' // Temporary auth
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to add staff member');
+        }
+        
+        showToast('Staff member added successfully!', 'success');
+        
+        // Reset form and hide it
+        (form as HTMLFormElement).reset();
+        const formContainer = form.closest('.add-staff-form');
+        formContainer?.classList.add('hidden');
+        const addBtn = document.querySelector(`.add-staff-btn[data-server-id="${serverId}"]`);
+        addBtn?.classList.remove('hidden');
+        
+        // Reload staff list
+        loadStaff(serverId);
+        
+      } catch (err: any) {
+        showToast(err.message || 'Failed to add staff member', 'error');
+      }
+    });
+  });
+  
+  // Load Staff Function
+  async function loadStaff(serverId: string) {
+    const container = document.querySelector(`.staff-list[data-server-id="${serverId}"]`);
+    if (!container) return;
+    
+    try {
+      const response = await fetch(`/api/servers/${serverId}/staff`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to load staff');
+      }
+      
+      const staff = data.staff || [];
+      const groupedByRole = data.grouped_by_role || {};
+      
+      if (staff.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8">
+            <div class="w-12 h-12 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h4 class="text-white font-bold mb-1">No staff members yet</h4>
+            <p class="text-[#8892b0] text-sm">Add your team members to showcase them on your server page.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      const roleLabels: Record<string, string> = {
+        owner: 'Owner',
+        admin: 'Admin',
+        developer: 'Developer',
+        moderator: 'Moderator',
+        helper: 'Helper',
+        builder: 'Builder',
+        content_creator: 'Content Creator'
+      };
+      
+      const roleColors: Record<string, string> = {
+        owner: '#ff3864',
+        admin: '#ff6b6b',
+        developer: '#00f5d4',
+        moderator: '#ffd93d',
+        helper: '#6bcf7f',
+        builder: '#a78bfa',
+        content_creator: '#f472b6'
+      };
+      
+      const roleIcons: Record<string, string> = {
+        owner: '👑',
+        admin: '⚔️',
+        developer: '💻',
+        moderator: '🛡️',
+        helper: '🤝',
+        builder: '🏗️',
+        content_creator: '🎬'
+      };
+      
+      let html = '';
+      
+      Object.keys(groupedByRole).forEach(role => {
+        const members = groupedByRole[role];
+        html += `
+          <div class="mb-6 last:mb-0">
+            <h4 class="text-sm font-bold uppercase tracking-wider mb-3" style="color: ${roleColors[role]}">
+              ${roleIcons[role]} ${roleLabels[role]}
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              ${members.map((member: any) => `
+                <div class="staff-card p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg flex items-center gap-3" data-staff-id="${member.id}">
+                  <div class="relative flex-shrink-0">
+                    <img 
+                      src="https://mc-heads.net/avatar/${encodeURIComponent(member.minecraft_username)}/64"
+                      alt="${member.minecraft_username}"
+                      class="w-12 h-12 rounded-lg pixelated"
+                      loading="lazy"
+                      onerror="this.src='https://mc-heads.net/avatar/Steve/64'"
+                    />
+                    <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs" style="background-color: ${roleColors[role]}20">
+                      <span style="color: ${roleColors[role]}">${roleIcons[role]}</span>
+                    </div>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-bold text-white truncate">${member.display_name || member.minecraft_username}</p>
+                    <p class="text-xs text-[#8892b0] truncate">${member.minecraft_username}</p>
+                    ${member.discord_username ? `<p class="text-xs text-[#00f5d4]">Discord: ${member.discord_username}</p>` : ''}
+                    ${member.bio ? `<p class="text-xs text-[#8892b0] mt-1 line-clamp-2">${member.bio}</p>` : ''}
+                  </div>
+                  <button 
+                    class="delete-staff-btn p-2 bg-[#1a1a25] hover:bg-[#ff3864]/20 text-[#8892b0] hover:text-[#ff3864] rounded transition-colors flex-shrink-0"
+                    data-staff-id="${member.id}"
+                    data-server-id="${serverId}"
+                    data-username="${member.minecraft_username}"
+                    title="Remove staff member"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                  </button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+      
+      // Attach delete handlers
+      container.querySelectorAll('.delete-staff-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const staffId = btn.getAttribute('data-staff-id');
+          const serverId = btn.getAttribute('data-server-id');
+          const username = btn.getAttribute('data-username');
+          
+          if (!staffId || !serverId) return;
+          
+          if (!confirm(`Are you sure you want to remove ${username} from the staff team?`)) {
+            return;
+          }
+          
+          try {
+            const response = await fetch(`/api/servers/${serverId}/staff`, {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                staff_id: staffId,
+                owner_email: 'owner@example.com'
+              })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+              throw new Error(data.error || 'Failed to remove staff member');
+            }
+            
+            showToast('Staff member removed', 'success');
+            loadStaff(serverId);
+            
+          } catch (err: any) {
+            showToast(err.message || 'Failed to remove staff member', 'error');
+          }
+        });
+      });
+      
+    } catch (err: any) {
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-[#ff3864] text-sm">Failed to load staff members</p>
+          <button class="retry-load-staff mt-3 px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded-lg text-sm" data-server-id="${serverId}">
+            Retry
+          </button>
+        </div>
+      `;
+      
+      container.querySelector('.retry-load-staff')?.addEventListener('click', () => loadStaff(serverId));
+    }
+  }
+  
+  // ==================== BLOG/POSTS MANAGEMENT ====================
+  
+  // Load posts when blog tab is clicked
+  document.querySelectorAll('.tab-btn[data-tab="blog"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const serverId = btn.getAttribute('data-server-id');
+      if (serverId) loadPosts(serverId);
+    });
+  });
+  
+  // Create post button handlers
+  document.querySelectorAll('.create-post-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const serverId = btn.getAttribute('data-server-id');
+      const form = document.querySelector(`.create-post-form[data-server-id="${serverId}"]`);
+      const formTitle = document.getElementById(`post-form-title-${serverId}`);
+      
+      // Reset form for new post
+      const formElement = form?.querySelector('form');
+      formElement?.reset();
+      formElement?.querySelector('input[name="post_id"]')?.setAttribute('value', '');
+      if (formTitle) formTitle.textContent = 'Create New Post';
+      
+      form?.classList.remove('hidden');
+      btn.classList.add('hidden');
+    });
+  });
+  
+  // Cancel post button handlers
+  document.querySelectorAll('.cancel-post-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const formContainer = btn.closest('.create-post-form');
+      const serverId = formContainer?.getAttribute('data-server-id');
+      const createBtn = document.querySelector(`.create-post-btn[data-server-id="${serverId}"]`);
+      
+      formContainer?.classList.add('hidden');
+      createBtn?.classList.remove('hidden');
+    });
+  });
+  
+  // Rich text button handlers
+  document.querySelectorAll('.rich-text-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const command = btn.getAttribute('data-command');
+      const value = btn.getAttribute('data-value') || '';
+      
+      if (command) {
+        document.execCommand(command, false, value);
+      }
+    });
+  });
+  
+  // Post form submission handlers
+  document.querySelectorAll('.create-post-form form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const serverId = form.getAttribute('data-server-id');
+      if (!serverId) return;
+      
+      const formData = new FormData(form as HTMLFormElement);
+      const postId = formData.get('post_id') as string;
+      const title = formData.get('title') as string;
+      const category = formData.get('category') as string;
+      const author = formData.get('author') as string;
+      const summary = formData.get('summary') as string;
+      const content = formData.get('content') as string;
+      const isPinned = formData.get('is_pinned') === 'on';
+      const isPublished = formData.get('is_published') === 'on';
+      
+      // Validation
+      if (!title || title.length < 3 || title.length > 200) {
+        showToast('Title must be between 3 and 200 characters', 'error');
+        return;
+      }
+      
+      if (!content || content.length < 10) {
+        showToast('Content must be at least 10 characters', 'error');
+        return;
+      }
+      
+      try {
+        const url = postId 
+          ? `/api/servers/${serverId}/posts`
+          : `/api/servers/${serverId}/posts`;
+        const method = postId ? 'PATCH' : 'POST';
+        
+        const body: any = {
+          title: title.trim(),
+          content: content.trim(),
+          category,
+          is_pinned: isPinned,
+          is_published: isPublished
+        };
+        
+        if (author?.trim()) body.author = author.trim();
+        if (summary?.trim()) body.summary = summary.trim();
+        if (postId) body.post_id = postId;
+        
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || `Failed to ${postId ? 'update' : 'create'} post`);
+        }
+        
+        showToast(postId ? 'Post updated successfully!' : 'Post created successfully!', 'success');
+        
+        // Reset and hide form
+        (form as HTMLFormElement).reset();
+        const formContainer = form.closest('.create-post-form');
+        formContainer?.classList.add('hidden');
+        const createBtn = document.querySelector(`.create-post-btn[data-server-id="${serverId}"]`);
+        createBtn?.classList.remove('hidden');
+        
+        // Reload posts list
+        loadPosts(serverId);
+        
+      } catch (err: any) {
+        showToast(err.message || 'Failed to save post', 'error');
+      }
+    });
+  });
+  
+  // Load posts for a server
+  async function loadPosts(serverId: string) {
+    const container = document.querySelector(`.posts-list[data-server-id="${serverId}"]`);
+    if (!container) return;
+    
+    container.innerHTML = '<div class="text-center py-8"><div class="animate-spin w-8 h-8 border-2 border-[#00f5d4] border-t-transparent rounded-full mx-auto"></div></div>';
+    
+    try {
+      const response = await fetch(`/api/servers/${serverId}/posts?include_unpublished=true&limit=50`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to load posts');
+      }
+      
+      const posts = data.posts || [];
+      
+      if (posts.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 bg-[#0a0a0f] rounded-lg">
+            <div class="w-16 h-16 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-2xl">📝</span>
+            </div>
+            <h4 class="text-lg font-bold text-white mb-2">No posts yet</h4>
+            <p class="text-[#8892b0] text-sm">Create your first post to share news with your community</p>
+          </div>
+        `;
+        return;
+      }
+      
+      const categoryLabels: {[key: string]: {emoji: string, label: string}} = {
+        news: { emoji: '📰', label: 'News' },
+        update: { emoji: '🔄', label: 'Update' },
+        patch: { emoji: '📦', label: 'Patch' },
+        event: { emoji: '🎉', label: 'Event' },
+        announcement: { emoji: '📢', label: 'Announce' },
+        other: { emoji: '📝', label: 'Post' }
+      };
+      
+      container.innerHTML = posts.map((post: any) => {
+        const cat = categoryLabels[post.category] || categoryLabels.other;
+        const date = new Date(post.published_at);
+        const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        return `
+          <div class="p-4 bg-[#0a0a0f] rounded-lg border ${post.is_pinned ? 'border-[#ff3864]/50' : 'border-[#2a2a3a]'} mb-3">
+            <div class="flex items-start gap-4">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  ${post.is_pinned ? '<span class="px-2 py-0.5 bg-[#ff3864]/20 text-[#ff3864] text-xs font-bold rounded">📌 PINNED</span>' : ''}
+                  ${!post.is_published ? '<span class="px-2 py-0.5 bg-yellow-500/20 text-yellow-500 text-xs font-bold rounded">📝 DRAFT</span>' : ''}
+                  <span class="text-xs text-[#8892b0]">${cat.emoji} ${cat.label}</span>
+                  <span class="text-xs text-[#8892b0]">• ${formattedDate}</span>
+                  <span class="text-xs text-[#8892b0]">• 👁 ${post.view_count || 0}</span>
+                </div>
+                <h4 class="font-bold text-white mb-1">${post.title}</h4>
+                <p class="text-[#8892b0] text-sm mb-2">By ${post.author}</p>
+                ${post.summary ? `<p class="text-[#8892b0] text-sm line-clamp-2">${post.summary}</p>` : ''}
+              </div>
+              
+              <div class="flex flex-col gap-2">
+                <button 
+                  class="edit-post-btn p-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] hover:text-white rounded transition-colors"
+                  data-post-id="${post.id}"
+                  data-server-id="${serverId}"
+                  title="Edit post"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+                <button 
+                  class="delete-post-btn p-2 bg-[#1a1a25] hover:bg-[#ff3864]/20 text-[#8892b0] hover:text-[#ff3864] rounded transition-colors"
+                  data-post-id="${post.id}"
+                  data-server-id="${serverId}"
+                  data-title="${post.title.replace(/"/g, '&quot;')}"
+                  title="Delete post"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Attach handlers
+      attachPostHandlers(serverId);
+      
+    } catch (err: any) {
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <p class="text-[#ff3864] text-sm">${err.message || 'Failed to load posts'}</p>
+          <button class="retry-load-posts mt-3 px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded-lg text-sm" data-server-id="${serverId}">
+            Retry
+          </button>
+        </div>
+      `;
+      
+      container.querySelector('.retry-load-posts')?.addEventListener('click', () => loadPosts(serverId));
+    }
+  }
+  
+  // Attach post card handlers
+  function attachPostHandlers(serverId: string) {
+    // Edit post handlers
+    document.querySelectorAll(`.posts-list[data-server-id="${serverId}"] .edit-post-btn`).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const postId = btn.getAttribute('data-post-id');
+        if (!postId) return;
+        
+        try {
+          const response = await fetch(`/api/servers/${serverId}/posts?include_unpublished=true`);
+          const data = await response.json();
+          
+          if (!response.ok) throw new Error('Failed to load post');
+          
+          const post = data.posts.find((p: any) => p.id === postId);
+          if (!post) throw new Error('Post not found');
+          
+          // Populate form
+          const form = document.querySelector(`.create-post-form[data-server-id="${serverId}"] form`);
+          if (form) {
+            form.querySelector('input[name="post_id"]')?.setAttribute('value', post.id);
+            (form.querySelector('input[name="title"]') as HTMLInputElement)?.setAttribute('value', post.title);
+            (form.querySelector('select[name="category"]') as HTMLSelectElement)!.value = post.category;
+            (form.querySelector('input[name="author"]') as HTMLInputElement)?.setAttribute('value', post.author || '');
+            (form.querySelector('input[name="summary"]') as HTMLInputElement)?.setAttribute('value', post.summary || '');
+            (form.querySelector('textarea[name="content"]') as HTMLTextAreaElement)!.value = post.content;
+            (form.querySelector('input[name="is_pinned"]') as HTMLInputElement)!.checked = post.is_pinned;
+            (form.querySelector('input[name="is_published"]') as HTMLInputElement)!.checked = post.is_published;
+          }
+          
+          // Show form
+          const formContainer = document.querySelector(`.create-post-form[data-server-id="${serverId}"]`);
+          const formTitle = document.getElementById(`post-form-title-${serverId}`);
+          const createBtn = document.querySelector(`.create-post-btn[data-server-id="${serverId}"]`);
+          
+          if (formTitle) formTitle.textContent = 'Edit Post';
+          formContainer?.classList.remove('hidden');
+          createBtn?.classList.add('hidden');
+          
+        } catch (err: any) {
+          showToast(err.message || 'Failed to load post', 'error');
+        }
+      });
+    });
+    
+    // Delete post handlers
+    document.querySelectorAll(`.posts-list[data-server-id="${serverId}"] .delete-post-btn`).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const postId = btn.getAttribute('data-post-id');
+        const title = btn.getAttribute('data-title');
+        
+        if (!postId) return;
+        
+        if (!confirm(`Delete "${title}"? This cannot be undone.`)) {
+          return;
+        }
+        
+        try {
+          const response = await fetch(`/api/servers/${serverId}/posts?post_id=${postId}`, {
+            method: 'DELETE'
+          });
+          
+          const data = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to delete post');
+          }
+          
+          showToast('Post deleted successfully', 'success');
+          loadPosts(serverId);
+        } catch (err: any) {
+          showToast(err.message || 'Failed to delete post', 'error');
+        }
+      });
+    });
+  }
 </script>

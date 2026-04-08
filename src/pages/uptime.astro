@@ -1,0 +1,558 @@
+---
+// Uptime Leaderboard Page - Shows servers ranked by uptime percentage
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.35hrTSgxQnICpLOY3g6W3eNxxe7DKCc3q165tyb0Ieo';
+
+interface UptimeServer {
+  id: string;
+  name: string;
+  ip: string;
+  port: number;
+  description?: string;
+  tags?: string[];
+  icon_url?: string;
+  banner_url?: string;
+  vote_count: number;
+  total_pings: number;
+  online_pings: number;
+  uptime_percent: number;
+  avg_players: number;
+  max_players_seen: number;
+  last_online_at?: string;
+}
+
+interface UptimeData {
+  servers: UptimeServer[];
+  period: {
+    days: number;
+    since: string;
+    description: string;
+  };
+  stats: {
+    total_servers: number;
+    perfect_uptime_count: number;
+    average_uptime: number;
+  };
+}
+
+let uptimeData: UptimeData = {
+  servers: [],
+  period: { days: 7, since: '', description: 'Last 7 days' },
+  stats: { total_servers: 0, perfect_uptime_count: 0, average_uptime: 0 }
+};
+
+try {
+  const response = await fetch(`${supabaseUrl}/rest/v1/rpc/get_uptime_leaderboard`, {
+    method: 'POST',
+    headers: {
+      'apikey': supabaseKey,
+      'Authorization': `Bearer ${supabaseKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      days_back: 7,
+      result_limit: 50,
+      min_pings_required: 10
+    })
+  });
+
+  if (response.ok) {
+    const servers = await response.json();
+    uptimeData.servers = servers;
+    uptimeData.stats.total_servers = servers.length;
+    uptimeData.stats.perfect_uptime_count = servers.filter((s: UptimeServer) => s.uptime_percent === 100).length;
+    uptimeData.stats.average_uptime = servers.length > 0
+      ? Math.round(servers.reduce((sum: number, s: UptimeServer) => sum + s.uptime_percent, 0) / servers.length * 100) / 100
+      : 0;
+  } else {
+    // Fallback to API endpoint
+    const apiResponse = await fetch(`${Astro.url.origin}/api/uptime?days=7&limit=50`);
+    if (apiResponse.ok) {
+      uptimeData = await apiResponse.json();
+    }
+  }
+} catch (e) {
+  console.error('Failed to fetch uptime data:', e);
+}
+
+// Helper functions
+function getUptimeColor(percent: number): string {
+  if (percent >= 99) return 'text-green-400';
+  if (percent >= 95) return 'text-emerald-400';
+  if (percent >= 90) return 'text-yellow-400';
+  if (percent >= 80) return 'text-orange-400';
+  return 'text-red-400';
+}
+
+function getUptimeBg(percent: number): string {
+  if (percent >= 99) return 'bg-green-500/20';
+  if (percent >= 95) return 'bg-emerald-500/20';
+  if (percent >= 90) return 'bg-yellow-500/20';
+  if (percent >= 80) return 'bg-orange-500/20';
+  return 'bg-red-500/20';
+}
+
+function getUptimeBarColor(percent: number): string {
+  if (percent >= 99) return 'bg-green-500';
+  if (percent >= 95) return 'bg-emerald-500';
+  if (percent >= 90) return 'bg-yellow-500';
+  if (percent >= 80) return 'bg-orange-500';
+  return 'bg-red-500';
+}
+
+function getRankIcon(index: number): string {
+  if (index === 0) return '🥇';
+  if (index === 1) return '🥈';
+  if (index === 2) return '🥉';
+  return '';
+}
+---
+
+<Layout
+  title="Uptime Leaderboard - Most Reliable Minecraft Servers | GuildPost"
+  description="Discover the most reliable Minecraft servers ranked by uptime percentage. Find servers that stay online 24/7 with minimal downtime."
+  url="https://guildpost.tech/uptime"
+  keywords="minecraft server uptime, reliable minecraft servers, server uptime leaderboard, best minecraft servers, 24/7 minecraft servers"
+>
+  <div class="min-h-screen bg-[#0a0a0f]">
+    <Header />
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm text-[#8892b0] mb-6">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <a href="/minecraft" class="hover:text-white transition-colors">Minecraft</a>
+        <span>/</span>
+        <span class="text-white">Uptime Leaderboard</span>
+      </nav>
+
+      <!-- Header Section -->
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-[#00f5d4]/10 border border-[#00f5d4]/30 rounded-full mb-4">
+          <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+          <span class="text-[#00f5d4] text-sm font-medium">Live Uptime Tracking</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-black text-white mb-4">
+          Uptime <span class="text-[#00f5d4]">Leaderboard</span>
+        </h1>
+        <p class="text-[#8892b0] text-lg max-w-2xl mx-auto">
+          Discover the most reliable Minecraft servers ranked by their uptime percentage.
+          These servers stay online 24/7 with minimal downtime.
+        </p>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+          <p class="text-4xl font-black text-[#00f5d4]">{uptimeData.stats.total_servers}</p>
+          <p class="text-[#8892b0] text-sm mt-1">Tracked Servers</p>
+        </div>
+        <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+          <p class="text-4xl font-black text-green-400">{uptimeData.stats.perfect_uptime_count}</p>
+          <p class="text-[#8892b0] text-sm mt-1">100% Uptime</p>
+        </div>
+        <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+          <p class="text-4xl font-black text-white">{uptimeData.stats.average_uptime.toFixed(1)}%</p>
+          <p class="text-[#8892b0] text-sm mt-1">Average Uptime</p>
+        </div>
+        <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+          <p class="text-4xl font-black text-[#ff3864]">{uptimeData.period.days}d</p>
+          <p class="text-[#8892b0] text-sm mt-1">Tracking Period</p>
+        </div>
+      </div>
+
+      <!-- Period Selector -->
+      <div class="flex justify-center gap-2 mb-8">
+        <button
+          class="period-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-[#00f5d4] text-[#0a0a0f]"
+          data-days="7"
+        >
+          7 Days
+        </button>
+        <button
+          class="period-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-[#1a1a25] text-[#8892b0] hover:bg-[#2a2a3a]"
+          data-days="14"
+        >
+          14 Days
+        </button>
+        <button
+          class="period-btn px-4 py-2 rounded-lg text-sm font-medium transition-all bg-[#1a1a25] text-[#8892b0] hover:bg-[#2a2a3a]"
+          data-days="30"
+        >
+          30 Days
+        </button>
+      </div>
+
+      <!-- Leaderboard Table -->
+      <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg overflow-hidden">
+        <!-- Table Header -->
+        <div class="grid grid-cols-12 gap-4 p-4 bg-[#0a0a0f] border-b border-[#2a2a3a] text-sm font-medium text-[#8892b0]">
+          <div class="col-span-1 text-center">#</div>
+          <div class="col-span-5 md:col-span-4">Server</div>
+          <div class="col-span-3 md:col-span-2 text-center">Uptime</div>
+          <div class="col-span-2 md:col-span-2 text-center hidden md:block">Players</div>
+          <div class="col-span-2 md:col-span-2 text-center hidden md:block">Checks</div>
+          <div class="col-span-3 md:col-span-1 text-center">Status</div>
+        </div>
+
+        <!-- Table Body -->
+        <div id="leaderboard-body" class="divide-y divide-[#2a2a3a]">
+          {uptimeData.servers.map((server, index) => (
+            <div class="grid grid-cols-12 gap-4 p-4 items-center hover:bg-[#1a1a25] transition-colors group">
+              <!-- Rank -->
+              <div class="col-span-1 text-center">
+                <span class="text-lg">{getRankIcon(index)}</span>
+                <span class={`text-sm font-bold ${index < 3 ? 'text-[#00f5d4]' : 'text-[#8892b0]'}`}>
+                  {index + 1}
+                </span>
+              </div>
+
+              <!-- Server Info -->
+              <div class="col-span-5 md:col-span-4">
+                <a href={`/servers/${server.id}`} class="flex items-center gap-3 group/link">
+                  {server.icon_url ? (
+                    <img
+                      src={server.icon_url}
+                      alt={server.name}
+                      class="w-10 h-10 rounded-lg bg-[#0a0a0f] object-cover"
+                    />
+                  ) : (
+                    <div class="w-10 h-10 rounded-lg bg-[#0a0a0f] flex items-center justify-center text-lg">
+                      ⛏️
+                    </div>
+                  )}
+                  <div class="min-w-0">
+                    <h3 class="font-bold text-white truncate group-hover/link:text-[#00f5d4] transition-colors">
+                      {server.name}
+                    </h3>
+                    <p class="text-xs text-[#8892b0] truncate">{server.ip}:{server.port}</p>
+                    {server.tags && server.tags.length > 0 && (
+                      <div class="flex gap-1 mt-1">
+                        {server.tags.slice(0, 2).map((tag) => (
+                          <span class="text-[10px] px-1.5 py-0.5 bg-[#0a0a0f] rounded text-[#8892b0]">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </a>
+              </div>
+
+              <!-- Uptime Percentage -->
+              <div class="col-span-3 md:col-span-2 text-center">
+                <div class={`text-xl font-black ${getUptimeColor(server.uptime_percent)}`}>
+                  {server.uptime_percent.toFixed(1)}%
+                </div>
+                <div class="w-full h-1.5 bg-[#0a0a0f] rounded-full mt-1 overflow-hidden">
+                  <div
+                    class={`h-full rounded-full transition-all ${getUptimeBarColor(server.uptime_percent)}`}
+                    style={`width: ${server.uptime_percent}%`}
+                  />
+                </div>
+              </div>
+
+              <!-- Players -->
+              <div class="col-span-2 md:col-span-2 text-center hidden md:block">
+                <div class="text-white font-semibold">
+                  {Math.round(server.avg_players).toLocaleString()}
+                </div>
+                <div class="text-xs text-[#8892b0]">
+                  Max: {server.max_players_seen.toLocaleString()}
+                </div>
+              </div>
+
+              <!-- Total Checks -->
+              <div class="col-span-2 md:col-span-2 text-center hidden md:block">
+                <div class="text-white font-semibold">{server.total_pings.toLocaleString()}</div>
+                <div class="text-xs text-green-400">
+                  {server.online_pings.toLocaleString()} online
+                </div>
+              </div>
+
+              <!-- Status Badge -->
+              <div class="col-span-3 md:col-span-1 text-center">
+                <span class={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium ${getUptimeBg(server.uptime_percent)} ${getUptimeColor(server.uptime_percent)}`}>
+                  <span class={`w-1.5 h-1.5 rounded-full ${server.uptime_percent >= 99 ? 'bg-green-500' : server.uptime_percent >= 90 ? 'bg-yellow-500' : 'bg-red-500'}`}></span>
+                  {server.uptime_percent >= 99 ? 'Excellent' : server.uptime_percent >= 95 ? 'Great' : server.uptime_percent >= 90 ? 'Good' : server.uptime_percent >= 80 ? 'Fair' : 'Poor'}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Empty State -->
+        {uptimeData.servers.length === 0 && (
+          <div class="p-12 text-center">
+            <div class="text-4xl mb-4">📊</div>
+            <h3 class="text-xl font-bold text-white mb-2">No uptime data available</h3>
+            <p class="text-[#8892b0]">
+              We need more ping history to calculate uptime statistics. Check back soon!
+            </p>
+          </div>
+        )}
+      </div>
+
+      <!-- Legend -->
+      <div class="mt-6 p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+        <h3 class="text-sm font-semibold text-white mb-3">Uptime Rating Scale</h3>
+        <div class="flex flex-wrap gap-4 text-sm">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+            <span class="text-green-400 font-medium">99-100%</span>
+            <span class="text-[#8892b0]">Excellent</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+            <span class="text-emerald-400 font-medium">95-98%</span>
+            <span class="text-[#8892b0]">Great</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span class="text-yellow-400 font-medium">90-94%</span>
+            <span class="text-[#8892b0]">Good</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+            <span class="text-orange-400 font-medium">80-89%</span>
+            <span class="text-[#8892b0]">Fair</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            <span class="text-red-400 font-medium">Below 80%</span>
+            <span class="text-[#8892b0]">Poor</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Section -->
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+          <h2 class="text-xl font-bold text-white mb-4">How It Works</h2>
+          <ul class="space-y-3 text-[#8892b0]">
+            <li class="flex items-start gap-3">
+              <span class="text-[#00f5d4]">1.</span>
+              <span>We ping every server every 5 minutes to check if it's online</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-[#00f5d4]">2.</span>
+              <span>Uptime percentage = (online checks / total checks) × 100</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-[#00f5d4]">3.</span>
+              <span>Servers need at least 10 pings to qualify for the leaderboard</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-[#00f5d4]">4.</span>
+              <span>Data updates automatically as we collect more ping history</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+          <h2 class="text-xl font-bold text-white mb-4">Why Uptime Matters</h2>
+          <p class="text-[#8892b0] mb-4">
+            Server uptime is one of the most important metrics for Minecraft players.
+            High uptime means:
+          </p>
+          <ul class="space-y-2 text-[#8892b0]">
+            <li class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              <span>Reliable access to your builds and progress</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              <span>Consistent community and player base</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              <span>Professional server management</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              <span>Better overall player experience</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>
+
+<script>
+  // Period selector functionality
+  const periodButtons = document.querySelectorAll('.period-btn');
+  const leaderboardBody = document.getElementById('leaderboard-body');
+
+  periodButtons.forEach(btn => {
+    btn.addEventListener('click', async () => {
+      // Update active state
+      periodButtons.forEach(b => {
+        b.classList.remove('bg-[#00f5d4]', 'text-[#0a0a0f]');
+        b.classList.add('bg-[#1a1a25]', 'text-[#8892b0]');
+      });
+      btn.classList.remove('bg-[#1a1a25]', 'text-[#8892b0]');
+      btn.classList.add('bg-[#00f5d4]', 'text-[#0a0a0f]');
+
+      const days = btn.dataset.days;
+
+      // Fetch new data
+      try {
+        leaderboardBody.innerHTML = '<div class="p-12 text-center"><div class="text-2xl animate-spin">⏳</div><p class="text-[#8892b0] mt-2">Loading...</p></div>';
+
+        const response = await fetch(`/api/uptime?days=${days}&limit=50`);
+        const data = await response.json();
+
+        if (data.servers && data.servers.length > 0) {
+          renderLeaderboard(data.servers);
+        } else {
+          leaderboardBody.innerHTML = `
+            <div class="p-12 text-center">
+              <div class="text-4xl mb-4">📊</div>
+              <h3 class="text-xl font-bold text-white mb-2">No data available</h3>
+              <p class="text-[#8892b0]">No uptime data for the selected period.</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Failed to fetch uptime data:', error);
+        leaderboardBody.innerHTML = `
+          <div class="p-12 text-center">
+            <div class="text-4xl mb-4">⚠️</div>
+            <h3 class="text-xl font-bold text-white mb-2">Error loading data</h3>
+            <p class="text-[#8892b0]">Please try again later.</p>
+          </div>
+        `;
+      }
+    });
+  });
+
+  function getUptimeColor(percent: number): string {
+    if (percent >= 99) return 'text-green-400';
+    if (percent >= 95) return 'text-emerald-400';
+    if (percent >= 90) return 'text-yellow-400';
+    if (percent >= 80) return 'text-orange-400';
+    return 'text-red-400';
+  }
+
+  function getUptimeBg(percent: number): string {
+    if (percent >= 99) return 'bg-green-500/20';
+    if (percent >= 95) return 'bg-emerald-500/20';
+    if (percent >= 90) return 'bg-yellow-500/20';
+    if (percent >= 80) return 'bg-orange-500/20';
+    return 'bg-red-500/20';
+  }
+
+  function getUptimeBarColor(percent: number): string {
+    if (percent >= 99) return 'bg-green-500';
+    if (percent >= 95) return 'bg-emerald-500';
+    if (percent >= 90) return 'bg-yellow-500';
+    if (percent >= 80) return 'bg-orange-500';
+    return 'bg-red-500';
+  }
+
+  function getUptimeLabel(percent: number): string {
+    if (percent >= 99) return 'Excellent';
+    if (percent >= 95) return 'Great';
+    if (percent >= 90) return 'Good';
+    if (percent >= 80) return 'Fair';
+    return 'Poor';
+  }
+
+  function getUptimeDot(percent: number): string {
+    if (percent >= 99) return 'bg-green-500';
+    if (percent >= 90) return 'bg-yellow-500';
+    return 'bg-red-500';
+  }
+
+  function getRankIcon(index: number): string {
+    if (index === 0) return '🥇';
+    if (index === 1) return '🥈';
+    if (index === 2) return '🥉';
+    return '';
+  }
+
+  function renderLeaderboard(servers: any[]) {
+    leaderboardBody.innerHTML = servers.map((server, index) => `
+      <div class="grid grid-cols-12 gap-4 p-4 items-center hover:bg-[#1a1a25] transition-colors group">
+        <div class="col-span-1 text-center">
+          <span class="text-lg">${getRankIcon(index)}</span>
+          <span class="text-sm font-bold ${index < 3 ? 'text-[#00f5d4]' : 'text-[#8892b0]'}">
+            ${index + 1}
+          </span>
+        </div>
+
+        <div class="col-span-5 md:col-span-4">
+          <a href="/servers/${server.id}" class="flex items-center gap-3 group/link">
+            ${server.icon_url ? `
+              <img
+                src="${server.icon_url}"
+                alt="${server.name}"
+                class="w-10 h-10 rounded-lg bg-[#0a0a0f] object-cover"
+              />
+            ` : `
+              <div class="w-10 h-10 rounded-lg bg-[#0a0a0f] flex items-center justify-center text-lg">
+                ⛏️
+              </div>
+            `}
+            <div class="min-w-0">
+              <h3 class="font-bold text-white truncate group-hover/link:text-[#00f5d4] transition-colors">
+                ${server.name}
+              </h3>
+              <p class="text-xs text-[#8892b0] truncate">${server.ip}:${server.port}</p>
+              ${server.tags && server.tags.length > 0 ? `
+                <div class="flex gap-1 mt-1">
+                  ${server.tags.slice(0, 2).map((tag: string) => `
+                    <span class="text-[10px] px-1.5 py-0.5 bg-[#0a0a0f] rounded text-[#8892b0]">${tag}</span>
+                  `).join('')}
+                </div>
+              ` : ''}
+            </div>
+          </a>
+        </div>
+
+        <div class="col-span-3 md:col-span-2 text-center">
+          <div class="text-xl font-black ${getUptimeColor(server.uptime_percent)}">
+            ${server.uptime_percent.toFixed(1)}%
+          </div>
+          <div class="w-full h-1.5 bg-[#0a0a0f] rounded-full mt-1 overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all ${getUptimeBarColor(server.uptime_percent)}"
+              style="width: ${server.uptime_percent}%"
+            />
+          </div>
+        </div>
+
+        <div class="col-span-2 md:col-span-2 text-center hidden md:block">
+          <div class="text-white font-semibold">
+            ${Math.round(server.avg_players || 0).toLocaleString()}
+          </div>
+          <div class="text-xs text-[#8892b0]">
+            Max: ${(server.max_players_seen || 0).toLocaleString()}
+          </div>
+        </div>
+
+        <div class="col-span-2 md:col-span-2 text-center hidden md:block">
+          <div class="text-white font-semibold">${(server.total_pings || 0).toLocaleString()}</div>
+          <div class="text-xs text-green-400">
+            ${(server.online_pings || 0).toLocaleString()} online
+          </div>
+        </div>
+
+        <div class="col-span-3 md:col-span-1 text-center">
+          <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium ${getUptimeBg(server.uptime_percent)} ${getUptimeColor(server.uptime_percent)}">
+            <span class="w-1.5 h-1.5 rounded-full ${getUptimeDot(server.uptime_percent)}"></span>
+            ${getUptimeLabel(server.uptime_percent)}
+          </span>
+        </div>
+      </div>
+    `).join('');
+  }
+</script>
