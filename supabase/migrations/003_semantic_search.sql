@@ -14,7 +14,7 @@ CREATE OR REPLACE FUNCTION match_servers(
   match_count int
 )
 RETURNS TABLE(
-  id uuid,
+  id text,
   name text,
   ip text,
   port int,
@@ -43,7 +43,7 @@ $$;
 -- Table for click analytics (if not using KV)
 CREATE TABLE IF NOT EXISTS server_clicks (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-  server_id uuid REFERENCES servers(id) ON DELETE CASCADE,
+  server_id text REFERENCES servers(id) ON DELETE CASCADE,
   click_type text DEFAULT 'view',
   source text DEFAULT 'listing',
   ip_hash text,
@@ -70,7 +70,7 @@ ORDER BY click_count DESC;
 -- Function to get trending servers
 CREATE OR REPLACE FUNCTION get_trending_servers(limit_count int DEFAULT 10)
 RETURNS TABLE(
-  server_id uuid,
+  server_id text,
   name text,
   click_count bigint,
   rank bigint

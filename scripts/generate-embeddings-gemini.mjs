@@ -21,7 +21,7 @@ if (!SUPABASE_SERVICE_KEY || !GEMINI_API_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
-// Gemini embedding API
+// Gemini embedding API - text-embedding-004 produces 768 dimensions
 async function generateEmbedding(text) {
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${GEMINI_API_KEY}`,
@@ -94,7 +94,7 @@ async function processServers() {
       
       const embedding = await generateEmbedding(text);
       
-      if (!embedding || embedding.length !== 3072) {
+      if (!embedding || embedding.length !== 768) {
         console.error(`   ❌ Wrong embedding size: ${embedding?.length}`);
         failed++;
         continue;
