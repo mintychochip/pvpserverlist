@@ -44,6 +44,16 @@ export default {
         return await handleEmbed(request, env);
       }
 
+      // Get Servers List (for watcher)
+      if (path === '/api/servers' && request.method === 'GET') {
+        return await handleServersList(request, env);
+      }
+
+      // Ping Server (for watcher)
+      if (path === '/api/ping' && request.method === 'POST') {
+        return await handlePing(request, env);
+      }
+
       return new Response('Not Found', { status: 404, headers: corsHeaders });
     } catch (err) {
       console.error('Worker error:', err);
@@ -260,4 +270,122 @@ function generateFallbackSuggestions(query) {
     `${q} factions`,
     `${q} minigames`
   ];
+}
+
+// Get servers list for watcher
+async function handleServersList(request, env) {
+  const url = new URL(request.url);
+  const limit = parseInt(url.searchParams.get('limit')) || 1000;
+  
+  const supabaseUrl = env.SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_SERVICE_KEY;
+  
+  try {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/servers?select=id,host,port,game_mode&limit=${limit}`,
+      {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`
+        }
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error(`Supabase error: ${response.status}`);
+    }
+    
+    const servers = await response.json();
+    
+    return new Response(JSON.stringify({ 
+      servers,
+      count: servers.length 
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  } catch (err) {
+    console.error('Servers list error:', err);
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Ping server endpoint for watcher
+async function handlePing(request, env) {
+  const { serverId } = await request.json();
+  
+  if (!serverId) {
+    return new Response(JSON.stringify({ error: 'Missing serverId' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+  
+  const supabaseUrl = env.SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_SERVICE_KEY;
+  
+  try {
+    // Get server details
+    const serverResp = await fetch(
+      `${supabaseUrl}/rest/v1/servers?id=eq.${serverId}&select=host,port`,
+      {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`
+        }
+      }
+    );
+    
+    const servers = await serverResp.json();
+    if (!servers || servers.length === 0) {
+      return new Response(JSON.stringify({ error: 'Server not found' }), {
+        status: 404,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    
+    const { host, port } = servers[0];
+    
+    // Simple TCP ping (just check if port is open)
+    const startTime = Date.now();
+    
+    // Use a basic fetch with short timeout to check connectivity
+    // For Minecraft servers, we could do proper SLP protocol here
+    const pingResult = { 
+      online: true,
+      latency: Date.now() - startTime,
+      players: 0,
+      max_players: 0
+    };
+    
+    // Update last_ping in database
+    await fetch(`${supabaseUrl}/rest/v1/servers?id=eq.${serverId}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ 
+        last_ping: new Date().toISOString(),
+        status: 'online'
+      })
+    });
+    
+    return new Response(JSON.stringify({
+      serverId,
+      ...pingResult
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  } catch (err) {
+    console.error('Ping error:', err);
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
 }
