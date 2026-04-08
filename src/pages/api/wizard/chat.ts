@@ -1,6 +1,6 @@
 /**
- * Wizard Chat API - AI-powered conversational intent extraction using Gemma (local)
- * POST /api/wizard/chat - Chat with local Gemma AI to refine search intent
+ * Wizard Chat API - AI-powered conversational intent extraction using Gemma via Gemini API
+ * POST /api/wizard/chat - Chat with Gemma AI to refine search intent
  */
 
 import type { APIRoute } from 'astro';
@@ -49,7 +49,7 @@ Rules:
 // Call Gemma via Google AI Studio API
 async function callGemma(messages: any[], apiKey: string) {
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-4b-it:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemma-2-2b-it:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -61,8 +61,7 @@ async function callGemma(messages: any[], apiKey: string) {
         ],
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 500,
-          responseMimeType: 'application/json'
+          maxOutputTokens: 500
         }
       })
     }
@@ -70,19 +69,32 @@ async function callGemma(messages: any[], apiKey: string) {
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`AI Studio API error: ${error}`);
+    console.error('Gemini API error:', response.status, error);
+    throw new Error(`AI Studio API error: ${response.status} - ${error}`);
   }
 
   const data = await response.json();
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
   
+  console.log('Gemma response:', text);
+  
   try {
-    // Try to parse as JSON
-    return JSON.parse(text);
-  } catch {
-    // Fallback: wrap text in expected format
+    // Try to extract JSON from the response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      return JSON.parse(jsonMatch[0]);
+    }
+    // If no JSON found, use the text directly
     return {
-      response: text || "I understand you're looking for a server. Could you tell me which game and gamemode you prefer?",
+      response: text,
+      readyToSearch: false,
+      searchQuery: null,
+      extractedIntent: { game: null, gamemode: null, features: [], size: null }
+    };
+  } catch (e) {
+    console.error('Failed to parse response:', e);
+    return {
+      response: text || "Tell me more about what kind of server you're looking for!",
       readyToSearch: false,
       searchQuery: null,
       extractedIntent: { game: null, gamemode: null, features: [], size: null }
@@ -106,45 +118,22 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Build conversation for Gemma
     const conversation = [
-      ...history.slice(-6), // Keep last 3 exchanges
+      ...history.slice(-6),
       { role: 'user', content: message }
     ];
 
     let result;
     if (apiKey) {
       try {
-        // Try AI Studio Gemma
         result = await callGemma(conversation, apiKey);
-      } catch (apiError) {
-        console.log('AI Studio API failed, falling back to keyword extraction:', apiError);
-        // Fallback to keyword extraction
-        const lower = message.toLowerCase();
-        const hasGamemode = /\b(survival|pvp|skyblock|creative|hardcore|minigames|smp|modded)\b/.test(lower);
-        const hasFeatures = (lower.match(/\b(economy|claims|community|discord|pvp|events|bedrock|shops|towny|quests)\b/g) || []).length;
-        
-        result = {
-          response: hasGamemode || hasFeatures >= 2 
-            ? "I'll search for servers matching what you described!"
-            : "I want to make sure I find the right server for you! 🎮\n\nWhat gamemode interests you? (survival, pvp, skyblock, creative, minigames, hardcore)",
-          readyToSearch: hasGamemode || hasFeatures >= 2,
-          searchQuery: hasGamemode || hasFeatures >= 2 ? `minecraft ${message}` : null,
-          extractedIntent: { game: 'minecraft', gamemode: null, features: [], size: null }
-        };
+      } catch (apiError: any) {
+        console.error('Gemma API failed:', apiError);
+        // Smart fallback based on message content
+        result = generateSmartFallback(message);
       }
     } else {
-      // No API key, use keyword extraction
-      const lower = message.toLowerCase();
-      const hasGamemode = /\b(survival|pvp|skyblock|creative|hardcore|minigames|smp|modded)\b/.test(lower);
-      const hasFeatures = (lower.match(/\b(economy|claims|community|discord|pvp|events|bedrock|shops|towny|quests)\b/g) || []).length;
-      
-      result = {
-        response: hasGamemode || hasFeatures >= 2 
-          ? "I'll search for servers matching what you described!"
-          : "I want to make sure I find the right server for you! 🎮\n\nWhat gamemode interests you? (survival, pvp, skyblock, creative, minigames, hardcore)",
-        readyToSearch: hasGamemode || hasFeatures >= 2,
-        searchQuery: hasGamemode || hasFeatures >= 2 ? `minecraft ${message}` : null,
-        extractedIntent: { game: 'minecraft', gamemode: null, features: [], size: null }
-      };
+      console.log('No API key, using keyword fallback');
+      result = generateSmartFallback(message);
     }
     
     return new Response(JSON.stringify(result), {
@@ -154,7 +143,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } catch (err: any) {
     console.error('Wizard chat error:', err);
     return new Response(JSON.stringify({ 
-      response: "Gemma AI is having issues... try again in a moment! Or tell me directly: what game and gamemode? (e.g., 'Minecraft survival')",
+      response: "I'm having trouble with my AI. Tell me: what game and what style? (e.g., 'Minecraft survival')",
       readyToSearch: false,
       searchQuery: null,
       fallback: true
@@ -164,6 +153,77 @@ export const POST: APIRoute = async ({ request, locals }) => {
     });
   }
 };
+
+// Smart fallback that actually parses the message
+function generateSmartFallback(message: string) {
+  const lower = message.toLowerCase();
+  
+  // Extract gamemode
+  let gamemode = null;
+  if (/\b(survival|smp|vanilla)\b/.test(lower)) gamemode = 'survival';
+  else if (/\b(pvp|factions|raid|raiding)\b/.test(lower)) gamemode = 'pvp';
+  else if (/\b(skyblock|island)\b/.test(lower)) gamemode = 'skyblock';
+  else if (/\b(creative|build|plot)\b/.test(lower)) gamemode = 'creative';
+  else if (/\b(minigame|bedwars|skywars)\b/.test(lower)) gamemode = 'minigames';
+  else if (/\b(hardcore|deathban)\b/.test(lower)) gamemode = 'hardcore';
+  else if (/\b(prison|mines)\b/.test(lower)) gamemode = 'prison';
+  else if (/\b(modded|forge|fabric)\b/.test(lower)) gamemode = 'modded';
+  
+  // Extract features
+  const features: string[] = [];
+  if (/\b(economy|money|trading|shop)\b/.test(lower)) features.push('economy');
+  if (/\b(claim|land|protect|grief)\b/.test(lower)) features.push('claims');
+  if (/\b(community|discord|friendly|social)\b/.test(lower)) features.push('community');
+  if (/\b(pvp|combat)\b/.test(lower)) features.push('pvp');
+  if (/\b(mmo|mcmmo|rpg|skills)\b/.test(lower)) features.push('mmo');
+  if (/\b(events|bosses|seasons)\b/.test(lower)) features.push('events');
+  if (/\b(bedrock|console|mobile)\b/.test(lower)) features.push('bedrock');
+  if (/\b(shop|market|player shop)\b/.test(lower)) features.push('shops');
+  if (/\b(towny|town|nation)\b/.test(lower)) features.push('towny');
+  if (/\b(quests|missions|story)\b/.test(lower)) features.push('quests');
+  if (/\b(vanilla|pure|no plugins)\b/.test(lower)) features.push('vanilla');
+  
+  // Extract size
+  let size = null;
+  if (/\b(small|tiny|close knit)\b/.test(lower)) size = 'small';
+  else if (/\b(medium|mid size)\b/.test(lower)) size = 'medium';
+  else if (/\b(large|big|huge|massive)\b/.test(lower)) size = 'large';
+  
+  // Build response based on what we found
+  const hasGamemode = !!gamemode;
+  const hasFeatures = features.length >= 2;
+  
+  if (hasGamemode && hasFeatures) {
+    const query = ['minecraft', gamemode, ...features, size].filter(Boolean).join(' ');
+    return {
+      response: `Got it! You want a ${gamemode} server${features.length ? ' with ' + features.join(', ') : ''}${size ? ' (' + size + ' community)' : ''}. Let me find some options!`,
+      readyToSearch: true,
+      searchQuery: query,
+      extractedIntent: { game: 'minecraft', gamemode, features, size }
+    };
+  } else if (hasGamemode) {
+    return {
+      response: `I see you want a ${gamemode} server! What features are important to you? (economy, claims, pvp, events, etc.)`,
+      readyToSearch: false,
+      searchQuery: null,
+      extractedIntent: { game: 'minecraft', gamemode, features, size }
+    };
+  } else if (features.length) {
+    return {
+      response: `You want features like ${features.join(', ')}! What gamemode do you prefer? (survival, pvp, skyblock, creative, minigames)`,
+      readyToSearch: false,
+      searchQuery: null,
+      extractedIntent: { game: 'minecraft', gamemode, features, size }
+    };
+  } else {
+    return {
+      response: "I'd love to help you find a server! 🎮\n\nWhat gamemode interests you? (survival, pvp, skyblock, creative, minigames, hardcore)",
+      readyToSearch: false,
+      searchQuery: null,
+      extractedIntent: { game: null, gamemode: null, features: [], size: null }
+    };
+  }
+}
 
 export const OPTIONS: APIRoute = async () => {
   return new Response(null, { headers: corsHeaders });
