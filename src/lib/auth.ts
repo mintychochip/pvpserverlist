@@ -398,3 +398,154 @@ export async function getLoginHistory(limit: number = 10): Promise<{ history: an
     return { history: [], error: (err as Error).message };
   }
 }
+
+// ===============================
+// PASSWORD RESET
+// ===============================
+
+/**
+ * Request password reset email
+ */
+export async function requestPasswordReset(email: string): Promise<{ success: boolean; message: string; error?: string }> {
+  try {
+    // Use Supabase Auth's built-in password reset
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+
+    if (error) {
+      return { success: false, message: '', error: error.message };
+    }
+
+    return { 
+      success: true, 
+      message: 'If an account exists with this email, you will receive password reset instructions.'
+    };
+  } catch (err) {
+    return { success: false, message: '', error: (err as Error).message };
+  }
+}
+
+/**
+ * Reset password with token from email
+ */
+export async function resetPassword(newPassword: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: (err as Error).message };
+  }
+}
+
+// ===============================
+// SESSION MANAGEMENT
+// ===============================
+
+export interface UserSession {
+  session_id: string;
+  device_name: string;
+  device_type: string;
+  browser: string;
+  os: string;
+  location: string;
+  is_current: boolean;
+  last_active_at: string;
+  created_at: string;
+}
+
+/**
+ * Get all active sessions for current user
+ */
+export async function getUserSessions(): Promise<{ sessions: UserSession[]; error?: string }> {
+  try {
+    const { data, error } = await supabase.rpc('get_user_sessions');
+
+    if (error) {
+      return { sessions: [], error: error.message };
+    }
+
+    return { sessions: data || [] };
+  } catch (err) {
+    return { sessions: [], error: (err as Error).message };
+  }
+}
+
+/**
+ * Revoke a specific session
+ */
+export async function revokeSession(sessionId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { data, error } = await supabase.rpc('revoke_session', {
+      p_session_id: sessionId
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: data || false };
+  } catch (err) {
+    return { success: false, error: (err as Error).message };
+  }
+}
+
+/**
+ * Revoke all other sessions (keep only current)
+ */
+export async function revokeAllOtherSessions(): Promise<{ count: number; error?: string }> {
+  try {
+    const { data, error } = await supabase.rpc('revoke_all_other_sessions');
+
+    if (error) {
+      return { count: 0, error: error.message };
+    }
+
+    return { count: data || 0 };
+  } catch (err) {
+    return { count: 0, error: (err as Error).message };
+  }
+}
+
+/**
+ * Change password (requires current password)
+ */
+export async function changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    // First verify current password by attempting login
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user?.email) {
+      return { success: false, error: 'Not authenticated' };
+    }
+
+    // Try to sign in with current password
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: currentPassword,
+    });
+
+    if (signInError) {
+      return { success: false, error: 'Current password is incorrect' };
+    }
+
+    // Update to new password
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: (err as Error).message };
+  }
+}

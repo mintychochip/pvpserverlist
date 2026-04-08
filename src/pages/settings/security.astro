@@ -1,0 +1,525 @@
+---
+// Security Settings Page - 2FA, Password, Sessions
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCurrentUser } from '../../lib/auth';
+
+// Check auth
+const user = await getCurrentUser();
+if (!user.user) {
+  return Astro.redirect('/login?redirect=/settings/security');
+}
+
+const has2FA = user.user.totp_enabled;
+---
+
+<Layout 
+  title="Security Settings | GuildPost"
+  description="Manage your account security settings including two-factor authentication and active sessions."
+  url="https://guildpost.tech/settings/security"
+>
+  <div class="min-h-screen" style="background-color: var(--bg-primary);">
+    <Header />
+    
+    <main class="max-w-4xl mx-auto px-4 py-8">
+      <div class="mb-8">
+        <h1 class="text-3xl font-black text-white mb-2">Security Settings</h1>
+        <p class="text-[var(--text-secondary)]">Manage your account security and active sessions</p>
+      </div>
+      
+      <!-- 2FA Section -->
+      <section class="bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-[var(--accent-primary)]/10 rounded-lg flex items-center justify-center">
+              <span class="text-xl">🔒</span>
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-white">Two-Factor Authentication</h2>
+              <p class="text-sm text-[var(--text-secondary)]">
+                {has2FA ? '✅ Enabled' : '⚠️ Not enabled'}
+              </p>
+            </div>
+          </div>
+          <button 
+            id="toggle-2fa-btn"
+            class={`px-4 py-2 rounded-lg font-medium transition-opacity ${has2FA ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' : 'bg-[var(--accent-primary)] text-[var(--bg-primary)] hover:opacity-90'}`}
+          >
+            {has2FA ? 'Disable 2FA' : 'Enable 2FA'}
+          </button>
+        </div>
+        
+        <p class="text-sm text-[var(--text-muted)]">
+          Two-factor authentication adds an extra layer of security to your account by requiring a code from your authenticator app when signing in.
+        </p>
+        
+        <!-- 2FA Setup Modal -->
+        <div id="setup-2fa-modal" class="hidden mt-6 pt-6 border-t border-[var(--border-color)]">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="font-semibold text-white mb-3">Step 1: Scan QR Code</h3>
+              <p class="text-sm text-[var(--text-secondary)] mb-3">
+                Open your authenticator app (Google Authenticator, Authy, etc.) and scan this QR code:
+              </p>
+              <div id="qr-container" class="bg-white p-4 rounded-lg inline-block">
+                <img id="qr-code" src="" alt="2FA QR Code" class="w-48 h-48" />
+              </div>
+              <div class="mt-3">
+                <p class="text-xs text-[var(--text-muted)] mb-1">Can't scan? Enter this code manually:</p>
+                <code id="secret-key" class="block bg-[var(--bg-primary)] px-3 py-2 rounded text-sm font-mono text-[var(--accent-primary)] select-all"></code>
+              </div>
+            </div>
+            
+            <div>
+              <h3 class="font-semibold text-white mb-3">Step 2: Verify Code</h3>
+              <p class="text-sm text-[var(--text-secondary)] mb-3">
+                Enter the 6-digit code from your authenticator app:
+              </p>
+              <div class="flex gap-2 mb-4">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <input 
+                    type="text" 
+                    maxlength="1"
+                    data-index={i}
+                    class="totp-verify w-10 h-12 text-center text-lg font-bold bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
+                  />
+                ))}
+              </div>
+              <input type="hidden" id="verify-totp-code" />
+              
+              <button 
+                id="verify-2fa-btn"
+                class="w-full px-4 py-2 bg-[var(--accent-primary)] text-[var(--bg-primary)] font-semibold rounded-lg hover:opacity-90 transition-opacity"
+              >
+                Verify & Enable
+              </button>
+              
+              <div id="setup-error" class="hidden mt-3 p-2 bg-red-500/10 border border-red-500/30 rounded text-red-400 text-sm"></div>
+            </div>
+          </div>
+          
+          <!-- Backup Codes -->
+          <div id="backup-codes-section" class="hidden mt-6 pt-6 border-t border-[var(--border-color)]">
+            <div class="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+              <h4 class="font-semibold text-amber-400 mb-2">⚠️ Save Your Backup Codes</h4>
+              <p class="text-sm text-[var(--text-secondary)] mb-3">
+                These codes can be used to access your account if you lose your authenticator device. Save them somewhere safe!
+              </p>
+              <div id="backup-codes" class="grid grid-cols-2 gap-2 font-mono text-sm"></div>
+              <button 
+                id="download-codes-btn"
+                class="mt-3 px-4 py-2 bg-[var(--accent-primary)]/20 text-[var(--accent-primary)] rounded-lg text-sm font-medium hover:bg-[var(--accent-primary)]/30 transition-colors"
+              >
+                Download Backup Codes
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Disable 2FA Modal -->
+        <div id="disable-2fa-modal" class="hidden mt-6 pt-6 border-t border-[var(--border-color)]">
+          <p class="text-sm text-red-400 mb-4">
+            ⚠️ Disabling 2FA will make your account less secure. You'll need to enter your password to confirm.
+          </p>
+          <input 
+            type="password" 
+            id="disable-password"
+            placeholder="Enter your password"
+            class="w-full px-4 py-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] mb-3"
+          />
+          <div class="flex gap-3">
+            <button 
+              id="confirm-disable-btn"
+              class="px-4 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Disable 2FA
+            </button>
+            <button 
+              id="cancel-disable-btn"
+              class="px-4 py-2 bg-[var(--bg-primary)] text-[var(--text-secondary)] rounded-lg hover:text-white transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+          <div id="disable-error" class="hidden mt-3 p-2 bg-red-500/10 border border-red-500/30 rounded text-red-400 text-sm"></div>
+        </div>
+      </section>
+      
+      <!-- Change Password Section -->
+      <section class="bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-6 mb-6">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-[var(--accent-primary)]/10 rounded-lg flex items-center justify-center">
+            <span class="text-xl">🔑</span>
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold text-white">Change Password</h2>
+            <p class="text-sm text-[var(--text-secondary)]">Update your account password</p>
+          </div>
+        </div>
+        
+        <form id="change-password-form" class="space-y-4 max-w-md">
+          <input 
+            type="password" 
+            id="current-password"
+            placeholder="Current password"
+            required
+            class="w-full px-4 py-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
+          />
+          <input 
+            type="password" 
+            id="new-password"
+            placeholder="New password"
+            required
+            minlength="8"
+            class="w-full px-4 py-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
+          />
+          <input 
+            type="password" 
+            id="confirm-new-password"
+            placeholder="Confirm new password"
+            required
+            class="w-full px-4 py-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
+          />
+          <button 
+            type="submit"
+            class="px-4 py-2 bg-[var(--accent-primary)] text-[var(--bg-primary)] font-semibold rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Update Password
+          </button>
+        </form>
+        
+        <div id="password-success" class="hidden mt-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-green-400 text-sm"></div>
+        <div id="password-error" class="hidden mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm"></div>
+      </section>
+      
+      <!-- Active Sessions Section -->
+      <section class="bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-[var(--accent-primary)]/10 rounded-lg flex items-center justify-center">
+              <span class="text-xl">💻</span>
+            </div>
+            <div>
+              <h2 class="text-lg font-semibold text-white">Active Sessions</h2>
+              <p class="text-sm text-[var(--text-secondary)]">Manage devices signed into your account</p>
+            </div>
+          </div>
+          <button 
+            id="revoke-all-btn"
+            class="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg text-sm font-medium hover:bg-red-500/30 transition-colors"
+          >
+            Sign Out All Devices
+          </button>
+        </div>
+        
+        <div id="sessions-list" class="space-y-3">
+          <div class="text-center py-8 text-[var(--text-muted)]">
+            Loading sessions...
+          </div>
+        </div>
+        
+        <div id="sessions-error" class="hidden mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm"></div>
+      </section>
+    </main>
+    
+    <Footer />
+  </div>
+  
+  <script>
+    import { 
+      getCurrentUser, setupTOTP, enableTOTP, disableTOTP, 
+      changePassword, getUserSessions, revokeSession, revokeAllOtherSessions 
+    } from '../../lib/auth';
+    
+    // =================== 2FA ===================
+    const toggle2FABtn = document.getElementById('toggle-2fa-btn');
+    const setup2FAModal = document.getElementById('setup-2fa-modal');
+    const disable2FAModal = document.getElementById('disable-2fa-modal');
+    
+    let backupCodes: string[] = [];
+    
+    toggle2FABtn?.addEventListener('click', async () => {
+      const has2FA = toggle2FABtn.textContent?.includes('Disable');
+      
+      if (has2FA) {
+        // Show disable modal
+        setup2FAModal?.classList.add('hidden');
+        disable2FAModal?.classList.remove('hidden');
+      } else {
+        // Start 2FA setup
+        try {
+          const result = await setupTOTP();
+          
+          if (result.success && result.setup) {
+            backupCodes = result.setup.backupCodes;
+            
+            // Show QR code
+            const qrImg = document.getElementById('qr-code') as HTMLImageElement;
+            // Generate QR code using a QR API
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(result.setup.qrCodeUrl)}`;
+            
+            // Show secret
+            const secretEl = document.getElementById('secret-key');
+            if (secretEl) secretEl.textContent = result.setup.secret;
+            
+            disable2FAModal?.classList.add('hidden');
+            setup2FAModal?.classList.remove('hidden');
+          }
+        } catch (err) {
+          console.error('Failed to setup 2FA:', err);
+        }
+      }
+    });
+    
+    // TOTP verification inputs
+    const verifyDigits = document.querySelectorAll('.totp-verify');
+    verifyDigits.forEach((digit, index) => {
+      digit.addEventListener('input', (e) => {
+        const target = e.target as HTMLInputElement;
+        target.value = target.value.replace(/[^0-9]/g, '');
+        
+        if (target.value && index < verifyDigits.length - 1) {
+          (verifyDigits[index + 1] as HTMLInputElement).focus();
+        }
+        
+        const code = Array.from(verifyDigits).map(d => (d as HTMLInputElement).value).join('');
+        (document.getElementById('verify-totp-code') as HTMLInputElement).value = code;
+      });
+      
+      digit.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !(e.target as HTMLInputElement).value && index > 0) {
+          (verifyDigits[index - 1] as HTMLInputElement).focus();
+        }
+      });
+    });
+    
+    // Enable 2FA
+    document.getElementById('verify-2fa-btn')?.addEventListener('click', async () => {
+      const code = (document.getElementById('verify-totp-code') as HTMLInputElement).value;
+      const errorDiv = document.getElementById('setup-error');
+      
+      if (code.length !== 6) {
+        errorDiv?.classList.remove('hidden');
+        if (errorDiv) errorDiv.textContent = 'Please enter all 6 digits';
+        return;
+      }
+      
+      try {
+        const result = await enableTOTP(code);
+        
+        if (result.success) {
+          // Show backup codes
+          const backupSection = document.getElementById('backup-codes-section');
+          const codesContainer = document.getElementById('backup-codes');
+          
+          if (codesContainer && backupCodes.length > 0) {
+            codesContainer.innerHTML = backupCodes.map(code => 
+              `<div class="bg-[var(--bg-primary)] px-3 py-2 rounded text-amber-400 font-mono">${code}</div>`
+            ).join('');
+          }
+          
+          backupSection?.classList.remove('hidden');
+          
+          // Update button state
+          toggle2FABtn.textContent = 'Disable 2FA';
+          toggle2FABtn.className = 'px-4 py-2 rounded-lg font-medium transition-opacity bg-red-500/20 text-red-400 hover:bg-red-500/30';
+          
+          // Hide verification UI
+          document.querySelector('#setup-2fa-modal .grid')?.classList.add('hidden');
+        } else {
+          errorDiv?.classList.remove('hidden');
+          if (errorDiv) errorDiv.textContent = result.error || 'Failed to verify code';
+        }
+      } catch (err) {
+        errorDiv?.classList.remove('hidden');
+        if (errorDiv) errorDiv.textContent = 'Verification failed. Please try again.';
+      }
+    });
+    
+    // Download backup codes
+    document.getElementById('download-codes-btn')?.addEventListener('click', () => {
+      const content = `GuildPost 2FA Backup Codes\nGenerated: ${new Date().toLocaleString()}\n\n${backupCodes.join('\n')}\n\nKeep these codes safe! Each can only be used once.`;
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'guildpost-backup-codes.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    
+    // Disable 2FA
+    document.getElementById('cancel-disable-btn')?.addEventListener('click', () => {
+      disable2FAModal?.classList.add('hidden');
+    });
+    
+    document.getElementById('confirm-disable-btn')?.addEventListener('click', async () => {
+      const password = (document.getElementById('disable-password') as HTMLInputElement).value;
+      const errorDiv = document.getElementById('disable-error');
+      
+      try {
+        const result = await disableTOTP(password);
+        
+        if (result.success) {
+          // Refresh page to show updated state
+          window.location.reload();
+        } else {
+          errorDiv?.classList.remove('hidden');
+          if (errorDiv) errorDiv.textContent = result.error || 'Failed to disable 2FA';
+        }
+      } catch (err) {
+        errorDiv?.classList.remove('hidden');
+        if (errorDiv) errorDiv.textContent = 'An error occurred';
+      }
+    });
+    
+    // =================== PASSWORD ===================
+    const passwordForm = document.getElementById('change-password-form') as HTMLFormElement;
+    passwordForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const current = (document.getElementById('current-password') as HTMLInputElement).value;
+      const newPass = (document.getElementById('new-password') as HTMLInputElement).value;
+      const confirm = (document.getElementById('confirm-new-password') as HTMLInputElement).value;
+      
+      const successDiv = document.getElementById('password-success');
+      const errorDiv = document.getElementById('password-error');
+      
+      if (newPass !== confirm) {
+        errorDiv?.classList.remove('hidden');
+        if (errorDiv) errorDiv.textContent = 'New passwords do not match';
+        return;
+      }
+      
+      if (newPass.length < 8) {
+        errorDiv?.classList.remove('hidden');
+        if (errorDiv) errorDiv.textContent = 'Password must be at least 8 characters';
+        return;
+      }
+      
+      try {
+        const result = await changePassword(current, newPass);
+        
+        if (result.success) {
+          passwordForm.reset();
+          errorDiv?.classList.add('hidden');
+          successDiv?.classList.remove('hidden');
+          if (successDiv) successDiv.textContent = 'Password updated successfully!';
+          setTimeout(() => successDiv?.classList.add('hidden'), 5000);
+        } else {
+          successDiv?.classList.add('hidden');
+          errorDiv?.classList.remove('hidden');
+          if (errorDiv) errorDiv.textContent = result.error || 'Failed to update password';
+        }
+      } catch (err) {
+        errorDiv?.classList.remove('hidden');
+        if (errorDiv) errorDiv.textContent = 'An error occurred';
+      }
+    });
+    
+    // =================== SESSIONS ===================
+    async function loadSessions() {
+      const list = document.getElementById('sessions-list');
+      const errorDiv = document.getElementById('sessions-error');
+      
+      try {
+        const { sessions, error } = await getUserSessions();
+        
+        if (error) {
+          throw new Error(error);
+        }
+        
+        if (!sessions || sessions.length === 0) {
+          if (list) list.innerHTML = '<div class="text-center py-8 text-[var(--text-muted)]">No active sessions found</div>';
+          return;
+        }
+        
+        const deviceIcons: Record<string, string> = {
+          desktop: '💻',
+          mobile: '📱',
+          tablet: '📱',
+          unknown: '💻'
+        };
+        
+        const browserIcons: Record<string, string> = {
+          Chrome: 'Chrome',
+          Firefox: 'Firefox',
+          Safari: 'Safari',
+          Edge: 'Edge'
+        };
+        
+        if (list) {
+          list.innerHTML = sessions.map(session => `
+            <div class="flex items-center justify-between p-4 bg-[var(--bg-primary)] rounded-lg border border-[var(--border-color)] ${session.is_current ? 'ring-1 ring-[var(--accent-primary)]' : ''}">
+              <div class="flex items-center gap-3">
+                <div class="text-2xl">${deviceIcons[session.device_type] || '💻'}</div>
+                <div>
+                  <div class="font-medium text-white flex items-center gap-2">
+                    ${session.device_name || 'Unknown Device'}
+                    ${session.is_current ? '<span class="px-2 py-0.5 bg-[var(--accent-primary)]/20 text-[var(--accent-primary)] rounded text-xs">Current</span>' : ''}
+                  </div>
+                  <div class="text-sm text-[var(--text-secondary)]">
+                    ${session.browser || 'Unknown browser'} on ${session.os || 'Unknown OS'}
+                    ${session.location ? `• ${session.location}` : ''}
+                  </div>
+                  <div class="text-xs text-[var(--text-muted)]">
+                    Last active: ${new Date(session.last_active_at).toLocaleString()}
+                  </div>
+                </div>
+              </div>
+              ${!session.is_current ? `
+                <button 
+                  class="revoke-btn px-3 py-1 bg-red-500/20 text-red-400 rounded text-sm hover:bg-red-500/30 transition-colors"
+                  data-session-id="${session.session_id}"
+                >
+                  Revoke
+                </button>
+              ` : ''}
+            </div>
+          `).join('');
+        }
+        
+        // Add revoke handlers
+        document.querySelectorAll('.revoke-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const sessionId = (e.target as HTMLElement).dataset.sessionId;
+            if (!sessionId) return;
+            
+            try {
+              const result = await revokeSession(sessionId);
+              if (result.success) {
+                loadSessions(); // Refresh list
+              }
+            } catch (err) {
+              errorDiv?.classList.remove('hidden');
+              if (errorDiv) errorDiv.textContent = 'Failed to revoke session';
+            }
+          });
+        });
+        
+      } catch (err) {
+        if (list) list.innerHTML = '<div class="text-center py-8 text-[var(--text-muted)]">Failed to load sessions</div>';
+      }
+    }
+    
+    // Load sessions on page load
+    loadSessions();
+    
+    // Revoke all other sessions
+    document.getElementById('revoke-all-btn')?.addEventListener('click', async () => {
+      if (!confirm('Sign out all other devices? You\'ll need to sign in again on them.')) return;
+      
+      try {
+        const result = await revokeAllOtherSessions();
+        if (result.count > 0) {
+          loadSessions(); // Refresh
+        }
+      } catch (err) {
+        const errorDiv = document.getElementById('sessions-error');
+        errorDiv?.classList.remove('hidden');
+        if (errorDiv) errorDiv.textContent = 'Failed to revoke sessions';
+      }
+    });
+  </script>
+</Layout>
