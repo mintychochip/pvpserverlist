@@ -1,0 +1,316 @@
+---
+// Login Page with 2FA Support
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const redirectTo = Astro.url.searchParams.get('redirect') || '/dashboard';
+---
+
+<Layout 
+  title="Login | GuildPost"
+  description="Sign in to your GuildPost account to manage your servers and access premium features."
+  url="https://guildpost.tech/login"
+>
+  <div class="min-h-screen" style="background-color: var(--bg-primary);">
+    <Header />
+    
+    <main class="max-w-md mx-auto px-4 py-16">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-black text-white mb-2">Welcome Back</h1>
+        <p class="text-[var(--text-secondary)]">Sign in to manage your servers</p>
+      </div>
+      
+      <!-- Step 1: Email/Password -->
+      <div id="login-step-1" class="bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-6">
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              required
+              class="w-full px-4 py-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
+              placeholder="you@example.com"
+            />
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-1">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              required
+              class="w-full px-4 py-2 bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
+              placeholder="••••••••"
+            />
+          </div>
+          
+          <div class="flex items-center justify-between text-sm">
+            <label class="flex items-center text-[var(--text-secondary)]">
+              <input type="checkbox" id="remember" class="mr-2" />
+              Remember me
+            </label>
+            <a href="/forgot-password" class="text-[var(--accent-primary)] hover:underline">Forgot password?</a>
+          </div>
+          
+          <button 
+            type="submit"
+            id="login-btn"
+            class="w-full px-4 py-2 bg-[var(--accent-primary)] text-[var(--bg-primary)] font-semibold rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Sign In
+          </button>
+        </form>
+        
+        <div id="login-error" class="hidden mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm"></div>
+        
+        <div class="mt-6 text-center text-sm text-[var(--text-secondary)]">
+          Don't have an account? 
+          <a href="/register" class="text-[var(--accent-primary)] hover:underline">Sign up</a>
+        </div>
+      </div>
+      
+      <!-- Step 2: 2FA Verification -->
+      <div id="login-step-2" class="hidden bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-6">
+        <div class="text-center mb-6">
+          <div class="w-12 h-12 bg-[var(--accent-primary)]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+            <span class="text-2xl">🔒</span>
+          </div>
+          <h2 class="text-xl font-bold text-white">Two-Factor Authentication</h2>
+          <p class="text-sm text-[var(--text-secondary)] mt-1">Enter the 6-digit code from your authenticator app</p>
+        </div>
+        
+        <form id="totp-form" class="space-y-4">
+          <input type="hidden" id="temp-token" />
+          
+          <div class="flex justify-center gap-2">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <input 
+                type="text" 
+                maxlength="1"
+                data-index={i}
+                class="totp-digit w-12 h-14 text-center text-xl font-bold bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
+              />
+            ))}
+          </div>
+          
+          <input type="hidden" id="totp-code" />
+          
+          <button 
+            type="submit"
+            id="verify-btn"
+            class="w-full px-4 py-2 bg-[var(--accent-primary)] text-[var(--bg-primary)] font-semibold rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Verify
+          </button>
+        </form>
+        
+        <div class="mt-4 text-center">
+          <button id="use-backup-code" class="text-sm text-[var(--accent-primary)] hover:underline">
+            Use backup code instead
+          </button>
+        </div>
+        
+        <div id="totp-error" class="hidden mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm"></div>
+        
+        <div class="mt-4 text-center">
+          <button id="back-to-login" class="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+            ← Back to login
+          </button>
+        </div>
+      </div>
+      
+      <!-- Backup Code Step -->
+      <div id="backup-step" class="hidden bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-xl p-6">
+        <div class="text-center mb-6">
+          <h2 class="text-xl font-bold text-white">Backup Code</h2>
+          <p class="text-sm text-[var(--text-secondary)] mt-1">Enter one of your saved backup codes</p>
+        </div>
+        
+        <form id="backup-form" class="space-y-4">
+          <input type="hidden" id="backup-temp-token" />
+          
+          <input 
+            type="text" 
+            id="backup-code" 
+            maxlength="12"
+            class="w-full px-4 py-3 text-center text-lg tracking-widest bg-[var(--bg-primary)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
+            placeholder="XXXXXXXXXXXX"
+          />
+          
+          <button 
+            type="submit"
+            class="w-full px-4 py-2 bg-[var(--accent-primary)] text-[var(--bg-primary)] font-semibold rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Verify Backup Code
+          </button>
+        </form>
+        
+        <div id="backup-error" class="hidden mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm"></div>
+        
+        <div class="mt-4 text-center">
+          <button id="back-to-totp" class="text-sm text-[var(--accent-primary)] hover:underline">
+            ← Use authenticator app instead
+          </button>
+        </div>
+      </div>
+    </main>
+    
+    <Footer />
+  </div>
+  
+  <script>
+    import { login, verifyTOTP, verifyBackupCode } from '../lib/auth';
+    
+    // Step 1: Email/Password Login
+    const loginForm = document.getElementById('login-form') as HTMLFormElement;
+    const step1 = document.getElementById('login-step-1');
+    const step2 = document.getElementById('login-step-2');
+    const backupStep = document.getElementById('backup-step');
+    const loginError = document.getElementById('login-error');
+    const totpError = document.getElementById('totp-error');
+    const backupError = document.getElementById('backup-error');
+    
+    loginForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = (document.getElementById('email') as HTMLInputElement).value;
+      const password = (document.getElementById('password') as HTMLInputElement).value;
+      const loginBtn = document.getElementById('login-btn') as HTMLButtonElement;
+      
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing in...';
+      
+      try {
+        const result = await login(email, password);
+        
+        if (result.success && result.user) {
+          // No 2FA required - redirect
+          window.location.href = '{redirectTo}';
+        } else if (result.requires2FA) {
+          // Show 2FA step
+          step1?.classList.add('hidden');
+          step2?.classList.remove('hidden');
+          (document.getElementById('temp-token') as HTMLInputElement).value = result.tempToken || '';
+          
+          // Focus first TOTP digit
+          (document.querySelector('.totp-digit') as HTMLInputElement)?.focus();
+        } else {
+          loginError?.classList.remove('hidden');
+          if (loginError) loginError.textContent = result.error || 'Login failed';
+        }
+      } catch (err) {
+        loginError?.classList.remove('hidden');
+        if (loginError) loginError.textContent = 'An error occurred. Please try again.';
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In';
+      }
+    });
+    
+    // TOTP digit inputs
+    const totpDigits = document.querySelectorAll('.totp-digit');
+    totpDigits.forEach((digit, index) => {
+      digit.addEventListener('input', (e) => {
+        const target = e.target as HTMLInputElement;
+        target.value = target.value.replace(/[^0-9]/g, '');
+        
+        if (target.value && index < totpDigits.length - 1) {
+          (totpDigits[index + 1] as HTMLInputElement).focus();
+        }
+        
+        // Update hidden full code input
+        const code = Array.from(totpDigits).map(d => (d as HTMLInputElement).value).join('');
+        (document.getElementById('totp-code') as HTMLInputElement).value = code;
+      });
+      
+      digit.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !(e.target as HTMLInputElement).value && index > 0) {
+          (totpDigits[index - 1] as HTMLInputElement).focus();
+        }
+      });
+    });
+    
+    // Step 2: TOTP Verification
+    const totpForm = document.getElementById('totp-form') as HTMLFormElement;
+    totpForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const tempToken = (document.getElementById('temp-token') as HTMLInputElement).value;
+      const totpCode = (document.getElementById('totp-code') as HTMLInputElement).value;
+      const verifyBtn = document.getElementById('verify-btn') as HTMLButtonElement;
+      
+      if (totpCode.length !== 6) {
+        totpError?.classList.remove('hidden');
+        if (totpError) totpError.textContent = 'Please enter all 6 digits';
+        return;
+      }
+      
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Verifying...';
+      
+      try {
+        const result = await verifyTOTP(tempToken, totpCode);
+        
+        if (result.success) {
+          window.location.href = '{redirectTo}';
+        } else {
+          totpError?.classList.remove('hidden');
+          if (totpError) totpError.textContent = result.error || 'Invalid code';
+          
+          // Clear inputs
+          totpDigits.forEach(d => (d as HTMLInputElement).value = '');
+          (totpDigits[0] as HTMLInputElement).focus();
+        }
+      } catch (err) {
+        totpError?.classList.remove('hidden');
+        if (totpError) totpError.textContent = 'Verification failed. Please try again.';
+      } finally {
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'Verify';
+      }
+    });
+    
+    // Backup code toggle
+    document.getElementById('use-backup-code')?.addEventListener('click', () => {
+      step2?.classList.add('hidden');
+      backupStep?.classList.remove('hidden');
+      (document.getElementById('backup-temp-token') as HTMLInputElement).value = 
+        (document.getElementById('temp-token') as HTMLInputElement).value;
+    });
+    
+    document.getElementById('back-to-totp')?.addEventListener('click', () => {
+      backupStep?.classList.add('hidden');
+      step2?.classList.remove('hidden');
+    });
+    
+    document.getElementById('back-to-login')?.addEventListener('click', () => {
+      step2?.classList.add('hidden');
+      step1?.classList.remove('hidden');
+    });
+    
+    // Backup code verification
+    const backupForm = document.getElementById('backup-form') as HTMLFormElement;
+    backupForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const tempToken = (document.getElementById('backup-temp-token') as HTMLInputElement).value;
+      const backupCode = (document.getElementById('backup-code') as HTMLInputElement).value;
+      
+      try {
+        const result = await verifyBackupCode(tempToken, backupCode);
+        
+        if (result.success) {
+          window.location.href = '{redirectTo}';
+        } else {
+          backupError?.classList.remove('hidden');
+          if (backupError) backupError.textContent = result.error || 'Invalid backup code';
+        }
+      } catch (err) {
+        backupError?.classList.remove('hidden');
+        if (backupError) backupError.textContent = 'Verification failed. Please try again.';
+      }
+    });
+  </script>
+</Layout>
