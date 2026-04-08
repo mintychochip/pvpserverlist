@@ -172,14 +172,14 @@ const VALID_CATEGORIES = [
       </div>
 
       <!-- Pagination -->
-      <div id="pagination" class="flex items-center justify-center gap-2 mt-8 hidden">
-        <button id="prev-page" class="px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+      <div id="pagination" class="flex flex-wrap items-center justify-center gap-2 mt-8 hidden">
+        <button id="prev-page" class="px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0">
           ← Prev
         </button>
-        <div id="page-numbers" class="flex gap-1">
+        <div id="page-numbers" class="flex flex-wrap items-center justify-center gap-1 max-w-[300px]">
           <!-- Page numbers -->
         </div>
-        <button id="next-page" class="px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+        <button id="next-page" class="px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex-shrink-0">
           Next →
         </button>
       </div>
@@ -471,9 +471,35 @@ const VALID_CATEGORIES = [
     prevPageBtn.disabled = currentPage === 1;
     nextPageBtn.disabled = currentPage === totalPages || totalPages === 0;
     
-    // Page numbers
+    // Page numbers - show limited window around current page
     pageNumbers.innerHTML = '';
-    for (let i = 1; i <= totalPages; i++) {
+    const maxVisible = 5; // Show 5 page buttons max
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+    
+    // Adjust if we're near the end
+    if (endPage - startPage + 1 < maxVisible) {
+      startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+    
+    // First page + ellipsis if needed
+    if (startPage > 1) {
+      const firstBtn = document.createElement('button');
+      firstBtn.textContent = '1';
+      firstBtn.className = 'w-10 h-10 rounded-lg text-sm bg-[#1a1a25] hover:bg-[#2a2a3a] text-white transition-colors';
+      firstBtn.addEventListener('click', () => { currentPage = 1; updateDisplay(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      pageNumbers.appendChild(firstBtn);
+      
+      if (startPage > 2) {
+        const ellipsis = document.createElement('span');
+        ellipsis.textContent = '...';
+        ellipsis.className = 'px-2 text-[#8892b0]';
+        pageNumbers.appendChild(ellipsis);
+      }
+    }
+    
+    // Visible page range
+    for (let i = startPage; i <= endPage; i++) {
       const btn = document.createElement('button');
       btn.textContent = i;
       btn.className = `w-10 h-10 rounded-lg text-sm transition-colors ${
@@ -487,6 +513,22 @@ const VALID_CATEGORIES = [
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
       pageNumbers.appendChild(btn);
+    }
+    
+    // Last page + ellipsis if needed
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        const ellipsis = document.createElement('span');
+        ellipsis.textContent = '...';
+        ellipsis.className = 'px-2 text-[#8892b0]';
+        pageNumbers.appendChild(ellipsis);
+      }
+      
+      const lastBtn = document.createElement('button');
+      lastBtn.textContent = totalPages;
+      lastBtn.className = 'w-10 h-10 rounded-lg text-sm bg-[#1a1a25] hover:bg-[#2a2a3a] text-white transition-colors';
+      lastBtn.addEventListener('click', () => { currentPage = totalPages; updateDisplay(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      pageNumbers.appendChild(lastBtn);
     }
     
     pagination.classList.remove('hidden');
