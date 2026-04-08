@@ -1,0 +1,811 @@
+---
+// Banner Maker Tool - Create custom server banners
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const templates = [
+  { id: 'modern', name: 'Modern', icon: '✨', description: 'Sleek gradient with glowing accents' },
+  { id: 'classic', name: 'Classic', icon: '🎮', description: 'Traditional Minecraft styling' },
+  { id: 'minimalist', name: 'Minimalist', icon: '◇', description: 'Clean and simple design' },
+  { id: 'cyber', name: 'Cyber', icon: '⚡', description: 'Neon cyberpunk aesthetic' },
+];
+
+const badgeOptions = [
+  { id: 'none', name: 'No Badge', icon: '' },
+  { id: 'verified', name: 'Verified', icon: '✓', color: '#00f5d4' },
+  { id: 'popular', name: 'Popular', icon: '★', color: '#ff3864' },
+  { id: 'new', name: 'New', icon: '●', color: '#ffd700' },
+  { id: 'premium', name: 'Premium', icon: '♦', color: '#a855f7' },
+];
+
+const backgroundPresets = [
+  '#0a0a0f', '#1a1a2e', '#16213e', '#0f3460', '#533483',
+  '#ff3864', '#00f5d4', '#ffd700', '#ff6b6b', '#4ecdc4'
+];
+
+const gradients = [
+  { name: 'Ocean', colors: ['#0a0a0f', '#16213e', '#0f3460'] },
+  { name: 'Sunset', colors: ['#ff3864', '#ff6b6b', '#ffd700'] },
+  { name: 'Neon', colors: ['#0a0a0f', '#00f5d4', '#ff3864'] },
+  { name: 'Forest', colors: ['#0a0a0f', '#1a4d2e', '#4ecdc4'] },
+  { name: 'Purple', colors: ['#1a1a2e', '#533483', '#a855f7'] },
+];
+---
+
+<Layout 
+  title="Banner Maker - GuildPost"
+  description="Create beautiful custom banners for your Minecraft server. Free banner generator with multiple templates, icons, and download options."
+  url="https://guildpost.tech/banner-maker"
+  keywords="minecraft server banner, banner maker, server banner generator, minecraft banner, custom banner"
+>
+  <div class="min-h-screen bg-[#0a0a0f]">
+    <Header />
+    
+    <main class="pt-20 pb-16">
+      <!-- Header Section -->
+      <div class="max-w-6xl mx-auto px-4 mb-8">
+        <nav class="flex items-center gap-2 text-sm text-[#8892b0] mb-6">
+          <a href="/" class="hover:text-white transition-colors">Home</a>
+          <span>/</span>
+          <span class="text-white">Banner Maker</span>
+        </nav>
+
+        <div class="text-center mb-10">
+          <h1 class="text-4xl md:text-5xl font-black text-white mb-4">
+            Banner <span class="text-[#00f5d4]">Maker</span>
+          </h1>
+          <p class="text-[#8892b0] text-lg max-w-2xl mx-auto">
+            Create stunning custom banners for your Minecraft server. 
+            Choose a template, customize the text, and download your banner in seconds.
+          </p>
+        </div>
+      </div>
+
+      <!-- Banner Maker Interface -->
+      <div class="max-w-6xl mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Left Panel: Controls -->
+          <div class="lg:col-span-5 space-y-6">
+            
+            <!-- Template Selection -->
+            <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg p-5">
+              <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                Choose Template
+              </h3>
+              <div class="grid grid-cols-2 gap-3">
+                {templates.map((template) => (
+                  <button 
+                    class="template-btn p-3 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg hover:border-[#00f5d4] transition-all text-left group"
+                    data-template={template.id}
+                  >
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-lg">{template.icon}</span>
+                      <span class="text-white font-medium group-hover:text-[#00f5d4] transition-colors">{template.name}</span>
+                    </div>
+                    <p class="text-xs text-[#8892b0]">{template.description}</p>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <!-- Text Settings -->
+            <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg p-5">
+              <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+                Text Settings
+              </h3>
+              
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-sm text-[#8892b0] mb-2">Server Name</label>
+                  <input 
+                    type="text" 
+                    id="server-name" 
+                    value="My Awesome Server"
+                    maxlength="30"
+                    class="w-full px-3 py-2 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-white placeholder-[#8892b0] focus:outline-none focus:border-[#00f5d4] transition-colors"
+                  />
+                </div>
+                
+                <div>
+                  <label class="block text-sm text-[#8892b0] mb-2">Tagline / Description</label>
+                  <input 
+                    type="text" 
+                    id="tagline" 
+                    value="Survival • PvP • Quests"
+                    maxlength="40"
+                    class="w-full px-3 py-2 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-white placeholder-[#8892b0] focus:outline-none focus:border-[#00f5d4] transition-colors"
+                  />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-sm text-[#8892b0] mb-2">Online Players</label>
+                    <input 
+                      type="text" 
+                      id="players" 
+                      value="1,234"
+                      class="w-full px-3 py-2 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-white placeholder-[#8892b0] focus:outline-none focus:border-[#00f5d4] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm text-[#8892b0] mb-2">Vote Count</label>
+                    <input 
+                      type="text" 
+                      id="votes" 
+                      value="567"
+                      class="w-full px-3 py-2 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-white placeholder-[#8892b0] focus:outline-none focus:border-[#00f5d4] transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Background Settings -->
+            <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg p-5">
+              <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.01 17.461 2 12 2z"/></svg>
+                Background
+              </h3>
+              
+              <!-- Color Presets -->
+              <div class="mb-4">
+                <label class="block text-sm text-[#8892b0] mb-2">Solid Colors</label>
+                <div class="flex flex-wrap gap-2">
+                  {backgroundPresets.map((color) => (
+                    <button 
+                      class="color-btn w-8 h-8 rounded-full border-2 border-transparent hover:scale-110 transition-transform"
+                      style={`background-color: ${color}`}
+                      data-color={color}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <!-- Gradients -->
+              <div class="mb-4">
+                <label class="block text-sm text-[#8892b0] mb-2">Gradients</label>
+                <div class="grid grid-cols-2 gap-2">
+                  {gradients.map((gradient) => (
+                    <button 
+                      class="gradient-btn p-2 rounded-lg border border-[#2a2a3a] hover:border-[#00f5d4] transition-all text-left"
+                      data-gradient={JSON.stringify(gradient.colors)}
+                    >
+                      <div 
+                        class="h-8 rounded mb-1"
+                        style={`background: linear-gradient(135deg, ${gradient.colors.join(', ')})`}
+                      />
+                      <span class="text-xs text-white">{gradient.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <!-- Custom Color -->
+              <div>
+                <label class="block text-sm text-[#8892b0] mb-2">Custom Color</label>
+                <div class="flex gap-2">
+                  <input 
+                    type="color" 
+                    id="custom-color" 
+                    value="#0a0a0f"
+                    class="w-12 h-10 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg cursor-pointer"
+                  />
+                  <input 
+                    type="text" 
+                    id="custom-color-text" 
+                    value="#0a0a0f"
+                    class="flex-1 px-3 py-2 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-white font-mono text-sm focus:outline-none focus:border-[#00f5d4] transition-colors"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Badge & Icons -->
+            <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg p-5">
+              <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                Badge & Icons
+              </h3>
+              
+              <div class="grid grid-cols-3 gap-2 mb-4">
+                {badgeOptions.map((badge) => (
+                  <button 
+                    class="badge-btn p-2 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg hover:border-[#00f5d4] transition-all text-center"
+                    data-badge={badge.id}
+                    data-color={badge.color}
+                  >
+                    <span class="text-lg" style={`color: ${badge.color}`}>{badge.icon}</span>
+                    <p class="text-xs text-[#8892b0] mt-1">{badge.name}</p>
+                  </button>
+                ))}
+              </div>
+
+              <div class="flex items-center gap-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="show-icons" checked class="accent-[#00f5d4] w-4 h-4" />
+                  <span class="text-sm text-white">Show Minecraft Icons</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Panel: Preview & Download -->
+          <div class="lg:col-span-7 space-y-6">
+            
+            <!-- Canvas Preview -->
+            <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg p-5">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-white font-bold flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  Live Preview
+                </h3>
+                <div class="flex gap-2">
+                  <button id="reset-btn" class="px-3 py-1.5 text-sm text-[#8892b0] hover:text-white bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg transition-colors">
+                    Reset
+                  </button>
+                </div>
+              </div>
+              
+              <div class="bg-[#0a0a0f] rounded-lg p-4 flex items-center justify-center overflow-hidden">
+                <canvas 
+                  id="banner-canvas" 
+                  width="800" 
+                  height="300"
+                  class="max-w-full h-auto rounded-lg shadow-lg"
+                ></canvas>
+              </div>
+              
+              <div class="mt-4 flex flex-wrap gap-3">
+                <button 
+                  id="download-btn"
+                  class="flex-1 md:flex-none px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#00d4b8] transition-colors flex items-center justify-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                  Download PNG
+                </button>
+                <button 
+                  id="copy-btn"
+                  class="flex-1 md:flex-none px-6 py-3 bg-[#1a1a25] text-white font-medium rounded-lg hover:bg-[#2a2a3a] transition-colors flex items-center justify-center gap-2 border border-[#2a2a3a]"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                  Copy to Clipboard
+                </button>
+              </div>
+            </div>
+
+            <!-- Banner Sizes -->
+            <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg p-5">
+              <h3 class="text-white font-bold mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Banner Size
+              </h3>
+              <div class="grid grid-cols-3 gap-3">
+                <button class="size-btn p-3 bg-[#0a0a0f] border border-[#00f5d4] rounded-lg text-center" data-width="800" data-height="300">
+                  <p class="text-white font-medium">Wide</p>
+                  <p class="text-xs text-[#8892b0]">800 × 300</p>
+                </button>
+                <button class="size-btn p-3 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-center hover:border-[#00f5d4] transition-colors" data-width="600" data-height="200">
+                  <p class="text-white font-medium">Standard</p>
+                  <p class="text-xs text-[#8892b0]">600 × 200</p>
+                </button>
+                <button class="size-btn p-3 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-center hover:border-[#00f5d4] transition-colors" data-width="400" data-height="150">
+                  <p class="text-white font-medium">Compact</p>
+                  <p class="text-xs text-[#8892b0]">400 × 150</p>
+                </button>
+              </div>
+            </div>
+
+            <!-- Usage Tips -->
+            <div class="bg-[#12121a]/50 border border-[#2a2a3a] rounded-lg p-5">
+              <h4 class="text-white font-medium mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                Tips for Great Banners
+              </h4>
+              <ul class="space-y-2 text-sm text-[#8892b0]">
+                <li class="flex items-start gap-2">
+                  <span class="text-[#00f5d4]">•</span>
+                  Keep server name short and memorable (under 25 characters)
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-[#00f5d4]">•</span>
+                  Use high contrast between text and background
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-[#00f5d4]">•</span>
+                  Include key game modes in your tagline
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="text-[#00f5d4]">•</span>
+                  Wide banners work best for website headers
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</Layout>
+
+<script>
+  // Banner Maker State
+  const state = {
+    template: 'modern',
+    serverName: 'My Awesome Server',
+    tagline: 'Survival • PvP • Quests',
+    players: '1,234',
+    votes: '567',
+    backgroundColor: '#0a0a0f',
+    gradient: null,
+    badge: 'verified',
+    showIcons: true,
+    width: 800,
+    height: 300
+  };
+
+  // Canvas setup
+  const canvas = document.getElementById('banner-canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Template rendering functions
+  const templates = {
+    modern: (ctx, state) => {
+      const { width, height, backgroundColor, gradient, serverName, tagline, players, votes, badge, showIcons } = state;
+      
+      // Background
+      if (gradient) {
+        const grd = ctx.createLinearGradient(0, 0, width, height);
+        gradient.forEach((color, i) => grd.addColorStop(i / (gradient.length - 1), color));
+        ctx.fillStyle = grd;
+      } else {
+        ctx.fillStyle = backgroundColor;
+      }
+      ctx.fillRect(0, 0, width, height);
+      
+      // Decorative gradient overlay
+      const overlay = ctx.createLinearGradient(0, 0, width, 0);
+      overlay.addColorStop(0, 'rgba(0, 245, 212, 0.1)');
+      overlay.addColorStop(0.5, 'rgba(255, 56, 100, 0.05)');
+      overlay.addColorStop(1, 'rgba(0, 245, 212, 0.1)');
+      ctx.fillStyle = overlay;
+      ctx.fillRect(0, 0, width, height);
+      
+      // Border
+      ctx.strokeStyle = '#00f5d4';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(1.5, 1.5, width - 3, height - 3);
+      
+      // Accent corner
+      ctx.fillStyle = '#00f5d4';
+      ctx.beginPath();
+      ctx.moveTo(0, height);
+      ctx.lineTo(0, height - 40);
+      ctx.lineTo(40, height);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Server name
+      ctx.font = 'bold 48px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
+      ctx.fillText(serverName, 40, height / 2 - 10);
+      
+      // Tagline
+      ctx.font = '24px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#00f5d4';
+      ctx.fillText(tagline, 40, height / 2 + 35);
+      
+      // Stats section
+      const statsY = height - 50;
+      
+      // Players
+      if (showIcons) {
+        ctx.font = '20px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#8892b0';
+        ctx.fillText('👥', width - 220, statsY);
+      }
+      ctx.font = 'bold 20px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(players, width - 190, statsY);
+      ctx.font = '16px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#8892b0';
+      ctx.fillText('online', width - 120, statsY);
+      
+      // Votes
+      if (showIcons) {
+        ctx.font = '20px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#8892b0';
+        ctx.fillText('⭐', width - 100, statsY);
+      }
+      ctx.font = 'bold 20px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#ff3864';
+      ctx.fillText(votes, width - 70, statsY);
+      
+      // Badge
+      if (badge && badge !== 'none') {
+        const badgeColors = {
+          verified: '#00f5d4',
+          popular: '#ff3864',
+          new: '#ffd700',
+          premium: '#a855f7'
+        };
+        const badgeIcons = {
+          verified: '✓',
+          popular: '★',
+          new: '●',
+          premium: '♦'
+        };
+        const color = badgeColors[badge] || '#00f5d4';
+        const icon = badgeIcons[badge] || '✓';
+        
+        // Badge background
+        ctx.fillStyle = color + '20';
+        ctx.beginPath();
+        ctx.roundRect(width - 120, 25, 90, 32, 16);
+        ctx.fill();
+        
+        // Badge text
+        ctx.font = 'bold 14px Inter, system-ui, sans-serif';
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.fillText(`${icon} ${badge.charAt(0).toUpperCase() + badge.slice(1)}`, width - 75, 46);
+      }
+    },
+    
+    classic: (ctx, state) => {
+      const { width, height, backgroundColor, gradient, serverName, tagline, players, votes, badge, showIcons } = state;
+      
+      // Background - dirt pattern simulation
+      ctx.fillStyle = gradient ? gradient[0] : backgroundColor;
+      ctx.fillRect(0, 0, width, height);
+      
+      // Grass top
+      ctx.fillStyle = '#5d8c38';
+      ctx.fillRect(0, 0, width, 20);
+      ctx.fillStyle = '#4a7030';
+      ctx.fillRect(0, 20, width, 10);
+      
+      // Border
+      ctx.strokeStyle = '#5d8c38';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(2, 2, width - 4, height - 4);
+      
+      // Server name with shadow
+      ctx.font = 'bold 52px "Orbitron", monospace';
+      ctx.fillStyle = '#3d2817';
+      ctx.textAlign = 'center';
+      ctx.fillText(serverName, width / 2 + 3, height / 2 + 3);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(serverName, width / 2, height / 2);
+      
+      // Tagline
+      ctx.font = '22px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#cccccc';
+      ctx.fillText(tagline, width / 2, height / 2 + 45);
+      
+      // Stats bar at bottom
+      const barY = height - 40;
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+      ctx.fillRect(0, barY, width, 40);
+      
+      // Players
+      ctx.font = 'bold 18px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#5d8c38';
+      ctx.textAlign = 'left';
+      ctx.fillText(`👥 ${players} Online`, 30, barY + 25);
+      
+      // Votes
+      ctx.fillStyle = '#ffd700';
+      ctx.textAlign = 'right';
+      ctx.fillText(`⭐ ${votes} Votes`, width - 30, barY + 25);
+      
+      // Badge
+      if (badge && badge !== 'none') {
+        const colors = { verified: '#00f5d4', popular: '#ff3864', new: '#ffd700', premium: '#a855f7' };
+        const color = colors[badge] || '#00f5d4';
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(width - 40, 35);
+        ctx.lineTo(width - 25, 60);
+        ctx.lineTo(width - 55, 60);
+        ctx.closePath();
+        ctx.fill();
+      }
+    },
+    
+    minimalist: (ctx, state) => {
+      const { width, height, backgroundColor, gradient, serverName, tagline, players, votes, badge, showIcons } = state;
+      
+      // Clean background
+      ctx.fillStyle = gradient ? gradient[0] : backgroundColor;
+      ctx.fillRect(0, 0, width, height);
+      
+      // Subtle line accent
+      ctx.strokeStyle = '#00f5d4';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(40, height / 2);
+      ctx.lineTo(40, height / 2 + 60);
+      ctx.stroke();
+      
+      // Server name
+      ctx.font = '300 44px "Space Grotesk", sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
+      ctx.fillText(serverName, 60, height / 2 + 10);
+      
+      // Tagline
+      ctx.font = '18px "Space Grotesk", sans-serif';
+      ctx.fillStyle = '#8892b0';
+      ctx.fillText(tagline, 60, height / 2 + 45);
+      
+      // Simple stats
+      ctx.font = '16px "Space Grotesk", sans-serif';
+      ctx.fillStyle = '#00f5d4';
+      ctx.textAlign = 'right';
+      ctx.fillText(`${players} playing  •  ${votes} votes`, width - 40, height - 35);
+      
+      // Minimal badge
+      if (badge && badge !== 'none') {
+        const colors = { verified: '#00f5d4', popular: '#ff3864', new: '#ffd700', premium: '#a855f7' };
+        const color = colors[badge] || '#00f5d4';
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(width - 30, 30, 8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    },
+    
+    cyber: (ctx, state) => {
+      const { width, height, backgroundColor, gradient, serverName, tagline, players, votes, badge, showIcons } = state;
+      
+      // Dark background
+      ctx.fillStyle = '#050508';
+      ctx.fillRect(0, 0, width, height);
+      
+      // Neon grid effect
+      ctx.strokeStyle = '#00f5d4';
+      ctx.lineWidth = 0.5;
+      ctx.globalAlpha = 0.3;
+      for (let i = 0; i < width; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, height);
+        ctx.stroke();
+      }
+      for (let i = 0; i < height; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(width, i);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+      
+      // Glowing border
+      ctx.shadowColor = '#00f5d4';
+      ctx.shadowBlur = 20;
+      ctx.strokeStyle = '#00f5d4';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(1.5, 1.5, width - 3, height - 3);
+      ctx.shadowBlur = 0;
+      
+      // Corner accents
+      ctx.fillStyle = '#ff3864';
+      ctx.fillRect(0, 0, 30, 4);
+      ctx.fillRect(0, 0, 4, 30);
+      ctx.fillRect(width - 30, height - 4, 30, 4);
+      ctx.fillRect(width - 4, height - 30, 4, 30);
+      
+      // Server name with glow
+      ctx.shadowColor = '#ff3864';
+      ctx.shadowBlur = 15;
+      ctx.font = 'bold 48px "Orbitron", monospace';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'left';
+      ctx.fillText(serverName, 40, height / 2);
+      ctx.shadowBlur = 0;
+      
+      // Tagline
+      ctx.font = '20px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#00f5d4';
+      ctx.fillText(tagline, 40, height / 2 + 40);
+      
+      // Stats with neon effect
+      const statsY = height - 50;
+      ctx.font = 'bold 18px "Orbitron", monospace';
+      ctx.fillStyle = '#ff3864';
+      ctx.fillText(`${players} ONLINE`, 40, statsY);
+      
+      ctx.fillStyle = '#00f5d4';
+      ctx.textAlign = 'right';
+      ctx.fillText(`${votes} VOTES`, width - 40, statsY);
+      
+      // Cyber badge
+      if (badge && badge !== 'none') {
+        const colors = { verified: '#00f5d4', popular: '#ff3864', new: '#ffd700', premium: '#a855f7' };
+        const color = colors[badge] || '#00f5d4';
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 10;
+        ctx.fillRect(width - 100, 20, 80, 30);
+        ctx.shadowBlur = 0;
+        
+        ctx.font = 'bold 12px "Orbitron", monospace';
+        ctx.fillStyle = '#000000';
+        ctx.textAlign = 'center';
+        ctx.fillText(badge.toUpperCase(), width - 60, 39);
+      }
+    }
+  };
+
+  // Render function
+  function renderBanner() {
+    const renderFn = templates[state.template] || templates.modern;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    renderFn(ctx, state);
+  }
+
+  // Event Listeners
+  document.querySelectorAll('.template-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('border-[#00f5d4]'));
+      btn.classList.add('border-[#00f5d4]');
+      state.template = btn.dataset.template;
+      renderBanner();
+    });
+  });
+
+  document.getElementById('server-name')?.addEventListener('input', (e) => {
+    state.serverName = e.target.value || 'Server Name';
+    renderBanner();
+  });
+
+  document.getElementById('tagline')?.addEventListener('input', (e) => {
+    state.tagline = e.target.value || '';
+    renderBanner();
+  });
+
+  document.getElementById('players')?.addEventListener('input', (e) => {
+    state.players = e.target.value || '0';
+    renderBanner();
+  });
+
+  document.getElementById('votes')?.addEventListener('input', (e) => {
+    state.votes = e.target.value || '0';
+    renderBanner();
+  });
+
+  document.querySelectorAll('.color-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('border-white'));
+      btn.classList.add('border-white');
+      state.backgroundColor = btn.dataset.color;
+      state.gradient = null;
+      document.getElementById('custom-color').value = state.backgroundColor;
+      document.getElementById('custom-color-text').value = state.backgroundColor;
+      renderBanner();
+    });
+  });
+
+  document.querySelectorAll('.gradient-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.gradient-btn').forEach(b => b.classList.remove('border-[#00f5d4]'));
+      btn.classList.add('border-[#00f5d4]');
+      state.gradient = JSON.parse(btn.dataset.gradient);
+      renderBanner();
+    });
+  });
+
+  const customColorInput = document.getElementById('custom-color');
+  const customColorText = document.getElementById('custom-color-text');
+
+  customColorInput?.addEventListener('input', (e) => {
+    state.backgroundColor = e.target.value;
+    state.gradient = null;
+    customColorText.value = e.target.value;
+    renderBanner();
+  });
+
+  customColorText?.addEventListener('input', (e) => {
+    const color = e.target.value;
+    if (/^#[0-9A-Fa-f]{6}$/.test(color)) {
+      state.backgroundColor = color;
+      state.gradient = null;
+      customColorInput.value = color;
+      renderBanner();
+    }
+  });
+
+  document.querySelectorAll('.badge-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.badge-btn').forEach(b => b.classList.remove('border-[#00f5d4]'));
+      btn.classList.add('border-[#00f5d4]');
+      state.badge = btn.dataset.badge;
+      renderBanner();
+    });
+  });
+
+  document.getElementById('show-icons')?.addEventListener('change', (e) => {
+    state.showIcons = e.target.checked;
+    renderBanner();
+  });
+
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.size-btn').forEach(b => {
+        b.classList.remove('border-[#00f5d4]');
+        b.classList.add('border-[#2a2a3a]');
+      });
+      btn.classList.remove('border-[#2a2a3a]');
+      btn.classList.add('border-[#00f5d4]');
+      state.width = parseInt(btn.dataset.width);
+      state.height = parseInt(btn.dataset.height);
+      canvas.width = state.width;
+      canvas.height = state.height;
+      renderBanner();
+    });
+  });
+
+  document.getElementById('reset-btn')?.addEventListener('click', () => {
+    state.template = 'modern';
+    state.serverName = 'My Awesome Server';
+    state.tagline = 'Survival • PvP • Quests';
+    state.players = '1,234';
+    state.votes = '567';
+    state.backgroundColor = '#0a0a0f';
+    state.gradient = null;
+    state.badge = 'verified';
+    state.showIcons = true;
+    state.width = 800;
+    state.height = 300;
+    canvas.width = 800;
+    canvas.height = 300;
+    
+    document.getElementById('server-name').value = state.serverName;
+    document.getElementById('tagline').value = state.tagline;
+    document.getElementById('players').value = state.players;
+    document.getElementById('votes').value = state.votes;
+    document.getElementById('custom-color').value = state.backgroundColor;
+    document.getElementById('custom-color-text').value = state.backgroundColor;
+    document.getElementById('show-icons').checked = true;
+    
+    renderBanner();
+    window.showToast?.('Banner reset to defaults', 'info');
+  });
+
+  document.getElementById('download-btn')?.addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = `server-banner-${state.template}-${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    window.showToast?.('Banner downloaded!', 'success');
+  });
+
+  document.getElementById('copy-btn')?.addEventListener('click', async () => {
+    try {
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          window.showToast?.('Banner copied to clipboard!', 'success');
+        }
+      });
+    } catch (err) {
+      window.showToast?.('Could not copy to clipboard', 'error');
+    }
+  });
+
+  // Initialize
+  document.querySelector('.template-btn[data-template="modern"]')?.classList.add('border-[#00f5d4]');
+  document.querySelector('.badge-btn[data-badge="verified"]')?.classList.add('border-[#00f5d4]');
+  renderBanner();
+</script>
