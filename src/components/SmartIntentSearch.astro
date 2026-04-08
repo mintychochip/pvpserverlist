@@ -1,0 +1,336 @@
+---
+// SmartIntentSearch - AI extracts intent from natural language, clarifies if needed
+
+export interface Props {
+  id?: string;
+}
+
+const { id = 'smart-search' } = Astro.props;
+---
+
+<div id={id} class="smart-intent-search">
+  <!-- Search Input -->
+  <div class="search-container">
+    <div class="input-wrapper">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input 
+        type="text" 
+        id={`${id}-input`}
+        placeholder="Describe your ideal server (e.g., 'survival with economy and friendly community')..."
+        class="search-input"
+        autocomplete="off"
+      />
+      <button id={`${id}-btn`} class="search-button">
+        <span class="btn-text">Find</span>
+        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Quick suggestions -->
+    <div class="suggestions">
+      <span class="suggestion-label">Try:</span>
+      <button class="suggestion-chip" data-query="survival smp with claims and active discord">survival smp with claims</button>
+      <button class="suggestion-chip" data-query="hardcore pvp factions with raiding">hardcore pvp factions</button>
+      <button class="suggestion-chip" data-query="skyblock economy with custom items">skyblock economy</button>
+      <button class="suggestion-chip" data-query="small vanilla community server">small vanilla community</button>
+    </div>
+  </div>
+
+  <!-- AI Clarification Chat (hidden initially) -->
+  <div id={`${id}-chat`} class="chat-container hidden">
+    <div class="chat-messages" id={`${id}-messages`}>
+      <!-- Messages appear here -->
+    </div>
+    <div class="chat-input-area">
+      <input 
+        type="text" 
+        id={`${id}-chat-input`}
+        placeholder="Reply to AI..."
+        class="chat-input"
+      />
+      <button id={`${id}-chat-send`} class="chat-send">Send</button>
+    </div>
+  </div>
+
+  <!-- Results Container -->
+  <div id={`${id}-results`} class="results-container"></div>
+</div>
+
+<link rel="stylesheet" href="/styles/smart-search.css" />
+
+<script define:vars={{ searchId: id }}>
+  const id = searchId;
+  const container = document.getElementById(id);
+  if (!container) return;
+
+  const input = document.getElementById(`${id}-input`);
+  const btn = document.getElementById(`${id}-btn`);
+  const results = document.getElementById(`${id}-results`);
+  const chat = document.getElementById(`${id}-chat`);
+  const messages = document.getElementById(`${id}-messages`);
+  const chatInput = document.getElementById(`${id}-chat-input`);
+  const chatSend = document.getElementById(`${id}-chat-send`);
+
+  let conversationHistory = [];
+  let currentIntent = null;
+
+  // Parse intent locally first (fast path)
+  function parseIntentLocal(query) {
+    const lower = query.toLowerCase();
+    const intent = {
+      game: 'minecraft', // default
+      gamemode: null,
+      features: [],
+      size: null,
+      confidence: 0
+    };
+
+    // Gamemodes
+    const gamemodes = {
+      survival: ['survival', 'smp', 'vanilla'],
+      pvp: ['pvp', 'factions', 'raid', 'raiding'],
+      skyblock: ['skyblock', 'island'],
+      creative: ['creative', 'build', 'plot'],
+      minigames: ['minigame', 'bedwars', 'skywars', 'hunger games'],
+      hardcore: ['hardcore', 'death ban'],
+      prison: ['prison', 'mines'],
+      modded: ['modded', 'forge', 'fabric', 'modpack'],
+      rp: ['roleplay', 'rp', 'lore']
+    };
+
+    for (const [mode, keywords] of Object.entries(gamemodes)) {
+      if (keywords.some(k => lower.includes(k))) {
+        intent.gamemode = mode;
+        intent.confidence += 30;
+        break;
+      }
+    }
+
+    // Features
+    const features = {
+      economy: ['economy', 'money', 'trading', 'shop'],
+      claims: ['claim', 'land protect', 'grief protection'],
+      community: ['community', 'discord', 'friendly', 'social'],
+      anticheat: ['anticheat', 'no hackers'],
+      mmo: ['mmo', 'mcmmo', 'rpg', 'skills'],
+      events: ['events', 'bosses', 'seasons'],
+      bedrock: ['bedrock', 'console', 'mobile', 'pe'],
+      voice: ['voice chat', 'proximity voice'],
+      custom: ['custom items', 'custom weapons', 'unique'],
+      shops: ['player shops', 'player economy'],
+      towny: ['towny', 'town', 'nation'],
+      quests: ['quests', 'missions', 'story'],
+      kits: ['starter kit', 'free items'],
+      vanilla: ['vanilla', 'no plugins', 'pure']
+    };
+
+    for (const [feature, keywords] of Object.entries(features)) {
+      if (keywords.some(k => lower.includes(k))) {
+        intent.features.push(feature);
+        intent.confidence += 15;
+      }
+    }
+
+    // Size
+    if (/\b(small|tiny|close.knit|few players)\b/.test(lower)) {
+      intent.size = 'small';
+      intent.confidence += 20;
+    } else if (/\b(medium|mid.size|50.*players|100.*players)\b/.test(lower)) {
+      intent.size = 'medium';
+      intent.confidence += 20;
+    } else if (/\b(large|big|huge|massive|200.*players)\b/.test(lower)) {
+      intent.size = 'large';
+      intent.confidence += 20;
+    }
+
+    return intent;
+  }
+
+  // Check if intent is clear enough
+  function isIntentClear(intent) {
+    // Need at least gamemode OR 2+ features
+    return intent.gamemode || intent.features.length >= 2 || intent.confidence >= 50;
+  }
+
+  // Build search query from intent
+  function buildQuery(intent, original) {
+    const parts = [intent.game];
+    if (intent.gamemode) parts.push(intent.gamemode);
+    parts.push(...intent.features);
+    if (intent.size) parts.push(intent.size);
+    return parts.join(' ');
+  }
+
+  // Add message to chat
+  function addMessage(text, isUser = false) {
+    const div = document.createElement('div');
+    div.className = `message ${isUser ? 'user' : 'ai'}`;
+    div.innerHTML = isUser 
+      ? `<div class="message-bubble user">${text}</div>`
+      : `<div class="message-avatar">🤖</div><div class="message-bubble ai">${text}</div>`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  // Show AI thinking
+  function showThinking() {
+    const div = document.createElement('div');
+    div.id = `${id}-thinking`;
+    div.className = 'message ai thinking';
+    div.innerHTML = `<div class="message-avatar">🤖</div><div class="message-bubble ai"><span class="dots"><span></span><span></span><span></span></span></div>`;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function hideThinking() {
+    document.getElementById(`${id}-thinking`)?.remove();
+  }
+
+  // Search servers
+  async function searchServers(query) {
+    results.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Finding servers...</p></div>';
+    
+    try {
+      const res = await fetch('/api/search/semantic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, limit: 9 })
+      });
+      const data = await res.json();
+
+      if (data.results?.length) {
+        results.innerHTML = `
+          <div class="results-header">
+            <h3>Found ${data.results.length} servers</h3>
+            <span class="search-terms">${query}</span>
+          </div>
+          <div class="results-grid">
+            ${data.results.map(s => `
+              <a href="/servers/${s.id}" class="server-card">
+                <div class="server-header">
+                  <div class="server-icon">${s.icon ? `<img src="${s.icon}" alt="" />` : '⛏️'}</div>
+                  <div class="server-info">
+                    <h4>${s.name}</h4>
+                    <p>${s.ip}:${s.port}</p>
+                  </div>
+                </div>
+                <div class="server-meta">
+                  <span class="status ${s.status || 'offline'}">${s.status === 'online' ? '●' : '○'} ${s.players_online || 0}/${s.max_players || '?'}</span>
+                  <span class="votes">▲ ${s.vote_count || 0}</span>
+                </div>
+                ${s.tags?.length ? `<div class="server-tags">${s.tags.slice(0, 3).map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
+              </a>
+            `).join('')}
+          </div>
+          <div class="results-footer">
+            <button class="new-search-btn" onclick="location.reload()">New Search</button>
+            <a href="/minecraft?q=${encodeURIComponent(query)}" class="view-all-link">View all results →</a>
+          </div>
+        `;
+      } else {
+        results.innerHTML = `
+          <div class="empty-state">
+            <p>No servers found for "${query}"</p>
+            <button class="retry-btn" onclick="document.getElementById('${id}-input').focus()">Try different keywords</button>
+          </div>
+        `;
+      }
+    } catch (e) {
+      results.innerHTML = '<div class="empty-state"><p>Search failed. Please try again.</p></div>';
+    }
+  }
+
+  // AI clarification flow
+  async function askAIForClarification(query, intent) {
+    chat.classList.remove('hidden');
+    results.classList.add('hidden');
+    
+    // Show what we understood
+    let understood = [];
+    if (intent.gamemode) understood.push(intent.gamemode);
+    understood.push(...intent.features.map(f => f.replace(/_/g, ' ')));
+    if (intent.size) understood.push(intent.size + ' community');
+    
+    const clarificationMsg = understood.length > 0 
+      ? `I see you want ${understood.join(', ')}. What else matters to you?` 
+      : `I didn't quite catch what you're looking for. What gamemode do you prefer? (survival, pvp, skyblock, creative, etc.)`;
+    
+    addMessage(clarificationMsg, false);
+    conversationHistory.push({ role: 'assistant', content: clarificationMsg });
+    
+    chatInput.focus();
+  }
+
+  // Handle chat response
+  async function handleChatResponse() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    
+    chatInput.value = '';
+    addMessage(text, true);
+    conversationHistory.push({ role: 'user', content: text });
+    
+    showThinking();
+    
+    // Combine original query + clarification
+    const combinedQuery = conversationHistory.map(m => m.content).join(' ');
+    const newIntent = parseIntentLocal(combinedQuery);
+    
+    hideThinking();
+    
+    if (isIntentClear(newIntent)) {
+      const searchQuery = buildQuery(newIntent, combinedQuery);
+      addMessage(`Got it! Searching for servers matching "${searchQuery}"...`, false);
+      setTimeout(() => searchServers(searchQuery), 500);
+    } else {
+      // Still unclear, ask another question
+      const followUp = newIntent.gamemode 
+        ? "Any specific features you want? (economy, claims, events, etc.)"
+        : "And what size community do you prefer? (small, medium, large)";
+      addMessage(followUp, false);
+      conversationHistory.push({ role: 'assistant', content: followUp });
+    }
+  }
+
+  // Main search handler
+  async function handleSearch() {
+    const query = input.value.trim();
+    if (!query) return;
+    
+    btn.disabled = true;
+    btn.querySelector('.btn-text').textContent = '...';
+    
+    const intent = parseIntentLocal(query);
+    
+    if (isIntentClear(intent)) {
+      // Intent is clear, search immediately
+      const searchQuery = buildQuery(intent, query);
+      searchServers(searchQuery);
+    } else {
+      // Need clarification
+      await askAIForClarification(query, intent);
+    }
+    
+    btn.disabled = false;
+    btn.querySelector('.btn-text').textContent = 'Find';
+  }
+
+  // Event listeners
+  btn?.addEventListener('click', handleSearch);
+  input?.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSearch(); });
+  
+  chatSend?.addEventListener('click', handleChatResponse);
+  chatInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChatResponse(); });
+
+  // Suggestion chips
+  container.querySelectorAll('.suggestion-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      input.value = chip.dataset.query;
+      handleSearch();
+    });
+  });
+</script>
