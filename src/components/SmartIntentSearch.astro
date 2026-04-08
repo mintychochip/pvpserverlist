@@ -1,5 +1,5 @@
 ---
-// SmartIntentSearch - AI extracts intent from natural language, clarifies until clear, then refines results
+// SmartIntentSearch - Phase-based intent wizard (no chatbot feel)
 
 export interface Props {
   id?: string;
@@ -8,9 +8,9 @@ export interface Props {
 const { id = 'smart-search' } = Astro.props;
 ---
 
-<div id={id} class="smart-intent-search">
-  <!-- Search Input -->
-  <div class="search-container">
+<div id={id} class="smart-intent-wizard">
+  <!-- Search Bar -->
+  <div class="search-bar-container" id={`${id}-search-bar`}>
     <div class="input-wrapper">
       <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
@@ -18,488 +18,294 @@ const { id = 'smart-search' } = Astro.props;
       <input 
         type="text" 
         id={`${id}-input`}
-        placeholder="Describe your ideal server (e.g., 'survival with economy and friendly community')..."
+        placeholder="Describe your ideal server..."
         class="search-input"
         autocomplete="off"
       />
-      <button id={`${id}-btn`} class="search-button">
-        <span class="btn-text">Find</span>
-        <svg class="btn-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-        </svg>
-      </button>
+      <button id={`${id}-btn`} class="search-button">Find</button>
     </div>
     
-    <!-- Quick suggestions -->
     <div class="suggestions">
       <span class="suggestion-label">Try:</span>
-      <button class="suggestion-chip" data-query="survival smp with claims and active discord">survival smp with claims</button>
-      <button class="suggestion-chip" data-query="hardcore pvp factions with raiding">hardcore pvp factions</button>
-      <button class="suggestion-chip" data-query="skyblock economy with custom items">skyblock economy</button>
-      <button class="suggestion-chip" data-query="small vanilla community server">small vanilla community</button>
+      <button class="suggestion-chip" data-query="survival smp with claims">survival smp</button>
+      <button class="suggestion-chip" data-query="pvp factions">pvp factions</button>
+      <button class="suggestion-chip" data-query="skyblock economy">skyblock</button>
+      <button class="suggestion-chip" data-query="small community">small community</button>
     </div>
   </div>
 
-  <!-- AI Clarification Chat (hidden initially) -->
-  <div id={`${id}-chat`} class="chat-container hidden">
-    <div class="chat-messages" id={`${id}-messages`}>
-      <!-- Messages appear here -->
-    </div>
-    <div class="chat-input-area">
-      <input 
-        type="text" 
-        id={`${id}-chat-input`}
-        placeholder="Reply to AI..."
-        class="chat-input"
-      />
-      <button id={`${id}-chat-send`} class="chat-send">Send</button>
+  <!-- Wizard Modal (hidden initially) -->
+  <div id={`${id}-wizard`} class="wizard-overlay hidden">
+    <div class="wizard-container">
+      <!-- Progress -->
+      <div class="wizard-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id={`${id}-progress`}></div>
+        </div>
+        <span class="progress-text" id={`${id}-progress-text`}>Step 1 of 2</span>
+      </div>
+
+      <!-- Step 1: Game Selection -->
+      <div class="wizard-step active" data-step="1">
+        <h3>What game are you looking for?</h3>
+        <p class="step-desc">Select your game</p>
+        <div class="option-grid">
+          <button class="option-card large" data-value="minecraft" data-type="game">
+            <span class="option-icon">🎮</span>
+            <span class="option-label">Minecraft</span>
+            <span class="option-badge">Live</span>
+          </button>
+          <button class="option-card large disabled" data-value="rust" data-type="game" disabled>
+            <span class="option-icon">🔧</span>
+            <span class="option-label">Rust</span>
+            <span class="option-badge soon">Soon</span>
+          </button>
+          <button class="option-card large disabled" data-value="cs2" data-type="game" disabled>
+            <span class="option-icon">🔫</span>
+            <span class="option-label">CS2</span>
+            <span class="option-badge soon">Soon</span>
+          </button>
+          <button class="option-card large" data-value="other" data-type="game">
+            <span class="option-icon">✏️</span>
+            <span class="option-label">Other...</span>
+            <span class="option-desc">Type below</span>
+          </button>
+        </div>
+        <div class="other-input hidden" id={`${id}-game-other`}>
+          <input type="text" placeholder="What game?" />
+          <button class="confirm-btn">Continue</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Gamemode -->
+      <div class="wizard-step" data-step="2">
+        <button class="back-btn" data-back="1">← Back</button>
+        <h3>What gamemode?</h3>
+        <p class="step-desc">Choose your experience</p>
+        <div class="option-grid">
+          <button class="option-card" data-value="survival" data-type="gamemode">
+            <span class="option-icon">🛡️</span>
+            <span class="option-label">Survival</span>
+          </button>
+          <button class="option-card" data-value="pvp" data-type="gamemode">
+            <span class="option-icon">⚔️</span>
+            <span class="option-label">PvP</span>
+          </button>
+          <button class="option-card" data-value="skyblock" data-type="gamemode">
+            <span class="option-icon">🏝️</span>
+            <span class="option-label">Skyblock</span>
+          </button>
+          <button class="option-card" data-value="creative" data-type="gamemode">
+            <span class="option-icon">🎨</span>
+            <span class="option-label">Creative</span>
+          </button>
+          <button class="option-card" data-value="minigames" data-type="gamemode">
+            <span class="option-icon">🎲</span>
+            <span class="option-label">Minigames</span>
+          </button>
+          <button class="option-card" data-value="hardcore" data-type="gamemode">
+            <span class="option-icon">🔥</span>
+            <span class="option-label">Hardcore</span>
+          </button>
+          <button class="option-card" data-value="smp" data-type="gamemode">
+            <span class="option-icon">🤝</span>
+            <span class="option-label">SMP</span>
+          </button>
+          <button class="option-card" data-value="factions" data-type="gamemode">
+            <span class="option-icon">🏰</span>
+            <span class="option-label">Factions</span>
+          </button>
+          <button class="option-card" data-value="prison" data-type="gamemode">
+            <span class="option-icon">⛓️</span>
+            <span class="option-label">Prison</span>
+          </button>
+          <button class="option-card" data-value="modded" data-type="gamemode">
+            <span class="option-icon">⚙️</span>
+            <span class="option-label">Modded</span>
+          </button>
+          <button class="option-card" data-value="rp" data-type="gamemode">
+            <span class="option-icon">🎭</span>
+            <span class="option-label">Roleplay</span>
+          </button>
+          <button class="option-card other" data-value="other" data-type="gamemode">
+            <span class="option-icon">✏️</span>
+            <span class="option-label">Other...</span>
+          </button>
+        </div>
+        <div class="other-input hidden" id={`${id}-mode-other`}>
+          <input type="text" placeholder="Describe the gamemode..." />
+          <button class="confirm-btn">Continue</button>
+        </div>
+        <button class="skip-btn" data-skip="search">Skip → Search with what I have</button>
+      </div>
+
+      <!-- Searching State -->
+      <div class="wizard-step" data-step="searching">
+        <div class="searching-state">
+          <div class="spinner"></div>
+          <p>Finding servers...</p>
+          <p class="search-query" id={`${id}-searching-query`}></p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Results Container -->
+  <!-- Results -->
   <div id={`${id}-results`} class="results-container"></div>
   
-  <!-- Refinement Options (shown AFTER search) -->
+  <!-- Refinements (after results) -->
   <div id={`${id}-refinements`} class="refinements-container hidden">
     <div class="refinements-header">
-      <h4>🔍 Refine Your Results</h4>
-      <button id={`${id}-clear-refinements`} class="clear-refinements">Clear all</button>
+      <h4>🔍 Refine Results</h4>
+      <button id={`${id}-clear-refinements`}>Clear all</button>
     </div>
     
-    <!-- Game Filter -->
-    <div class="refinement-section">
-      <span class="refinement-label">Game:</span>
-      <div class="refinement-chips" data-refine="game">
-        <button class="refine-chip" data-value="minecraft">🎮 Minecraft</button>
-        <button class="refine-chip" data-value="rust">🎮 Rust</button>
-        <button class="refine-chip" data-value="cs2">🎮 CS2</button>
-      </div>
-    </div>
-    
-    <!-- Gamemode Filter -->
-    <div class="refinement-section">
-      <span class="refinement-label">Gamemode:</span>
-      <div class="refinement-chips" data-refine="gamemode">
-        <button class="refine-chip" data-value="survival">🛡️ Survival</button>
-        <button class="refine-chip" data-value="pvp">⚔️ PvP</button>
-        <button class="refine-chip" data-value="skyblock">🏝️ Skyblock</button>
-        <button class="refine-chip" data-value="factions">🏰 Factions</button>
-        <button class="refine-chip" data-value="creative">🎨 Creative</button>
-        <button class="refine-chip" data-value="minigames">🎲 Minigames</button>
-        <button class="refine-chip" data-value="hardcore">🔥 Hardcore</button>
-        <button class="refine-chip" data-value="modded">⚙️ Modded</button>
-        <button class="refine-chip" data-value="smp">🤝 SMP</button>
-        <button class="refine-chip" data-value="prison">⛓️ Prison</button>
-        <button class="refine-chip" data-value="rp">🎭 Roleplay</button>
-      </div>
-    </div>
-    
-    <!-- Features Filter -->
     <div class="refinement-section">
       <span class="refinement-label">Features:</span>
       <div class="refinement-chips" data-refine="features">
         <button class="refine-chip" data-value="economy">💰 Economy</button>
-        <button class="refine-chip" data-value="claims">🏠 Land Claims</button>
+        <button class="refine-chip" data-value="claims">🏠 Claims</button>
         <button class="refine-chip" data-value="community">👥 Discord</button>
         <button class="refine-chip" data-value="anticheat">🔒 Anti-Cheat</button>
         <button class="refine-chip" data-value="mmo">🏛️ McMMO</button>
         <button class="refine-chip" data-value="events">🌍 Events</button>
         <button class="refine-chip" data-value="bedrock">📱 Bedrock</button>
-        <button class="refine-chip" data-value="voice">🎤 Voice Chat</button>
-        <button class="refine-chip" data-value="custom">🧙 Custom Items</button>
-        <button class="refine-chip" data-value="shops">🏪 Player Shops</button>
+        <button class="refine-chip" data-value="voice">🎤 Voice</button>
+        <button class="refine-chip" data-value="custom">🧙 Custom</button>
+        <button class="refine-chip" data-value="shops">🏪 Shops</button>
         <button class="refine-chip" data-value="towny">🏘️ Towny</button>
         <button class="refine-chip" data-value="quests">📜 Quests</button>
         <button class="refine-chip" data-value="crates">🎁 Crates</button>
-        <button class="refine-chip" data-value="kits">🎒 Starter Kits</button>
+        <button class="refine-chip" data-value="kits">🎒 Kits</button>
         <button class="refine-chip" data-value="parkour">🏃 Parkour</button>
         <button class="refine-chip" data-value="vanilla">🌿 Vanilla</button>
       </div>
     </div>
     
-    <!-- Size Filter -->
     <div class="refinement-section">
-      <span class="refinement-label">Server Size:</span>
+      <span class="refinement-label">Size:</span>
       <div class="refinement-chips" data-refine="size">
-        <button class="refine-chip" data-value="small">🌱 Small (1-50)</button>
-        <button class="refine-chip" data-value="medium">🌳 Medium (50-200)</button>
-        <button class="refine-chip" data-value="large">🌲 Large (200+)</button>
+        <button class="refine-chip" data-value="small">🌱 Small</button>
+        <button class="refine-chip" data-value="medium">🌳 Medium</button>
+        <button class="refine-chip" data-value="large">🌲 Large</button>
       </div>
     </div>
-    
-    <button id={`${id}-apply-refinements`} class="apply-refinements-btn">Apply Filters</button>
   </div>
 </div>
 
-<link rel="stylesheet" href="/styles/smart-search.css" />
-
-<script define:vars={{ searchId: id }}>
-  const id = searchId;
+<script define:vars={{ wizardId: id }}>
+  const id = wizardId;
   const container = document.getElementById(id);
   if (!container) return;
 
+  const searchBar = document.getElementById(`${id}-search-bar`);
+  const wizard = document.getElementById(`${id}-wizard`);
   const input = document.getElementById(`${id}-input`);
   const btn = document.getElementById(`${id}-btn`);
   const results = document.getElementById(`${id}-results`);
-  const chat = document.getElementById(`${id}-chat`);
-  const messages = document.getElementById(`${id}-messages`);
-  const chatInput = document.getElementById(`${id}-chat-input`);
-  const chatSend = document.getElementById(`${id}-chat-send`);
   const refinements = document.getElementById(`${id}-refinements`);
+  const progressFill = document.getElementById(`${id}-progress`);
+  const progressText = document.getElementById(`${id}-progress-text`);
+  const searchingQuery = document.getElementById(`${id}-searching-query`);
 
-  let conversationHistory = [];
-  let accumulatedIntent = {
-    game: null,
-    gamemode: null,
-    features: [],
-    size: null
-  };
-  let currentSearchQuery = '';
-  let hasSearched = false;
+  let intent = { game: null, gamemode: null, features: [], size: null, originalQuery: '' };
+  let currentStep = 1;
 
-  // Knowledge bases for parsing
-  const GAME_KEYWORDS = {
-    minecraft: ['minecraft', 'mc', 'mine craft'],
-    rust: ['rust', 'rusty'],
-    cs2: ['cs2', 'csgo', 'counter strike', 'counter-strike']
+  // Keyword databases
+  const GAME_KEYWORDS = { minecraft: ['minecraft', 'mc'], rust: ['rust'], cs2: ['cs2', 'csgo'] };
+  const MODE_KEYWORDS = {
+    survival: ['survival', 'smp'], pvp: ['pvp', 'factions'], skyblock: ['skyblock'],
+    creative: ['creative', 'build'], minigames: ['minigame', 'bedwars'], hardcore: ['hardcore'],
+    prison: ['prison'], modded: ['modded', 'forge', 'fabric'], smp: ['smp'], rp: ['roleplay', 'rp']
   };
 
-  const GAMEMODE_KEYWORDS = {
-    survival: ['survival', 'smp', 'vanilla survival'],
-    pvp: ['pvp', 'factions', 'raid', 'raiding', 'kitpvp'],
-    skyblock: ['skyblock', 'sky block', 'island'],
-    creative: ['creative', 'build', 'plots', 'plot'],
-    minigames: ['minigame', 'minigames', 'bedwars', 'skywars', 'hunger games', 'hg'],
-    hardcore: ['hardcore', 'death ban', 'hard core'],
-    prison: ['prison', 'mines', 'rankup'],
-    modded: ['modded', 'mods', 'forge', 'fabric', 'modpack', 'mod pack'],
-    smp: ['smp', 'survival multiplayer', 'vanilla smp'],
-    rp: ['roleplay', 'rp', 'lore', 'role play', 'role-play']
-  };
-
-  const FEATURE_KEYWORDS = {
-    economy: ['economy', 'money', 'trading', 'trade', 'shop', 'shops', 'currency'],
-    claims: ['claim', 'claims', 'land protect', 'grief protection', 'protection', 'protected'],
-    community: ['community', 'discord', 'friendly', 'social', 'active community'],
-    anticheat: ['anticheat', 'anti-cheat', 'no hackers', 'cheat protection'],
-    mmo: ['mmo', 'mcmmo', 'mcmmo', 'rpg', 'skills', 'leveling'],
-    events: ['events', 'event', 'bosses', 'seasons', 'tournaments'],
-    bedrock: ['bedrock', 'console', 'mobile', 'pe', 'pocket edition', 'crossplay'],
-    voice: ['voice chat', 'proximity voice', 'voicechat', 'proximity chat'],
-    custom: ['custom items', 'custom weapons', 'unique items', 'custom', 'custom enchant'],
-    shops: ['player shops', 'player economy', 'player shop', 'chestshop'],
-    towny: ['towny', 'town', 'nation', 'nations', 'towns'],
-    quests: ['quests', 'quest', 'missions', 'mission', 'story', 'storyline'],
-    crates: ['crates', 'crate', 'lootbox', 'loot crate', 'key', 'keys'],
-    kits: ['starter kit', 'starter kits', 'free items', 'daily kit', 'kit'],
-    parkour: ['parkour', 'parkour map', 'jumping', 'jump'],
-    vanilla: ['vanilla', 'no plugins', 'pure vanilla', 'plain']
-  };
-
-  const SIZE_KEYWORDS = {
-    small: ['small', 'tiny', 'close knit', 'close-knit', 'few players', 'intimate', 'cozy'],
-    medium: ['medium', 'mid size', 'mid-size', 'moderate', '50 players', '100 players'],
-    large: ['large', 'big', 'huge', 'massive', '200 players', '500 players', '1000 players']
-  };
-
-  // Parse intent from text - extracts all known entities
-  function parseIntent(text, existingIntent = null) {
+  // Parse intent from initial query
+  function parseIntent(text) {
     const lower = text.toLowerCase();
-    const intent = existingIntent ? { ...existingIntent } : {
-      game: null,
-      gamemode: null,
-      features: [],
-      size: null
-    };
-
-    // Parse game
+    const result = { game: null, gamemode: null, features: [], size: null };
+    
     for (const [game, keywords] of Object.entries(GAME_KEYWORDS)) {
-      if (keywords.some(k => lower.includes(k))) {
-        intent.game = game;
-        break;
-      }
+      if (keywords.some(k => lower.includes(k))) { result.game = game; break; }
     }
-
-    // Parse gamemode
-    for (const [mode, keywords] of Object.entries(GAMEMODE_KEYWORDS)) {
-      if (keywords.some(k => lower.includes(k))) {
-        intent.gamemode = mode;
-        break;
-      }
+    for (const [mode, keywords] of Object.entries(MODE_KEYWORDS)) {
+      if (keywords.some(k => lower.includes(k))) { result.gamemode = mode; break; }
     }
-
-    // Parse features (can have multiple)
-    for (const [feature, keywords] of Object.entries(FEATURE_KEYWORDS)) {
-      if (keywords.some(k => lower.includes(k)) && !intent.features.includes(feature)) {
-        intent.features.push(feature);
-      }
-    }
-
-    // Parse size
-    for (const [size, keywords] of Object.entries(SIZE_KEYWORDS)) {
-      if (keywords.some(k => lower.includes(k))) {
-        intent.size = size;
-        break;
-      }
-    }
-
-    return intent;
+    if (/\b(small|tiny)\b/.test(lower)) result.size = 'small';
+    else if (/\b(medium|mid)\b/.test(lower)) result.size = 'medium';
+    else if (/\b(large|big|huge)\b/.test(lower)) result.size = 'large';
+    
+    return result;
   }
 
-  // Check what information is still needed
-  function getMissingInfo(intent) {
-    const missing = [];
-    
-    if (!intent.game) missing.push('game');
-    // Need at least gamemode OR features OR size in addition to game
-    if (!intent.gamemode && intent.features.length === 0 && !intent.size) {
-      missing.push('preference'); // gamemode, feature, or size
+  function showStep(n) {
+    wizard.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
+    if (n === 'searching') {
+      wizard.querySelector('[data-step="searching"]').classList.add('active');
+      progressFill.style.width = '100%';
+      progressText.textContent = 'Searching...';
+    } else {
+      wizard.querySelector(`[data-step="${n}"]`).classList.add('active');
+      progressFill.style.width = `${(n / 2) * 100}%`;
+      progressText.textContent = `Step ${n} of 2`;
     }
-    
-    return missing;
+    currentStep = n;
   }
 
-  // Check if intent is clear enough to search
-  function isIntentClear(intent) {
-    const missing = getMissingInfo(intent);
-    return missing.length === 0;
+  function openWizard() {
+    wizard.classList.remove('hidden');
+    searchBar.classList.add('hidden');
+    
+    // Determine starting step based on parsed intent
+    if (!intent.game) {
+      showStep(1);
+    } else if (!intent.gamemode) {
+      showStep(2);
+    } else {
+      doSearch();
+    }
   }
 
-  // Generate next question based on what's missing
-  function generateQuestion(intent) {
-    const missing = getMissingInfo(intent);
-    
-    if (missing.includes('game')) {
-      const questions = [
-        "What game are you looking for? I can help you find **Minecraft**, **Rust**, or **CS2** servers.",
-        "Which game? Minecraft, Rust, or CS2?",
-        "Are you looking for a Minecraft server, Rust server, or CS2 server?"
-      ];
-      return questions[Math.floor(Math.random() * questions.length)];
-    }
-    
-    if (missing.includes('preference')) {
-      const game = intent.game || 'this game';
-      const questions = [
-        `What kind of ${game} experience are you after? Survival, PvP, creative building, or something else?`,
-        `Any specific features you want in a ${game} server? Economy, claims protection, events, etc.?`,
-        `What matters most to you? Gamemode (survival, PvP, etc.), features (economy, Discord), or community size?`
-      ];
-      return questions[Math.floor(Math.random() * questions.length)];
-    }
-    
-    return null;
+  function closeWizard() {
+    wizard.classList.add('hidden');
+    searchBar.classList.remove('hidden');
   }
 
-  // Build search query from intent
-  function buildSearchQuery(intent) {
+  function buildQuery() {
     const parts = [];
     if (intent.game) parts.push(intent.game);
     if (intent.gamemode) parts.push(intent.gamemode);
     parts.push(...intent.features);
     if (intent.size) parts.push(intent.size);
-    return parts.join(' ');
+    return parts.join(' ') || intent.originalQuery || 'minecraft';
   }
 
-  // Add message to chat
-  function addMessage(text, isUser = false) {
-    const div = document.createElement('div');
-    div.className = `message ${isUser ? 'user' : 'ai'}`;
-    div.innerHTML = isUser 
-      ? `<div class="message-bubble user">${escapeHtml(text)}</div>`
-      : `<div class="message-avatar">🤖</div><div class="message-bubble ai">${text}</div>`;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
-
-  // Add multiple choice options to chat
-  function addChoiceButtons(choices, allowOther = true) {
-    const div = document.createElement('div');
-    div.className = 'message ai choice-container';
+  async function doSearch() {
+    showStep('searching');
+    searchingQuery.textContent = buildQuery();
     
-    let html = '<div class="choice-grid">';
-    choices.forEach(choice => {
-      html += `<button class="choice-btn" data-value="${escapeHtml(choice.value)}" data-type="${choice.type}">${escapeHtml(choice.label)}</button>`;
-    });
-    if (allowOther) {
-      html += `<button class="choice-btn other" data-value="other">✏️ Other (type below)...</button>`;
-    }
-    html += '</div>';
-    
-    div.innerHTML = `<div class="message-avatar">🤖</div><div class="message-bubble ai">${html}</div>`;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-    
-    // Attach click handlers
-    div.querySelectorAll('.choice-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const value = btn.dataset.value;
-        const type = btn.dataset.type;
-        
-        if (value === 'other') {
-          // User wants to type - focus the input and show hint
-          chatInput.placeholder = "Type what you're looking for...";
-          chatInput.focus();
-          btn.classList.add('selected');
-          btn.textContent = '✏️ Type your answer below';
-        } else {
-          // Handle the choice
-          handleChoiceSelection(type, value);
-        }
-      });
-    });
-  }
-
-  // Handle a choice button click
-  function handleChoiceSelection(type, value) {
-    // Add user message showing their choice
-    addMessage(value, true);
-    conversationHistory.push({ role: 'user', content: value });
-    
-    // Update intent based on selection
-    if (type === 'game') {
-      accumulatedIntent.game = value;
-    } else if (type === 'gamemode') {
-      accumulatedIntent.gamemode = value;
-    } else if (type === 'feature') {
-      if (!accumulatedIntent.features.includes(value)) {
-        accumulatedIntent.features.push(value);
-      }
-    } else if (type === 'size') {
-      accumulatedIntent.size = value;
-    }
-    
-    // Check if we can search now
-    if (isIntentClear(accumulatedIntent)) {
-      const confirmation = `Got it! You want a ${accumulatedIntent.gamemode || ''} ${accumulatedIntent.game} server${accumulatedIntent.features.length ? ' with ' + accumulatedIntent.features.join(', ') : ''}${accumulatedIntent.size ? ' (' + accumulatedIntent.size + ' community)' : ''}. Searching now...`;
-      addMessage(confirmation, false);
-      
-      setTimeout(async () => {
-        chat.classList.add('hidden');
-        const searchQuery = buildSearchQuery(accumulatedIntent);
-        await searchServers(searchQuery, accumulatedIntent);
-      }, 600);
-    } else {
-      // Still need more info - ask next question with choices
-      askNextQuestionWithChoices();
-    }
-  }
-
-  // Ask next question with multiple choice options
-  function askNextQuestionWithChoices() {
-    const missing = getMissingInfo(accumulatedIntent);
-    
-    if (missing.includes('game')) {
-      addQuestionWithChoices(
-        "What game are you looking for?",
-        [
-          { value: 'minecraft', label: '🎮 Minecraft', type: 'game' },
-          { value: 'rust', label: '🎮 Rust (Soon)', type: 'game' },
-          { value: 'cs2', label: '🎮 CS2 (Soon)', type: 'game' }
-        ]
-      );
-    } else if (missing.includes('preference')) {
-      const game = accumulatedIntent.game || 'this';
-      addQuestionWithChoices(
-        `What kind of ${game} experience?`,
-        [
-          { value: 'survival', label: '🛡️ Survival', type: 'gamemode' },
-          { value: 'pvp', label: '⚔️ PvP', type: 'gamemode' },
-          { value: 'skyblock', label: '🏝️ Skyblock', type: 'gamemode' },
-          { value: 'creative', label: '🎨 Creative', type: 'gamemode' },
-          { value: 'minigames', label: '🎲 Minigames', type: 'gamemode' },
-          { value: 'hardcore', label: '🔥 Hardcore', type: 'gamemode' },
-          { value: 'smp', label: '🤝 SMP', type: 'gamemode' }
-        ]
-      );
-    }
-  }
-
-  // Combined question + choices in one message
-  function addQuestionWithChoices(question, choices) {
-    const div = document.createElement('div');
-    div.className = 'message ai choice-container';
-    
-    let html = `<p>${escapeHtml(question)}</p><div class="choice-grid">`;
-    choices.forEach(choice => {
-      html += `<button class="choice-btn" data-value="${escapeHtml(choice.value)}" data-type="${choice.type}">${escapeHtml(choice.label)}</button>`;
-    });
-    html += `<button class="choice-btn other" data-value="other">✏️ Other...</button></div>`;
-    
-    div.innerHTML = `<div class="message-avatar">🤖</div><div class="message-bubble ai">${html}</div>`;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-    
-    // Attach click handlers
-    div.querySelectorAll('.choice-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const value = btn.dataset.value;
-        const type = btn.dataset.type;
-        
-        if (value === 'other') {
-          chatInput.placeholder = "Type your answer...";
-          chatInput.focus();
-          btn.classList.add('selected');
-          btn.textContent = '✏️ Type below';
-        } else {
-          handleChoiceSelection(type, value);
-        }
-      });
-    });
-  }
-
-  // Escape HTML
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  // Show AI thinking
-  function showThinking() {
-    const div = document.createElement('div');
-    div.id = `${id}-thinking`;
-    div.className = 'message ai thinking';
-    div.innerHTML = `<div class="message-avatar">🤖</div><div class="message-bubble ai"><span class="dots"><span></span><span></span><span></span></span></div>`;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
-
-  function hideThinking() {
-    document.getElementById(`${id}-thinking`)?.remove();
-  }
-
-  // Search servers and show results
-  async function searchServers(query, intent) {
-    results.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Finding servers...</p></div>';
+    results.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Searching...</p></div>';
     results.classList.remove('hidden');
-    refinements.classList.add('hidden');
     
     try {
       const res = await fetch('/api/search/semantic', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, limit: 12 })
+        body: JSON.stringify({ query: buildQuery(), limit: 12 })
       });
       const data = await res.json();
-
-      currentSearchQuery = query;
-      hasSearched = true;
-
-      // Show results
+      
+      closeWizard();
+      
       if (data.results?.length) {
         results.innerHTML = `
-          <div class="results-header">
-            <h3>Found ${data.results.length} servers</h3>
-            <span class="search-terms">${escapeHtml(query)}</span>
-          </div>
+          <div class="results-header"><h3>Found ${data.results.length} servers</h3></div>
           <div class="results-grid">
             ${data.results.map(s => `
               <a href="/servers/${s.id}" class="server-card">
                 <div class="server-header">
                   <div class="server-icon">${s.icon ? `<img src="${s.icon}" alt="" />` : '⛏️'}</div>
                   <div class="server-info">
-                    <h4>${escapeHtml(s.name)}</h4>
+                    <h4>${s.name}</h4>
                     <p>${s.ip}:${s.port}</p>
                   </div>
                 </div>
@@ -507,218 +313,138 @@ const { id = 'smart-search' } = Astro.props;
                   <span class="status ${s.status || 'offline'}">${s.status === 'online' ? '●' : '○'} ${s.players_online || 0}/${s.max_players || '?'}</span>
                   <span class="votes">▲ ${s.vote_count || 0}</span>
                 </div>
-                ${s.tags?.length ? `<div class="server-tags">${s.tags.slice(0, 3).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
               </a>
             `).join('')}
           </div>
         `;
-        
-        // Show refinement options
-        updateRefinementUI(intent);
         refinements.classList.remove('hidden');
-        
-        // Scroll to results
-        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        updateRefinementUI();
       } else {
-        results.innerHTML = `
-          <div class="empty-state">
-            <p>No servers found for "${escapeHtml(query)}"</p>
-            <button class="retry-btn" id="${id}-retry-btn">Try different keywords</button>
-          </div>
-        `;
-        document.getElementById(`${id}-retry-btn`)?.addEventListener('click', () => {
-          input.value = '';
-          input.focus();
-          resetSearch();
-        });
-        refinements.classList.add('hidden');
+        results.innerHTML = '<div class="empty-state"><p>No servers found. Try different terms.</p></div>';
       }
     } catch (e) {
       results.innerHTML = '<div class="empty-state"><p>Search failed. Please try again.</p></div>';
-      refinements.classList.add('hidden');
     }
   }
 
-  // Update refinement UI based on current intent
-  function updateRefinementUI(intent) {
-    // Mark currently selected values
+  function updateRefinementUI() {
     container.querySelectorAll('.refine-chip').forEach(chip => {
       const type = chip.closest('.refinement-chips')?.dataset.refine;
       const value = chip.dataset.value;
-      
       chip.classList.remove('active');
-      
-      if (type === 'game' && intent.game === value) {
-        chip.classList.add('active');
-      } else if (type === 'gamemode' && intent.gamemode === value) {
-        chip.classList.add('active');
-      } else if (type === 'features' && intent.features.includes(value)) {
-        chip.classList.add('active');
-      } else if (type === 'size' && intent.size === value) {
-        chip.classList.add('active');
-      }
+      if (type === 'features' && intent.features.includes(value)) chip.classList.add('active');
+      if (type === 'size' && intent.size === value) chip.classList.add('active');
     });
   }
 
-  // Handle refinement click
-  function handleRefinement(type, value) {
-    // Toggle the value in accumulated intent
-    if (type === 'game') {
-      accumulatedIntent.game = accumulatedIntent.game === value ? null : value;
-    } else if (type === 'gamemode') {
-      accumulatedIntent.gamemode = accumulatedIntent.gamemode === value ? null : value;
-    } else if (type === 'features') {
-      if (accumulatedIntent.features.includes(value)) {
-        accumulatedIntent.features = accumulatedIntent.features.filter(f => f !== value);
-      } else {
-        accumulatedIntent.features.push(value);
-      }
-    } else if (type === 'size') {
-      accumulatedIntent.size = accumulatedIntent.size === value ? null : value;
-    }
-    
-    updateRefinementUI(accumulatedIntent);
-    
-    // Re-run search with updated intent
-    const newQuery = buildSearchQuery(accumulatedIntent);
-    if (newQuery) {
-      searchServers(newQuery, accumulatedIntent);
-    }
-  }
+  // Event handlers
+  btn?.addEventListener('click', () => {
+    intent.originalQuery = input.value.trim();
+    intent = { ...intent, ...parseIntent(intent.originalQuery) };
+    openWizard();
+  });
 
-  // Handle main search input
-  async function handleSearch() {
-    const query = input.value.trim();
-    if (!query) return;
-    
-    btn.disabled = true;
-    btn.querySelector('.btn-text').textContent = '...';
-    
-    // Parse intent from this query
-    accumulatedIntent = parseIntent(query);
-    
-    // Check if intent is clear
-    if (isIntentClear(accumulatedIntent)) {
-      // Intent is clear - search immediately
-      chat.classList.add('hidden');
-      const searchQuery = buildSearchQuery(accumulatedIntent);
-      await searchServers(searchQuery, accumulatedIntent);
-    } else {
-      // Need clarification - start chat flow with multiple choice
-      chat.classList.remove('hidden');
-      results.classList.add('hidden');
-      refinements.classList.add('hidden');
-      messages.innerHTML = ''; // Clear previous chat
-      
-      // Ask first question with choices (no separate welcome message)
-      askNextQuestionWithChoices();
+  input?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      intent.originalQuery = input.value.trim();
+      intent = { ...intent, ...parseIntent(intent.originalQuery) };
+      openWizard();
     }
-    
-    btn.disabled = false;
-    btn.querySelector('.btn-text').textContent = 'Find';
-  }
-
-  // Handle chat response during clarification
-  async function handleChatResponse() {
-    const text = chatInput.value.trim();
-    if (!text) return;
-    
-    chatInput.value = '';
-    addMessage(text, true);
-    conversationHistory.push({ role: 'user', content: text });
-    
-    showThinking();
-    
-    // Parse new info from response
-    accumulatedIntent = parseIntent(text, accumulatedIntent);
-    
-    // Check if intent is now clear
-    if (isIntentClear(accumulatedIntent)) {
-      // Intent is clear - proceed to search
-      hideThinking();
-      const confirmation = `Got it! You want a ${accumulatedIntent.gamemode || ''} ${accumulatedIntent.game} server${accumulatedIntent.features.length ? ' with ' + accumulatedIntent.features.join(', ') : ''}${accumulatedIntent.size ? ' (' + accumulatedIntent.size + ' community)' : ''}. Searching now...`;
-      addMessage(confirmation, false);
-      
-      setTimeout(async () => {
-        chat.classList.add('hidden');
-        const searchQuery = buildSearchQuery(accumulatedIntent);
-        await searchServers(searchQuery, accumulatedIntent);
-      }, 800);
-    } else {
-      // Still unclear - ask another question
-      hideThinking();
-      const question = generateQuestion(accumulatedIntent);
-      addMessage(question, false);
-      conversationHistory.push({ role: 'assistant', content: question });
-    }
-  }
-
-  // Reset search state
-  function resetSearch() {
-    accumulatedIntent = { game: null, gamemode: null, features: [], size: null };
-    conversationHistory = [];
-    hasSearched = false;
-    currentSearchQuery = '';
-    results.innerHTML = '';
-    results.classList.add('hidden');
-    refinements.classList.add('hidden');
-    chat.classList.add('hidden');
-    messages.innerHTML = '';
-    input.value = '';
-  }
-
-  // Event listeners
-  btn?.addEventListener('click', handleSearch);
-  input?.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSearch(); });
-  
-  chatSend?.addEventListener('click', handleChatResponse);
-  chatInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChatResponse(); });
+  });
 
   // Suggestion chips
   container.querySelectorAll('.suggestion-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       input.value = chip.dataset.query;
-      handleSearch();
+      intent.originalQuery = chip.dataset.query;
+      intent = { ...intent, ...parseIntent(intent.originalQuery) };
+      openWizard();
     });
   });
+
+  // Step 1: Game selection
+  wizard.querySelectorAll('[data-step="1"] .option-card:not(.disabled)').forEach(card => {
+    card.addEventListener('click', () => {
+      const value = card.dataset.value;
+      if (value === 'other') {
+        document.getElementById(`${id}-game-other`).classList.remove('hidden');
+      } else {
+        intent.game = value;
+        showStep(2);
+      }
+    });
+  });
+
+  document.getElementById(`${id}-game-other`)?.querySelector('.confirm-btn')?.addEventListener('click', function() {
+    const val = this.previousElementSibling.value.trim();
+    if (val) {
+      intent.game = val;
+      showStep(2);
+    }
+  });
+
+  // Step 2: Gamemode
+  wizard.querySelectorAll('[data-step="2"] .option-card:not(.other)').forEach(card => {
+    card.addEventListener('click', () => {
+      intent.gamemode = card.dataset.value;
+      doSearch();
+    });
+  });
+
+  wizard.querySelector('[data-step="2"] .option-card.other')?.addEventListener('click', () => {
+    document.getElementById(`${id}-mode-other`).classList.remove('hidden');
+  });
+
+  document.getElementById(`${id}-mode-other`)?.querySelector('.confirm-btn')?.addEventListener('click', function() {
+    const val = this.previousElementSibling.value.trim();
+    if (val) {
+      intent.gamemode = val;
+      doSearch();
+    }
+  });
+
+  // Back button
+  wizard.querySelector('.back-btn')?.addEventListener('click', () => showStep(1));
+
+  // Skip button
+  wizard.querySelector('.skip-btn')?.addEventListener('click', () => doSearch());
 
   // Refinement chips
   container.querySelectorAll('.refine-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       const type = chip.closest('.refinement-chips')?.dataset.refine;
       const value = chip.dataset.value;
-      if (type && value) {
-        handleRefinement(type, value);
+      
+      if (type === 'features') {
+        if (intent.features.includes(value)) {
+          intent.features = intent.features.filter(f => f !== value);
+        } else {
+          intent.features.push(value);
+        }
+      } else if (type === 'size') {
+        intent.size = intent.size === value ? null : value;
       }
+      
+      updateRefinementUI();
+      doSearch();
     });
   });
 
-  // Clear refinements button
+  // Clear refinements
   document.getElementById(`${id}-clear-refinements`)?.addEventListener('click', () => {
-    accumulatedIntent = { game: null, gamemode: null, features: [], size: null };
-    updateRefinementUI(accumulatedIntent);
-    // Re-run search with cleared filters
-    const searchQuery = buildSearchQuery(accumulatedIntent);
-    if (searchQuery) {
-      searchServers(searchQuery, accumulatedIntent);
-    }
-  });
-
-  // Apply refinements button (redundant since we apply immediately, but good UX)
-  document.getElementById(`${id}-apply-refinements`)?.addEventListener('click', () => {
-    const searchQuery = buildSearchQuery(accumulatedIntent);
-    if (searchQuery) {
-      searchServers(searchQuery, accumulatedIntent);
-    }
+    intent.features = [];
+    intent.size = null;
+    updateRefinementUI();
+    doSearch();
   });
 </script>
 
 <style>
-  .smart-intent-search {
+  .smart-intent-wizard {
     width: 100%;
   }
 
-  .search-container {
+  .search-bar-container {
     margin-bottom: 1rem;
   }
 
@@ -751,9 +477,6 @@ const { id = 'smart-search' } = Astro.props;
   }
 
   .search-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
     padding: 0.5rem 1rem;
     background: #00f5d4;
     color: #0a0a0f;
@@ -761,16 +484,10 @@ const { id = 'smart-search' } = Astro.props;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
   }
 
   .search-button:hover {
     background: #00d4b8;
-  }
-
-  .search-button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
   }
 
   .suggestions {
@@ -781,11 +498,6 @@ const { id = 'smart-search' } = Astro.props;
     margin-top: 0.75rem;
   }
 
-  .suggestion-label {
-    color: #8892b0;
-    font-size: 0.875rem;
-  }
-
   .suggestion-chip {
     padding: 0.25rem 0.75rem;
     background: #1a1a25;
@@ -794,7 +506,6 @@ const { id = 'smart-search' } = Astro.props;
     color: #8892b0;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
   }
 
   .suggestion-chip:hover {
@@ -802,146 +513,261 @@ const { id = 'smart-search' } = Astro.props;
     color: #fff;
   }
 
-  .chat-container {
-    margin-top: 1rem;
-    background: #12121a;
-    border: 1px solid #2a2a3a;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .chat-container.hidden,
-  .refinements-container.hidden,
-  .results-container.hidden {
-    display: none;
-  }
-
-  .chat-messages {
-    padding: 1rem;
-    max-height: 300px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .message {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .message.user {
-    flex-direction: row-reverse;
-  }
-
-  .message-avatar {
-    width: 2rem;
-    height: 2rem;
-    background: #00f5d4;
-    border-radius: 50%;
+  /* Wizard Overlay */
+  .wizard-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 15, 0.95);
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 1rem;
+  }
+
+  .wizard-overlay.hidden {
+    display: none;
+  }
+
+  .wizard-container {
+    background: #12121a;
+    border: 1px solid #2a2a3a;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Progress */
+  .wizard-progress {
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: #2a2a3a;
+    border-radius: 2px;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: #00f5d4;
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+
+  .progress-text {
     font-size: 0.875rem;
-    flex-shrink: 0;
+    color: #8892b0;
   }
 
-  .message.user .message-bubble {
-    background: #00f5d4;
-    color: #0a0a0f;
+  /* Steps */
+  .wizard-step {
+    display: none;
   }
 
-  .message-bubble {
-    padding: 0.75rem 1rem;
-    background: #1a1a25;
-    border-radius: 12px;
+  .wizard-step.active {
+    display: block;
+    animation: fadeIn 0.3s;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .wizard-step h3 {
     color: #fff;
-    max-width: 80%;
-    line-height: 1.5;
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
   }
 
-  .message-bubble strong {
-    color: #00f5d4;
+  .step-desc {
+    color: #8892b0;
+    margin-bottom: 1.5rem;
   }
 
-  .dots {
+  .back-btn {
+    background: transparent;
+    border: none;
+    color: #8892b0;
+    cursor: pointer;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    padding: 0;
+  }
+
+  .back-btn:hover {
+    color: #fff;
+  }
+
+  /* Option Grid */
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .option-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .option-card {
     display: flex;
-    gap: 0.25rem;
-  }
-
-  .dots span {
-    width: 0.5rem;
-    height: 0.5rem;
-    background: #00f5d4;
-    border-radius: 50%;
-    animation: bounce 1.4s infinite ease-in-out both;
-  }
-
-  .dots span:nth-child(1) { animation-delay: -0.32s; }
-  .dots span:nth-child(2) { animation-delay: -0.16s; }
-
-  @keyframes bounce {
-    0%, 80%, 100% { transform: scale(0); }
-    40% { transform: scale(1); }
-  }
-
-  .chat-input-area {
-    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 0.5rem;
     padding: 1rem;
-    border-top: 1px solid #2a2a3a;
-    background: #0a0a0f;
+    background: #1a1a25;
+    border: 1px solid #2a2a3a;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
   }
 
-  .chat-input {
+  .option-card:hover:not(.disabled) {
+    border-color: #00f5d4;
+    transform: translateY(-2px);
+  }
+
+  .option-card.large {
+    padding: 1.5rem;
+  }
+
+  .option-card.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .option-icon {
+    font-size: 1.5rem;
+  }
+
+  .option-card.large .option-icon {
+    font-size: 2rem;
+  }
+
+  .option-label {
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .option-badge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    background: #00f5d4;
+    color: #0a0a0f;
+    border-radius: 4px;
+  }
+
+  .option-badge.soon {
+    background: #2a2a3a;
+    color: #8892b0;
+  }
+
+  .option-desc {
+    font-size: 0.75rem;
+    color: #8892b0;
+  }
+
+  .option-card.other {
+    border-style: dashed;
+    color: #8892b0;
+  }
+
+  /* Other input */
+  .other-input {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .other-input.hidden {
+    display: none;
+  }
+
+  .other-input input {
     flex: 1;
-    padding: 0.75rem 1rem;
-    background: #1a1a25;
+    padding: 0.75rem;
+    background: #0a0a0f;
     border: 1px solid #2a2a3a;
     border-radius: 8px;
     color: #fff;
     outline: none;
   }
 
-  .chat-input:focus {
+  .other-input input:focus {
     border-color: #00f5d4;
   }
 
-  .chat-send {
-    padding: 0.75rem 1.25rem;
+  .confirm-btn {
+    padding: 0.75rem 1rem;
     background: #00f5d4;
     color: #0a0a0f;
     border: none;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
   }
 
-  .chat-send:hover {
-    background: #00d4b8;
+  .skip-btn {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: transparent;
+    border: 1px dashed #2a2a3a;
+    color: #8892b0;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
   }
 
+  .skip-btn:hover {
+    border-color: #00f5d4;
+    color: #fff;
+  }
+
+  /* Searching state */
+  .searching-state {
+    text-align: center;
+    padding: 3rem;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #2a2a3a;
+    border-top-color: #00f5d4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .search-query {
+    color: #8892b0;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Results */
   .results-container {
     margin-top: 1.5rem;
   }
 
   .results-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 1rem;
   }
 
   .results-header h3 {
     color: #fff;
-    font-size: 1.25rem;
-  }
-
-  .search-terms {
-    color: #8892b0;
-    font-size: 0.875rem;
   }
 
   .results-grid {
@@ -980,8 +806,6 @@ const { id = 'smart-search' } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.25rem;
-    flex-shrink: 0;
   }
 
   .server-icon img {
@@ -993,12 +817,8 @@ const { id = 'smart-search' } = Astro.props;
 
   .server-info h4 {
     color: #fff;
-    font-size: 1rem;
-    font-weight: 600;
     margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 1rem;
   }
 
   .server-info p {
@@ -1009,90 +829,36 @@ const { id = 'smart-search' } = Astro.props;
 
   .server-meta {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     font-size: 0.875rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .status {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+    color: #8892b0;
   }
 
   .status.online {
     color: #22c55e;
   }
 
-  .status.offline {
-    color: #ef4444;
-  }
-
   .votes {
     color: #ff3864;
   }
 
-  .server-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-  }
-
-  .tag {
-    padding: 0.125rem 0.5rem;
-    background: #1a1a25;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    color: #8892b0;
-  }
-
-  .loading-state,
   .empty-state {
     text-align: center;
     padding: 3rem;
-  }
-
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid #2a2a3a;
-    border-top-color: #00f5d4;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem;
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  .empty-state h4 {
-    color: #fff;
-    margin-bottom: 0.5rem;
-  }
-
-  .empty-state p {
     color: #8892b0;
   }
 
-  .retry-btn {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    background: #00f5d4;
-    color: #0a0a0f;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-
+  /* Refinements */
   .refinements-container {
     margin-top: 1.5rem;
     padding: 1rem;
     background: #12121a;
     border: 1px solid #2a2a3a;
     border-radius: 12px;
+  }
+
+  .refinements-container.hidden {
+    display: none;
   }
 
   .refinements-header {
@@ -1107,19 +873,15 @@ const { id = 'smart-search' } = Astro.props;
     margin: 0;
   }
 
-  .clear-refinements {
-    padding: 0.375rem 0.75rem;
+  .refinements-header button {
     background: transparent;
-    border: 1px solid #2a2a3a;
-    border-radius: 6px;
+    border: none;
     color: #8892b0;
-    font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
+    font-size: 0.875rem;
   }
 
-  .clear-refinements:hover {
-    border-color: #ff3864;
+  .refinements-header button:hover {
     color: #ff3864;
   }
 
@@ -1150,7 +912,6 @@ const { id = 'smart-search' } = Astro.props;
     cursor: pointer;
     transition: all 0.2s;
   }
-
   .refine-chip:hover {
     background: #2a2a3a;
     color: #fff;
@@ -1161,77 +922,5 @@ const { id = 'smart-search' } = Astro.props;
     color: #0a0a0f;
     border-color: #00f5d4;
     font-weight: 600;
-  }
-
-  /* Choice buttons in chat */
-  .choice-container .message-bubble {
-    max-width: 100%;
-    width: 100%;
-  }
-
-  .choice-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  @media (min-width: 640px) {
-    .choice-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  .choice-btn {
-    padding: 0.75rem 0.5rem;
-    background: #0a0a0f;
-    border: 1px solid #2a2a3a;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-  }
-
-  .choice-btn:hover {
-    background: #2a2a3a;
-    border-color: #00f5d4;
-  }
-
-  .choice-btn.selected {
-    background: #00f5d4;
-    color: #0a0a0f;
-    border-color: #00f5d4;
-    font-weight: 600;
-  }
-
-  .choice-btn.other {
-    grid-column: 1 / -1;
-    background: transparent;
-    border-style: dashed;
-    color: #8892b0;
-  }
-
-  .choice-btn.other:hover {
-    background: #1a1a25;
-    color: #fff;
-  }
-
-  .apply-refinements-btn {
-    width: 100%;
-    margin-top: 1rem;
-    padding: 0.75rem;
-    background: #00f5d4;
-    color: #0a0a0f;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .apply-refinements-btn:hover {
-    background: #00d4b8;
   }
 </style>
