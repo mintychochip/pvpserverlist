@@ -357,20 +357,77 @@ import Footer from '../components/Footer.astro';
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Show loading state
-    submitBtn.disabled = true;
-    btnText.textContent = 'Submitting...';
-    btnIcon.classList.add('hidden');
-    btnSpinner.classList.remove('hidden');
+    // Clear previous errors
     errorMsg.classList.add('hidden');
     
     const formData = new FormData(form);
     const tags = formData.getAll('tags');
     
+    // CLIENT-SIDE VALIDATION
+    const name = formData.get('name')?.toString().trim() || '';
+    const ip = formData.get('ip')?.toString().trim() || '';
+    const port = parseInt(formData.get('port')?.toString() || '25565');
+    const description = formData.get('description')?.toString().trim() || '';
+    
+    // Validate name
+    if (name.length < 3) {
+      errorMsg.classList.remove('hidden');
+      errorText.textContent = 'Server name must be at least 3 characters';
+      return;
+    }
+    if (name.length > 50) {
+      errorMsg.classList.remove('hidden');
+      errorText.textContent = 'Server name must be 50 characters or less';
+      return;
+    }
+    if (/^[0-9]+$/.test(name)) {
+      errorMsg.classList.remove('hidden');
+      errorText.textContent = 'Server name cannot be numbers only';
+      return;
+    }
+    
+    // Validate IP format (x.x.x.x)
+    const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+    if (!ipRegex.test(ip)) {
+      errorMsg.classList.remove('hidden');
+      errorText.textContent = 'Invalid IP address format. Use format: xxx.xxx.xxx.xxx';
+      return;
+    }
+    // Check each octet is 0-255
+    const octets = ip.split('.');
+    for (const octet of octets) {
+      const num = parseInt(octet);
+      if (num < 0 || num > 255) {
+        errorMsg.classList.remove('hidden');
+        errorText.textContent = 'Invalid IP address - each number must be 0-255';
+        return;
+      }
+    }
+    
+    // Validate port
+    if (port < 1 || port > 65535) {
+      errorMsg.classList.remove('hidden');
+      errorText.textContent = 'Port must be between 1 and 65535';
+      return;
+    }
+    
+    // Validate description
+    if (description.length < 10) {
+      errorMsg.classList.remove('hidden');
+      errorText.textContent = 'Description must be at least 10 characters';
+      return;
+    }
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    btnText.textContent = 'Submitting...';
+    btnIcon.classList.add('hidden');
+    btnSpinner.classList.remove('hidden');
+    
     const serverData = {
-      name: formData.get('name'),
-      ip: formData.get('ip'),
-      port: parseInt(formData.get('port')) || 25565,
+      name: name,
+      ip: ip,
+      port: port,
       version: formData.get('version') || null,
       edition: formData.get('edition'),
       tags: tags.length > 0 ? tags : ['Survival'],
