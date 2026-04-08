@@ -6,9 +6,6 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import AnimatedStat from '../components/AnimatedStat.astro';
 
-// Inline Arrow SVG component
-const ArrowIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>`;
-
 // Game categories data
 const gameCategories = [
   {
@@ -73,13 +70,21 @@ const gameCategories = [
           <AnimatedStat value={0} label="Fake Reviews" color="#ff3864" />
         </div>
 
-        <!-- Inline Wizard Search -->
+        <!-- AI Search -->
         <div class="max-w-3xl mx-auto mt-8 mb-4">
+          <div class="flex items-center justify-center gap-2 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+            <span class="text-[#00f5d4] text-sm font-medium">AI-Powered by Gemini</span>
+          </div>
           <div class="relative">
             <input 
               type="text" 
               id="wizard-search"
-              placeholder="Describe what you're looking for (e.g., 'minecraft pvp server with factions')..."
+              placeholder="Describe what you're looking for (e.g., 'pvp factions with economy')..."
               class="w-full px-6 py-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white text-lg placeholder-[#8892b0] focus:outline-none focus:border-[#00f5d4] pr-32"
             />
             <button 
@@ -91,37 +96,17 @@ const gameCategories = [
             </button>
           </div>
           <p class="text-[#8892b0] text-sm mt-2 text-left">
-            Or try: <span class="text-[#00f5d4] cursor-pointer hover:underline" onclick="setWizardSearch('survival building smp')">survival building smp</span>, 
-            <span class="text-[#00f5d4] cursor-pointer hover:underline" onclick="setWizardSearch('hardcore pvp')">hardcore pvp</span>, 
-            <span class="text-[#00f5d4] cursor-pointer hover:underline" onclick="setWizardSearch('creative plot world')">creative plot world</span>
+            Try: 
+            <span class="text-[#00f5d4] cursor-pointer hover:underline" onclick="setWizardSearch('survival smp with claims and friendly community')">survival smp with claims</span>, 
+            <span class="text-[#00f5d4] cursor-pointer hover:underline" onclick="setWizardSearch('hardcore pvp factions raiding')">hardcore pvp factions</span>, 
+            <span class="text-[#00f5d4] cursor-pointer hover:underline" onclick="setWizardSearch('skyblock with economy and custom items')">skyblock economy</span>
           </p>
-        </div>
-
-        <!-- Wizard Inline Container -->
-        <div id="inline-wizard" class="hidden max-w-3xl mx-auto mt-6">
-          <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg p-6">
-            <div id="wizard-question" class="mb-6">
-              <h3 class="text-xl font-bold text-white mb-2" id="wizard-q-text"></h3>
-              <p class="text-[#8892b0] text-sm">Select an option to refine your search</p>
-            </div>
-            <div id="wizard-options" class="grid gap-3 grid-cols-1 sm:grid-cols-2">
-              <!-- Options populated by JS -->
-            </div>
-            <div class="mt-4 flex justify-between">
-              <button id="wizard-back" class="text-[#8892b0] hover:text-white text-sm flex items-center gap-1 hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-                Back
-              </button>
-              <button id="wizard-skip" class="text-[#8892b0] hover:text-white text-sm">
-                Skip to results
-              </button>
-            </div>
-          </div>
         </div>
 
         <!-- Wizard Results -->
         <div id="wizard-results" class="hidden max-w-6xl mx-auto mt-8">
-          <h3 class="text-2xl font-bold text-white mb-4">Recommended Servers</h3>
+          <h3 class="text-2xl font-bold text-white mb-2">Recommended Servers</h3>
+          <p class="text-[#8892b0] text-sm mb-4" id="results-query"></p>
           <div id="wizard-results-grid" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             <!-- Results populated by JS -->
           </div>
@@ -143,7 +128,7 @@ const gameCategories = [
             style="clip-path: polygon(0 0, 90% 0, 100% 30%, 100% 100%, 10% 100%, 0 70%)"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-            Full Wizard
+            Full AI Wizard
           </a>
           <a
             href="/submit"
@@ -191,26 +176,18 @@ const gameCategories = [
             >
               <div class="mb-4" style={`color: ${game.iconColor}`}>
                 {game.id === 'minecraft' && (
-                  <!-- Minecraft Grass Block SVG -->
                   <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Top face -->
                     <path d="M24 0L48 12L24 24L0 12L24 0Z" fill="#5D8C3A"/>
-                    <!-- Front face -->
                     <path d="M24 24L48 12V36L24 48V24Z" fill="#735037"/>
-                    <!-- Left face -->
                     <path d="M24 24L0 12V36L24 48V24Z" fill="#8B654D"/>
-                    <!-- Dirt top edges -->
                     <path d="M0 12L24 24L48 12L24 0L0 12Z" fill="#5D8C3A"/>
-                    <!-- Grass highlight -->
                     <path d="M24 2L44 12L24 22L4 12L24 2Z" fill="#6B9E47"/>
                   </svg>
                 )}
                 {game.id === 'rust' && (
-                  <!-- Rust Gear SVG -->
                   <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="24" cy="24" r="12" stroke={game.iconColor} stroke-width="3" fill="none"/>
                     <circle cx="24" cy="24" r="6" stroke={game.iconColor} stroke-width="2" fill="none"/>
-                    <!-- Gear teeth -->
                     <path d="M24 4V10" stroke={game.iconColor} stroke-width="3" stroke-linecap="round"/>
                     <path d="M24 38V44" stroke={game.iconColor} stroke-width="3" stroke-linecap="round"/>
                     <path d="M4 24H10" stroke={game.iconColor} stroke-width="3" stroke-linecap="round"/>
@@ -222,12 +199,10 @@ const gameCategories = [
                   </svg>
                 )}
                 {game.id === 'cs2' && (
-                  <!-- CS2 Counter-Strike Icon -->
                   <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="24" cy="24" r="22" stroke={game.iconColor} stroke-width="3" fill="none"/>
                     <path d="M24 10V24L34 30" stroke={game.iconColor} stroke-width="3" stroke-linecap="round"/>
                     <circle cx="24" cy="24" r="4" fill={game.iconColor}/>
-                    <!-- Crosshair elements -->
                     <path d="M24 4V8" stroke={game.iconColor} stroke-width="2" stroke-linecap="round"/>
                     <path d="M24 40V44" stroke={game.iconColor} stroke-width="2" stroke-linecap="round"/>
                     <path d="M4 24H8" stroke={game.iconColor} stroke-width="2" stroke-linecap="round"/>
@@ -235,16 +210,10 @@ const gameCategories = [
                   </svg>
                 )}
               </div>
-              <h3 class="text-2xl font-bold text-white mb-2">
-                {game.name}
-              </h3>
-              <p class="text-[#8892b0] mb-4">
-                {game.description}
-              </p>
+              <h3 class="text-2xl font-bold text-white mb-2">{game.name}</h3>
+              <p class="text-[#8892b0] mb-4">{game.description}</p>
               {game.serverCount > 0 && (
-                <p class="text-[#00f5d4] font-bold">
-                  {game.serverCount.toLocaleString()} servers
-                </p>
+                <p class="text-[#00f5d4] font-bold">{game.serverCount.toLocaleString()} servers</p>
               )}
               {game.featured && (
                 <div class="mt-4 flex items-center gap-2 text-[#00f5d4]">
@@ -258,28 +227,18 @@ const gameCategories = [
       </div>
     </section>
 
-    <!-- Featured Minecraft Servers - Client Side Fetched -->
+    <!-- Featured Minecraft Servers -->
     <section class="px-4 py-16 border-t border-[#1a1a25]">
       <div class="max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-8">
-          <h2 class="text-3xl font-bold text-white">
-            Featured Minecraft Servers
-          </h2>
-          <a 
-            href="/minecraft" 
-            class="text-[#00f5d4] hover:underline flex items-center gap-2"
-          >
+          <h2 class="text-3xl font-bold text-white">Featured Minecraft Servers</h2>
+          <a href="/minecraft" class="text-[#00f5d4] hover:underline flex items-center gap-2">
             View All
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
-
-        <!-- Server grid - populated client-side -->
         <div id="featured-servers" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- Loading state -->
-          <div class="col-span-full text-center py-12 text-[#8892b0]">
-            Loading servers...
-          </div>
+          <div class="col-span-full text-center py-12 text-[#8892b0]">Loading servers...</div>
         </div>
       </div>
     </section>
@@ -287,45 +246,22 @@ const gameCategories = [
     <!-- Why GuildPost -->
     <section class="px-4 py-16 border-t border-[#1a1a25]">
       <div class="max-w-6xl mx-auto">
-        <h2 class="text-3xl font-bold text-white mb-12 text-center">
-          Why GuildPost?
-        </h2>
-
+        <h2 class="text-3xl font-bold text-white mb-12 text-center">Why GuildPost?</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="text-center">
-            <div class="w-16 h-16 bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center mx-auto mb-4 text-2xl">
-              🎮
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">
-              Multi-Game Support
-            </h3>
-            <p class="text-[#8892b0]">
-              Starting with Minecraft, expanding to Rust, CS2, and more.
-            </p>
+            <div class="w-16 h-16 bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center mx-auto mb-4 text-2xl">🎮</div>
+            <h3 class="text-xl font-bold text-white mb-2">Multi-Game Support</h3>
+            <p class="text-[#8892b0]">Starting with Minecraft, expanding to Rust, CS2, and more.</p>
           </div>
-
           <div class="text-center">
-            <div class="w-16 h-16 bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center mx-auto mb-4 text-2xl">
-              👥
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">
-              Community Driven
-            </h3>
-            <p class="text-[#8892b0]">
-              Real player votes and reviews. No pay-to-win placement.
-            </p>
+            <div class="w-16 h-16 bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center mx-auto mb-4 text-2xl">👥</div>
+            <h3 class="text-xl font-bold text-white mb-2">Community Driven</h3>
+            <p class="text-[#8892b0]">Real player votes and reviews. No pay-to-win placement.</p>
           </div>
-
           <div class="text-center">
-            <div class="w-16 h-16 bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center mx-auto mb-4 text-2xl">
-              📊
-            </div>
-            <h3 class="text-xl font-bold text-white mb-2">
-              Live Status
-            </h3>
-            <p class="text-[#8892b0]">
-              Real-time player counts and latency. Know before you join.
-            </p>
+            <div class="w-16 h-16 bg-[#12121a] border border-[#2a2a3a] flex items-center justify-center mx-auto mb-4 text-2xl">📊</div>
+            <h3 class="text-xl font-bold text-white mb-2">Live Status</h3>
+            <p class="text-[#8892b0]">Real-time player counts and latency. Know before you join.</p>
           </div>
         </div>
       </div>
@@ -334,17 +270,9 @@ const gameCategories = [
     <!-- Footer CTA -->
     <section class="px-4 py-16 border-t border-[#1a1a25]">
       <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-3xl font-bold text-white mb-4">
-          Ready to Find Your Server?
-        </h2>
-        <p class="text-[#8892b0] mb-8">
-          Join thousands of players discovering their next favorite server.
-        </p>
-        <a
-          href="/minecraft"
-          class="inline-flex items-center gap-2 bg-[#ff3864] text-white px-8 py-4 font-bold text-lg hover:bg-[#e63357] transition-colors"
-          style="clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)"
-        >
+        <h2 class="text-3xl font-bold text-white mb-4">Ready to Find Your Server?</h2>
+        <p class="text-[#8892b0] mb-8">Join thousands of players discovering their next favorite server.</p>
+        <a href="/minecraft" class="inline-flex items-center gap-2 bg-[#ff3864] text-white px-8 py-4 font-bold text-lg hover:bg-[#e63357] transition-colors" style="clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%)">
           Start Browsing
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
@@ -354,320 +282,151 @@ const gameCategories = [
     <!-- Footer -->
     <footer class="px-4 py-8 border-t border-[#2a2a3a]">
       <div class="max-w-6xl mx-auto text-center text-[#8892b0]">
-        <p>
-          Built for the community. Not for profit. 
-          <a href="https://github.com/mintychochip/guildpost" class="text-[#00f5d4] hover:underline ml-2">
-            Open source
-          </a>
-        </p>
+        <p>Built for the community. Not for profit. <a href="https://github.com/mintychochip/guildpost" class="text-[#00f5d4] hover:underline ml-2">Open source</a></p>
       </div>
     </footer>
   </div>
 </Layout>
 
-<!-- Client-side script to fetch servers -->
 <script>
   import { createClient } from '@supabase/supabase-js';
   
   const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.35hrTSgxQnICpLOY3g6W3eNxxe7DKCc3q165tyb0Ieo';
   
+  // Load featured servers
   async function loadServers() {
     const supabase = createClient(supabaseUrl, supabaseKey);
-    
     const { data: servers, error } = await supabase
       .from('servers')
-      .select('id, ip, port, name, description, version, tags, verified, vote_count, icon, banner')
+      .select('id, ip, port, name, description, version, tags, verified, vote_count, icon, banner, players_online, max_players, status')
       .order('vote_count', { ascending: false })
       .limit(6);
     
-    if (error) {
-      console.error('Error loading servers:', error);
-      document.getElementById('featured-servers').innerHTML = `
-        <div class="col-span-full text-center py-12 text-[#8892b0]">
-          Error loading servers. Please try again.
-        </div>
-      `;
-      return;
-    }
-    
-    if (!servers || servers.length === 0) {
-      document.getElementById('featured-servers').innerHTML = `
-        <div class="col-span-full text-center py-12 text-[#8892b0]">
-          No servers found.
-        </div>
-      `;
-      return;
-    }
-    
-    // Render servers
     const container = document.getElementById('featured-servers');
+    if (error || !servers?.length) {
+      container.innerHTML = `<div class="col-span-full text-center py-12 text-[#8892b0]">No servers found.</div>`;
+      return;
+    }
+    
     container.innerHTML = servers.map(server => `
       <a href="/servers/${server.id}" class="block p-5 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] transition-colors group rounded-lg">
         <div class="flex items-start gap-4 mb-4">
-          ${server.icon ? `
-            <img src="${server.icon}" alt="" class="w-14 h-14 rounded bg-[#1a1a25]" loading="lazy" />
-          ` : `
-            <div class="w-14 h-14 rounded bg-[#1a1a25] flex items-center justify-center">
-              <span class="text-[#00f5d4] text-2xl">⛏</span>
-            </div>
-          `}
+          ${server.icon ? `<img src="${server.icon}" alt="" class="w-14 h-14 rounded bg-[#1a1a25]" loading="lazy" />` : `<div class="w-14 h-14 rounded bg-[#1a1a25] flex items-center justify-center"><span class="text-[#00f5d4] text-2xl">⛏</span></div>`}
           <div class="flex-1 min-w-0">
-            <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate text-lg">
-              ${server.name}
-            </h3>
+            <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate text-lg">${server.name}</h3>
             <p class="text-sm text-[#8892b0] font-mono truncate">${server.ip}:${server.port}</p>
           </div>
         </div>
-        
-        <!-- Stats Row -->
         <div class="flex items-center gap-4 mb-3 text-sm">
-          <span class="flex items-center gap-1 ${server.players_online > 0 ? 'text-green-500' : 'text-[#8892b0]'}">
-            <span class="w-1.5 h-1.5 rounded-full ${server.players_online > 0 ? 'bg-green-500' : 'bg-gray-500'}"></span>
+          <span class="flex items-center gap-1 ${server.status === 'online' ? 'text-green-500' : 'text-[#8892b0]'}">
+            <span class="w-1.5 h-1.5 rounded-full ${server.status === 'online' ? 'bg-green-500' : 'bg-gray-500'}"></span>
             ${server.players_online || 0}/${server.max_players || '?'} online
           </span>
-          <span class="flex items-center gap-1 text-[#ff3864]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
-            ${server.vote_count || 0} votes
-          </span>
+          <span class="flex items-center gap-1 text-[#ff3864]">▲ ${server.vote_count || 0}</span>
         </div>
-        
-        <!-- Tags -->
         <div class="flex flex-wrap gap-1">
-          ${(server.tags || []).slice(0, 3).map(tag => `
-            <span class="text-xs px-2 py-1 bg-[#1a1a25] text-[#8892b0] rounded">${tag}</span>
-          `).join('')}
-          ${server.version ? `<span class="text-xs px-2 py-1 bg-[#00f5d4]/10 text-[#00f5d4] rounded">${server.version}</span>` : ''}
+          ${(server.tags || []).slice(0, 3).map(tag => `<span class="text-xs px-2 py-1 bg-[#1a1a25] text-[#8892b0] rounded">${tag}</span>`).join('')}
         </div>
       </a>
     `).join('');
   }
   
-  // Load servers when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadServers);
   } else {
     loadServers();
   }
   
-  // Surprise Me - Random Server
-  const surpriseBtn = document.getElementById('surprise-btn');
-  surpriseBtn?.addEventListener('click', async () => {
-    surpriseBtn.innerHTML = `
-      <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-        <line x1="12" y1="22.08" x2="12" y2="12"/>
-      </svg>
-      Finding random server...
-    `;
+  // Surprise Me
+  document.getElementById('surprise-btn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('surprise-btn');
+    btn.innerHTML = `<svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Finding...`;
     
     const supabase = createClient(supabaseUrl, supabaseKey);
+    const { count } = await supabase.from('servers').select('*', { count: 'exact', head: true });
+    if (!count) { showToast('No servers', 'error'); return; }
     
-    // Get count first
-    const { count } = await supabase
-      .from('servers')
-      .select('*', { count: 'exact', head: true });
-    
-    if (!count) {
-      showToast('No servers available', 'error');
-      return;
-    }
-    
-    // Get random offset
-    const randomOffset = Math.floor(Math.random() * count);
-    
-    // Fetch random server
-    const { data: servers } = await supabase
-      .from('servers')
-      .select('id, name')
-      .range(randomOffset, randomOffset)
-      .limit(1);
-    
-    if (servers && servers.length > 0) {
-      window.location.href = `/servers/${servers[0].id}`;
-    } else {
-      surpriseBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-          <line x1="12" y1="22.08" x2="12" y2="12"/>
-        </svg>
-        🎲 Surprise Me - Random Server
-      `;
-      showToast('Try again!', 'error');
-    }
+    const { data } = await supabase.from('servers').select('id').range(Math.floor(Math.random() * count), Math.floor(Math.random() * count)).limit(1);
+    if (data?.[0]) window.location.href = `/servers/${data[0].id}`;
   });
   
-  // Inline Wizard
+  // AI Semantic Search
   const wizardSearch = document.getElementById('wizard-search');
   const wizardSearchBtn = document.getElementById('wizard-search-btn');
-  const inlineWizard = document.getElementById('inline-wizard');
   const wizardResults = document.getElementById('wizard-results');
-  
-  let wizardStep = 0;
-  let wizardAnswers = [];
-  let searchQuery = '';
-  
-  const wizardQuestions = [
-    {
-      question: "What type of gameplay experience?",
-      options: [
-        { id: 'pvp', label: "PvP & Combat", icon: "⚔️", tags: ['PvP', 'Factions'] },
-        { id: 'survival', label: "Survival & Building", icon: "🏠", tags: ['Survival', 'SMP'] },
-        { id: 'creative', label: "Creative Mode", icon: "🎨", tags: ['Creative'] },
-        { id: 'minigames', label: "Minigames", icon: "🎮", tags: ['Minigames'] },
-      ]
-    },
-    {
-      question: "What difficulty level?",
-      options: [
-        { id: 'hardcore', label: "Hardcore", icon: "💀", tags: ['Hardcore'] },
-        { id: 'hard', label: "Hard", icon: "⚡", tags: ['Hard'] },
-        { id: 'normal', label: "Normal", icon: "⛏️", tags: [] },
-        { id: 'peaceful', label: "Peaceful/Easy", icon: "🌸", tags: ['Peaceful'] },
-      ]
-    },
-    {
-      question: "Preferred community size?",
-      options: [
-        { id: 'small', label: "Small (10-50)", icon: "👥", tags: ['Small'] },
-        { id: 'medium', label: "Medium (50-200)", icon: "👨‍👩‍👧‍👦", tags: ['Medium'] },
-        { id: 'large', label: "Large (200+)", icon: "🌆", tags: ['Large'] },
-        { id: 'any', label: "Any size", icon: "🤷", tags: [] },
-      ]
-    }
-  ];
+  const resultsGrid = document.getElementById('wizard-results-grid');
+  const resultsQuery = document.getElementById('results-query');
   
   window.setWizardSearch = (text) => {
     wizardSearch.value = text;
-    startWizard();
+    doSearch();
   };
   
-  function startWizard() {
-    searchQuery = wizardSearch.value.trim();
-    if (!searchQuery) return;
+  async function doSearch() {
+    const query = wizardSearch.value.trim();
+    if (!query) return;
     
-    wizardStep = 0;
-    wizardAnswers = [];
-    inlineWizard.classList.remove('hidden');
-    wizardResults.classList.add('hidden');
-    renderWizardStep();
-  }
-  
-  function renderWizardStep() {
-    const q = wizardQuestions[wizardStep];
-    document.getElementById('wizard-q-text').textContent = q.question;
-    
-    const optionsContainer = document.getElementById('wizard-options');
-    optionsContainer.innerHTML = q.options.map(opt => `
-      <button 
-        class="wizard-option-btn p-4 bg-[#0a0a0f] border border-[#2a2a3a] hover:border-[#00f5d4] rounded-lg transition-all text-left flex items-center gap-3"
-        onclick="selectWizardOption('${opt.id}')"
-      >
-        <span class="text-2xl">${opt.icon}</span>
-        <span class="font-bold text-white">${opt.label}</span>
-      </button>
-    `).join('');
-    
-    document.getElementById('wizard-back').classList.toggle('hidden', wizardStep === 0);
-  }
-  
-  window.selectWizardOption = (optionId) => {
-    const q = wizardQuestions[wizardStep];
-    const selected = q.options.find(o => o.id === optionId);
-    wizardAnswers.push(selected);
-    
-    if (wizardStep < wizardQuestions.length - 1) {
-      wizardStep++;
-      renderWizardStep();
-    } else {
-      finishWizard();
-    }
-  };
-  
-  document.getElementById('wizard-back')?.addEventListener('click', () => {
-    if (wizardStep > 0) {
-      wizardStep--;
-      wizardAnswers.pop();
-      renderWizardStep();
-    }
-  });
-  
-  document.getElementById('wizard-skip')?.addEventListener('click', finishWizard);
-  
-  async function finishWizard() {
-    inlineWizard.classList.add('hidden');
     wizardResults.classList.remove('hidden');
-    
-    const resultsGrid = document.getElementById('wizard-results-grid');
     resultsGrid.innerHTML = `
       <div class="col-span-full text-center py-12">
         <div class="w-8 h-8 border-2 border-[#2a2a3a] border-t-[#00f5d4] rounded-full animate-spin mx-auto mb-4"></div>
-        <p class="text-[#8892b0]">Finding perfect matches...</p>
+        <p class="text-[#8892b0]">Searching with AI...</p>
       </div>
     `;
     
-    // Collect all tags from answers
-    const allTags = wizardAnswers.flatMap(a => a.tags || []);
-    
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    
-    let query = supabase.from('servers').select('*');
-    
-    // If we have tags, filter by them
-    if (allTags.length > 0) {
-      query = query.contains('tags', allTags.slice(0, 2));
-    }
-    
-    // Also try to match search query in name/description
-    if (searchQuery) {
-      query = query.or(`name.ilike.%${searchQuery}%,description.ilike.%${searchQuery}%`);
-    }
-    
-    const { data: servers } = await query
-      .order('vote_count', { ascending: false })
-      .limit(6);
-    
-    if (!servers || servers.length === 0) {
+    try {
+      const response = await fetch('/api/search/semantic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, limit: 6 })
+      });
+      
+      const data = await response.json();
+      
+      if (data.results?.length > 0) {
+        resultsQuery.textContent = `Found ${data.results.length} servers matching "${query}"`;
+        resultsGrid.innerHTML = data.results.map(server => `
+          <a href="/servers/${server.id}" class="block p-4 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] rounded-lg transition-all group">
+            <div class="flex items-start gap-3">
+              <div class="w-12 h-12 bg-[#1a1a25] rounded-lg flex items-center justify-center flex-shrink-0">
+                ${server.icon ? `<img src="${server.icon}" alt="" class="w-full h-full object-cover rounded-lg">` : `<span class="text-[#00f5d4] text-xl">⛏</span>`}
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate">${server.name}</h3>
+                <p class="text-[#8892b0] text-sm truncate">${server.ip}:${server.port}</p>
+                <div class="flex items-center gap-3 mt-2 text-xs">
+                  <span class="${server.status === 'online' ? 'text-green-500' : 'text-gray-500'}">${server.status === 'online' ? '● Online' : '○ Offline'}</span>
+                  <span class="text-[#8892b0]">${server.players_online || 0} players</span>
+                  <span class="text-[#ff3864]">▲ ${server.vote_count || 0}</span>
+                </div>
+                ${server.tags?.length ? `<div class="flex flex-wrap gap-1 mt-2">${server.tags.slice(0, 3).map(t => `<span class="px-2 py-0.5 bg-[#1a1a25] text-[#8892b0] rounded text-xs">${t}</span>`).join('')}</div>` : ''}
+              </div>
+            </div>
+          </a>
+        `).join('');
+      } else {
+        resultsQuery.textContent = `No servers found for "${query}"`;
+        resultsGrid.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <p class="text-[#8892b0] mb-4">No matches found. Try a different search or browse all servers.</p>
+            <a href="/minecraft" class="px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg inline-block">Browse All Servers</a>
+          </div>
+        `;
+      }
+    } catch (err) {
+      console.error('Search error:', err);
       resultsGrid.innerHTML = `
         <div class="col-span-full text-center py-12">
-          <p class="text-[#8892b0] mb-4">No exact matches found.</p>
-          <a href="/minecraft" class="px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg inline-block">
-            Browse All Servers
-          </a>
+          <p class="text-[#ff3864] mb-4">Search failed. Please try again or browse all servers.</p>
+          <a href="/minecraft" class="px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg inline-block">Browse All Servers</a>
         </div>
       `;
-      return;
     }
     
-    resultsGrid.innerHTML = servers.map(server => `
-      <a href="/servers/${server.id}" class="block p-4 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] rounded-lg transition-all group">
-        <div class="flex items-start gap-3">
-          <div class="w-12 h-12 bg-[#1a1a25] rounded-lg flex items-center justify-center">
-            ${server.icon ? 
-              `<img src="${server.icon}" alt="" class="w-full h-full object-cover rounded-lg">` : 
-              `<span class="text-[#00f5d4] text-xl">⛏</span>`
-            }
-          </div>
-          <div class="flex-1 min-w-0">
-            <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate">${server.name}</h3>
-            <p class="text-[#8892b0] text-sm truncate">${server.ip}:${server.port}</p>
-            <div class="flex items-center gap-3 mt-2 text-xs">
-              <span class="${server.status === 'online' ? 'text-green-500' : 'text-gray-500'}">
-                ${server.status === 'online' ? '● Online' : '○ Offline'}
-              </span>
-              <span class="text-[#8892b0]">${server.players_online || 0} players</span>
-              <span class="text-[#ff3864]">▲ ${server.vote_count || 0}</span>
-            </div>
-          </div>
-        </div>
-      </a>
-    `).join('');
+    wizardResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   
-  wizardSearchBtn?.addEventListener('click', startWizard);
-  wizardSearch?.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') startWizard();
-  });
+  wizardSearchBtn?.addEventListener('click', doSearch);
+  wizardSearch?.addEventListener('keypress', (e) => { if (e.key === 'Enter') doSearch(); });
 </script>

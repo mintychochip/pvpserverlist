@@ -1,66 +1,13 @@
 ---
-// Server Search Wizard - Interactive conversational search
+// Server Search Wizard - AI-powered conversational search using Gemma 4B
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-
-const questions = [
-  {
-    id: 'playstyle',
-    question: "What type of Minecraft experience are you looking for?",
-    options: [
-      { id: 'A', label: "PvP / Competitive", icon: "⚔️", description: "Battle other players, factions, minigames", tags: ['PvP', 'Factions', 'Minigames'] },
-      { id: 'B', label: "Survival / Building", icon: "🏠", description: "Chill survival, building communities", tags: ['Survival', 'SMP', 'Vanilla'] },
-      { id: 'C', label: "Creative / Building", icon: "🎨", description: "Creative mode, building projects", tags: ['Creative', 'Building'] },
-      { id: 'D', label: "RPG / Story", icon: "📜", description: "Quests, dungeons, story-driven", tags: ['RPG', 'Adventure'] },
-    ]
-  },
-  {
-    id: 'difficulty',
-    question: "How challenging do you want it to be?",
-    options: [
-      { id: 'A', label: "Hardcore", icon: "💀", description: "Hard mode, permadeath, hardcore survival", tags: ['Hardcore', 'Hard'] },
-      { id: 'B', label: "Normal survival", icon: "⛏️", description: "Standard survival difficulty", tags: ['Survival'] },
-      { id: 'C', label: "Peaceful / Easy", icon: "🌸", description: "Relaxed, no PvP, casual building", tags: ['Peaceful', 'Casual'] },
-      { id: 'D', label: "Scalable", icon: "📊", description: "Difficulty adjusts to player count", tags: [] },
-    ]
-  },
-  {
-    id: 'community',
-    question: "What size community do you prefer?",
-    options: [
-      { id: 'A', label: "Small & Intimate", icon: "👥", description: "10-50 players, tight-knit community", tags: ['Small', 'SMP'] },
-      { id: 'B', label: "Medium", icon: "👨‍👩‍👧‍👦", description: "50-200 players, active but not chaotic", tags: ['Medium'] },
-      { id: 'C', label: "Large", icon: "🌆", description: "200+ players, bustling economy", tags: ['Large', 'Economy'] },
-      { id: 'D', label: "Don't care", icon: "🤷", description: "Any size works for me", tags: [] },
-    ]
-  },
-  {
-    id: 'features',
-    question: "Any specific features you're looking for?",
-    options: [
-      { id: 'A', label: "Economy & Trading", icon: "💰", description: "Shops, currency, player markets", tags: ['Economy', 'Trading'] },
-      { id: 'B', label: "Claim Protection", icon: "🛡️", description: "Land claims, grief protection", tags: ['Claims', 'Protection'] },
-      { id: 'C', label: "Custom Items/Mobs", icon: "✨", description: "Custom plugins, unique items", tags: ['Custom', 'Modded'] },
-      { id: 'D', label: "None specifically", icon: "✅", description: "Vanilla or basic features OK", tags: ['Vanilla'] },
-    ]
-  },
-  {
-    id: 'version',
-    question: "Which Minecraft version?",
-    options: [
-      { id: 'A', label: "Latest (1.20+)", icon: "🆕", description: "Newest blocks, features, mobs", version: '1.20' },
-      { id: 'B', label: "1.19.x", icon: "📦", description: "The Wild Update", version: '1.19' },
-      { id: 'C', label: "Older versions", icon: "🕰️", description: "1.18 or earlier", version: '1.18' },
-      { id: 'D', label: "Any version", icon: "🎲", description: "Version doesn't matter to me", version: 'any' },
-    ]
-  }
-];
 ---
 
 <Layout 
-  title="Find Your Perfect Server | GuildPost Wizard"
-  description="Answer a few questions and we'll find the perfect Minecraft server for you."
+  title="AI Server Wizard | GuildPost"
+  description="Let our AI find the perfect Minecraft server for you. Powered by Gemma 4B."
   url="https://guildpost.tech/wizard"
 >
   <div class="min-h-screen bg-[#0a0a0f]">
@@ -69,72 +16,91 @@ const questions = [
     <main class="max-w-4xl mx-auto px-4 py-8">
       <!-- Header -->
       <div class="text-center mb-12">
-        <h1 class="text-4xl font-black text-white mb-4">🔮 Server Wizard</h1>
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#00f5d4]/10 border border-[#00f5d4]/30 rounded-full text-[#00f5d4] text-sm mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          Powered by Gemma 4B
+        </div>
+        <h1 class="text-4xl font-black text-white mb-4">🔮 AI Server Wizard</h1>
         <p class="text-[#8892b0] text-lg max-w-xl mx-auto">
-          Answer {questions.length} quick questions and we'll find your perfect Minecraft server.
+          Tell me what you're looking for and I'll find the perfect Minecraft server for you.
         </p>
       </div>
 
-      <!-- Progress Bar -->
-      <div class="mb-8">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-[#8892b0] text-sm">Progress</span>
-          <span class="text-[#00f5d4] text-sm font-bold" id="progress-text">1/{questions.length}</span>
+      <!-- Chat Container -->
+      <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg overflow-hidden">
+        <!-- Messages -->
+        <div id="chat-messages" class="p-6 space-y-4 min-h-[400px] max-h-[500px] overflow-y-auto">
+          <!-- AI welcome message -->
+          <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-full bg-[#00f5d4]/20 flex items-center justify-center flex-shrink-0">
+              <span class="text-sm">🔮</span>
+            </div>
+            <div class="flex-1">
+              <div class="bg-[#1a1a25] rounded-lg p-4 text-white">
+                <p class="mb-3">Hi! I'm your AI server assistant. Tell me about the Minecraft server you're looking for.</p>
+                <p class="text-[#8892b0] text-sm">For example: "I want a survival server with a friendly community and claims protection" or "hardcore pvp factions with economy"</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="h-2 bg-[#1a1a25] rounded-full overflow-hidden">
-          <div 
-            id="progress-bar"
-            class="h-full bg-gradient-to-r from-[#00f5d4] to-[#ff3864] rounded-full transition-all duration-500"
-            style="width: 20%"
-          ></div>
-        </div>
-      </div>
 
-      <!-- Wizard Container -->
-      <div id="wizard-container" class="min-h-[400px]">
-        <!-- Questions rendered here -->
+        <!-- Input Area -->
+        <div class="border-t border-[#2a2a3a] p-4">
+          <div class="flex gap-3">
+            <input 
+              type="text" 
+              id="chat-input"
+              placeholder="Describe your ideal server..."
+              class="flex-1 px-4 py-3 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg text-white placeholder-[#8892b0] focus:outline-none focus:border-[#00f5d4]"
+              autocomplete="off"
+            />
+            <button 
+              id="send-btn"
+              class="px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#00d4b8] transition-colors flex items-center gap-2"
+            >
+              <span>Send</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m22 2-7 20-4-8-8-4Z"/>
+                <path d="m22 2-11 11"/>
+              </svg>
+            </button>
+          </div>
+          <div class="flex gap-2 mt-3">
+            <button class="quick-prompt px-3 py-1.5 bg-[#1a1a25] text-[#8892b0] rounded text-sm hover:bg-[#2a2a3a] transition-colors" data-prompt="survival server with active community">
+              Survival + Community
+            </button>
+            <button class="quick-prompt px-3 py-1.5 bg-[#1a1a25] text-[#8892b0] rounded text-sm hover:bg-[#2a2a3a] transition-colors" data-prompt="hardcore pvp factions">
+              Hardcore PvP
+            </button>
+            <button class="quick-prompt px-3 py-1.5 bg-[#1a1a25] text-[#8892b0] rounded text-sm hover:bg-[#2a2a3a] transition-colors" data-prompt="creative plot world with large builds">
+              Creative Building
+            </button>
+            <button class="quick-prompt px-3 py-1.5 bg-[#1a1a25] text-[#8892b0] rounded text-sm hover:bg-[#2a2a3a] transition-colors" data-prompt="skyblock with economy and custom items">
+              Skyblock Economy
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Results (hidden initially) -->
-      <div id="results-container" class="hidden">
-        <div class="text-center mb-8">
-          <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 6 9 17l-5-5"/>
-            </svg>
-          </div>
-          <h2 class="text-2xl font-bold text-white mb-2">Perfect match found!</h2>
-          <p class="text-[#8892b0]">Based on your preferences, here are the best servers for you:</p>
-          
-          <!-- Search Summary -->
-          <div class="mt-4 p-4 bg-[#12121a] rounded-lg inline-block">
-            <p class="text-sm text-[#8892b0] mb-2">Your search profile:</p>
-            <div id="search-tags" class="flex flex-wrap gap-2 justify-center"></div>
-          </div>
+      <div id="results-container" class="hidden mt-8">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl font-bold text-white mb-2">Recommended Servers</h2>
+          <p class="text-[#8892b0]" id="results-summary"></p>
         </div>
 
-        <!-- Results Grid -->
         <div id="wizard-results" class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-8">
           <!-- Results populated by JS -->
         </div>
 
-        <!-- Actions -->
-        <div class="flex flex-wrap gap-4 justify-center">
-          <button id="restart-wizard" class="px-6 py-3 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white rounded-lg transition-colors flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 0 6.74 2.74L21 8"/>
-              <path d="M3 3v5h5"/>
-              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 0-6.74-2.74L3 16"/>
-              <path d="M16 16h5v5"/>
-            </svg>
-            Start Over
+        <div class="text-center">
+          <button id="restart-wizard" class="px-6 py-3 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white rounded-lg transition-colors">
+            Start New Search
           </button>
-          <a href="/minecraft" class="px-6 py-3 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors flex items-center gap-2">
-            Browse All Servers
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-            </svg>
-          </a>
         </div>
       </div>
     </main>
@@ -143,238 +109,200 @@ const questions = [
   </div>
 </Layout>
 
-<script define:vars={{ questionsData: questions }}>
-  const questions = questionsData;
-  let currentStep = 0;
-  const answers = {};
-  const selectedTags = [];
-  
-  const container = document.getElementById('wizard-container');
-  const progressBar = document.getElementById('progress-bar');
-  const progressText = document.getElementById('progress-text');
+<script>
+  const chatMessages = document.getElementById('chat-messages');
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('send-btn');
   const resultsContainer = document.getElementById('results-container');
   
-  function renderQuestion() {
-    const q = questions[currentStep];
-    const progress = ((currentStep + 1) / questions.length) * 100;
+  let conversationHistory = [];
+  let isSearching = false;
+  
+  // Add message to chat
+  function addMessage(content, isUser = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'flex gap-3';
     
-    progressBar.style.width = `${progress}%`;
-    progressText.textContent = `${currentStep + 1}/${questions.length}`;
-    
-    container.innerHTML = `
-      <div class="animate-fade-in">
-        <h2 class="text-2xl font-bold text-white mb-2">${q.question}</h2>
-        <p class="text-[#8892b0] mb-8">Select an option below (A, B, C, or D)</p>
-        
-        <div class="grid gap-4">
-          ${q.options.map((opt, i) => `
-            <button 
-              class="wizard-option p-4 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] rounded-lg transition-all text-left flex items-center gap-4 group"
-              data-option="${opt.id}"
-              onclick="selectOption('${opt.id}')"
-            >
-              <div class="w-12 h-12 bg-[#1a1a25] rounded-lg flex items-center justify-center text-2xl group-hover:bg-[#00f5d4]/20 transition-colors">
-                ${opt.icon}
-              </div>
-              <div class="flex-1">
-                <div class="flex items-center gap-2">
-                  <span class="text-[#00f5d4] font-bold">${opt.id}.</span>
-                  <span class="font-bold text-white group-hover:text-[#00f5d4] transition-colors">${opt.label}</span>
-                </div>
-                <p class="text-[#8892b0] text-sm mt-1">${opt.description}</p>
-              </div>
-              <div class="text-[#2a2a3a] group-hover:text-[#00f5d4] transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-                </svg>
-              </div>
-            </button>
-          `).join('')}
+    if (isUser) {
+      messageDiv.innerHTML = `
+        <div class="flex-1 text-right">
+          <div class="inline-block bg-[#00f5d4]/20 rounded-lg p-4 text-white text-left max-w-[80%]">
+            ${content}
+          </div>
         </div>
-        
-        ${currentStep > 0 ? `
-          <button 
-            onclick="goBack()"
-            class="mt-6 px-4 py-2 text-[#8892b0] hover:text-white transition-colors flex items-center gap-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
-            </svg>
-            Go Back
-          </button>
-        ` : ''}
-      </div>
-    `;
-  }
-  
-  window.selectOption = (optionId) => {
-    const q = questions[currentStep];
-    const selected = q.options.find(o => o.id === optionId);
-    
-    answers[q.id] = selected;
-    
-    // Add tags
-    if (selected.tags) {
-      selectedTags.push(...selected.tags);
-    }
-    
-    // Add version if applicable
-    if (selected.version && selected.version !== 'any') {
-      answers.version = selected.version;
-    }
-    
-    // Move to next or show results
-    if (currentStep < questions.length - 1) {
-      currentStep++;
-      renderQuestion();
+        <div class="w-8 h-8 rounded-full bg-[#ff3864]/20 flex items-center justify-center flex-shrink-0">
+          <span class="text-sm">👤</span>
+        </div>
+      `;
     } else {
-      showResults();
-    }
-  };
-  
-  window.goBack = () => {
-    if (currentStep > 0) {
-      currentStep--;
-      renderQuestion();
-    }
-  };
-  
-  async function showResults() {
-    container.classList.add('hidden');
-    document.querySelector('.max-w-4xl > .mb-8').classList.add('hidden'); // Hide progress
-    resultsContainer.classList.remove('hidden');
-    
-    // Show search tags
-    const uniqueTags = [...new Set(selectedTags)];
-    document.getElementById('search-tags').innerHTML = uniqueTags.map(tag => 
-      `<span class="px-2 py-1 bg-[#00f5d4]/20 text-[#00f5d4] rounded text-xs">${tag}</span>`
-    ).join('');
-    
-    // Fetch matching servers
-    const resultsDiv = document.getElementById('wizard-results');
-    resultsDiv.innerHTML = `
-      <div class="col-span-full text-center py-12">
-        <div class="w-8 h-8 border-2 border-[#2a2a3a] border-t-[#00f5d4] rounded-full animate-spin mx-auto mb-4"></div>
-        <p class="text-[#8892b0]">Finding perfect matches...</p>
-      </div>
-    `;
-    
-    try {
-      const supabase = createClient(
-        'https://wpxutsdbiampnxfgkjwq.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.35hrTSgxQnICpLOY3g6W3eNxxe7DKCc3q165tyb0Ieo'
-      );
-      
-      // Build query based on selected tags
-      let query = supabase.from('servers').select('*');
-      
-      // Filter by tags (overlap)
-      if (uniqueTags.length > 0) {
-        query = query.contains('tags', uniqueTags.slice(0, 3)); // Top 3 tags
-      }
-      
-      // Filter by version
-      if (answers.version && answers.version !== 'any') {
-        query = query.ilike('version', `%${answers.version}%`);
-      }
-      
-      const { data: servers, error } = await query
-        .order('vote_count', { ascending: false })
-        .limit(6);
-      
-      if (error || !servers || servers.length === 0) {
-        resultsDiv.innerHTML = `
-          <div class="col-span-full text-center py-12">
-            <p class="text-[#8892b0] mb-4">No exact matches found with those criteria.</p>
-            <a href="/minecraft" class="px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg inline-block">
-              Browse All Servers
-            </a>
+      messageDiv.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-[#00f5d4]/20 flex items-center justify-center flex-shrink-0">
+          <span class="text-sm">🔮</span>
+        </div>
+        <div class="flex-1">
+          <div class="bg-[#1a1a25] rounded-lg p-4 text-white">
+            ${content}
           </div>
-        `;
-        return;
-      }
-      
-      resultsDiv.innerHTML = servers.map(server => `
-        <a href="/servers/${server.id}" class="block p-4 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] rounded-lg transition-all group">
-          <div class="flex items-start gap-3">
-            <div class="w-12 h-12 bg-[#1a1a25] rounded-lg flex items-center justify-center flex-shrink-0">
-              ${server.icon ? 
-                `<img src="${server.icon}" alt="" class="w-full h-full object-cover rounded-lg">` : 
-                `<span class="text-[#00f5d4] text-xl">⛏</span>`
-              }
-            </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate">${server.name}</h3>
-              <p class="text-[#8892b0] text-sm truncate">${server.ip}:${server.port}</p>
-              
-              <div class="flex items-center gap-3 mt-2 text-xs">
-                <span class="${server.status === 'online' ? 'text-green-500' : 'text-gray-500'}">
-                  ${server.status === 'online' ? '● Online' : '○ Offline'}
-                </span>
-                <span class="text-[#8892b0]">
-                  ${server.players_online || 0} players
-                </span>
-                <span class="text-[#ff3864]">
-                  ▲ ${server.vote_count || 0}
-                </span>
-              </div>
-              
-              ${server.tags?.length ? `
-                <div class="flex flex-wrap gap-1 mt-2">
-                  ${server.tags.slice(0, 3).map(tag => `
-                    <span class="px-2 py-0.5 bg-[#1a1a25] text-[#8892b0] rounded text-xs">${tag}</span>
-                  `).join('')}
-                </div>
-              ` : ''}
-            </div>
-          </div>
-        </a>
-      `).join('');
-      
-    } catch (err) {
-      resultsDiv.innerHTML = `
-        <div class="col-span-full text-center py-12 text-[#ff3864]">
-          Error loading results. <a href="/minecraft" class="text-[#00f5d4] underline">Browse all servers</a>
         </div>
       `;
     }
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
+  
+  // Add loading indicator
+  function addLoading() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loading-message';
+    loadingDiv.className = 'flex gap-3';
+    loadingDiv.innerHTML = `
+      <div class="w-8 h-8 rounded-full bg-[#00f5d4]/20 flex items-center justify-center flex-shrink-0">
+        <span class="text-sm">🔮</span>
+      </div>
+      <div class="flex-1">
+        <div class="bg-[#1a1a25] rounded-lg p-4 text-white">
+          <div class="flex gap-1">
+            <span class="w-2 h-2 bg-[#00f5d4] rounded-full animate-bounce" style="animation-delay: 0s"></span>
+            <span class="w-2 h-2 bg-[#00f5d4] rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+            <span class="w-2 h-2 bg-[#00f5d4] rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+          </div>
+        </div>
+      </div>
+    `;
+    chatMessages.appendChild(loadingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  
+  function removeLoading() {
+    document.getElementById('loading-message')?.remove();
+  }
+  
+  // Quick prompts
+  document.querySelectorAll('.quick-prompt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatInput.value = btn.dataset.prompt;
+      sendMessage();
+    });
+  });
+  
+  // Send message
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message || isSearching) return;
+    
+    chatInput.value = '';
+    addMessage(message, true);
+    conversationHistory.push({ role: 'user', content: message });
+    
+    addLoading();
+    isSearching = true;
+    
+    try {
+      // Call semantic search API with conversation context
+      const response = await fetch('/api/search/semantic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: message,
+          conversation: conversationHistory.slice(-6), // Last 3 exchanges
+          limit: 6
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Search failed');
+      }
+      
+      const data = await response.json();
+      
+      removeLoading();
+      
+      if (data.results && data.results.length > 0) {
+        // Show results
+        showResults(data.results, message);
+        addMessage(`I found ${data.results.length} servers that match what you're looking for! Check them out below. Want to refine your search? Tell me more details.`, false);
+      } else {
+        addMessage(`I couldn't find any servers matching "${message}". Try describing what you want differently - for example, mention game modes like survival, pvp, skyblock, or features like economy, claims, or community size.`, false);
+      }
+      
+      conversationHistory.push({ role: 'assistant', content: `Found ${data.results?.length || 0} results` });
+      
+    } catch (err) {
+      console.error('Search error:', err);
+      removeLoading();
+      addMessage(`I'm having trouble connecting to the search service right now. Please try again in a moment, or <a href="/minecraft" class="text-[#00f5d4] underline">browse all servers</a> directly.`, false);
+    }
+    
+    isSearching = false;
+  }
+  
+  // Show results
+  function showResults(servers, query) {
+    resultsContainer.classList.remove('hidden');
+    document.getElementById('results-summary').textContent = `Based on "${query}"`;
+    
+    const resultsDiv = document.getElementById('wizard-results');
+    resultsDiv.innerHTML = servers.map(server => `
+      <a href="/servers/${server.id}" class="block p-4 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] rounded-lg transition-all group">
+        <div class="flex items-start gap-3">
+          <div class="w-12 h-12 bg-[#1a1a25] rounded-lg flex items-center justify-center flex-shrink-0">
+            ${server.icon ? 
+              `<img src="${server.icon}" alt="" class="w-full h-full object-cover rounded-lg">` : 
+              `<span class="text-[#00f5d4] text-xl">⛏</span>`
+            }
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-bold text-white group-hover:text-[#00f5d4] transition-colors truncate">${server.name || 'Unnamed Server'}</h3>
+            <p class="text-[#8892b0] text-sm truncate">${server.ip}:${server.port}</p>
+            
+            <div class="flex items-center gap-3 mt-2 text-xs">
+              <span class="${server.status === 'online' ? 'text-green-500' : 'text-gray-500'}">
+                ${server.status === 'online' ? '● Online' : '○ Offline'}
+              </span>
+              <span class="text-[#8892b0]">${server.players_online || 0} players</span>
+              <span class="text-[#ff3864]">▲ ${server.vote_count || 0}</span>
+            </div>
+            
+            ${server.tags?.length ? `
+              <div class="flex flex-wrap gap-1 mt-2">
+                ${server.tags.slice(0, 3).map(tag => `
+                  <span class="px-2 py-0.5 bg-[#1a1a25] text-[#8892b0] rounded text-xs">${tag}</span>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      </a>
+    `).join('');
+    
+    // Scroll to results
+    resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  
+  // Event listeners
+  sendBtn?.addEventListener('click', sendMessage);
+  chatInput?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
   
   // Restart
   document.getElementById('restart-wizard')?.addEventListener('click', () => {
-    currentStep = 0;
-    Object.keys(answers).forEach(key => delete answers[key]);
-    selectedTags.length = 0;
-    
+    conversationHistory = [];
     resultsContainer.classList.add('hidden');
-    container.classList.remove('hidden');
-    document.querySelector('.max-w-4xl > .mb-8').classList.remove('hidden');
-    
-    renderQuestion();
+    chatMessages.innerHTML = `
+      <div class="flex gap-3">
+        <div class="w-8 h-8 rounded-full bg-[#00f5d4]/20 flex items-center justify-center flex-shrink-0">
+          <span class="text-sm">🔮</span>
+        </div>
+        <div class="flex-1">
+          <div class="bg-[#1a1a25] rounded-lg p-4 text-white">
+            <p class="mb-3">Hi! I'm your AI server assistant. Tell me about the Minecraft server you're looking for.</p>
+            <p class="text-[#8892b0] text-sm">For example: "I want a survival server with a friendly community" or "hardcore pvp factions with economy"</p>
+          </div>
+        </div>
+      </div>
+    `;
+    chatInput.focus();
   });
-  
-  // Keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
-    if (resultsContainer.classList.contains('hidden')) {
-      if (e.key === 'a' || e.key === 'A') selectOption('A');
-      if (e.key === 'b' || e.key === 'B') selectOption('B');
-      if (e.key === 'c' || e.key === 'C') selectOption('C');
-      if (e.key === 'd' || e.key === 'D') selectOption('D');
-      if (e.key === 'ArrowLeft' && currentStep > 0) goBack();
-    }
-  });
-  
-  // Start
-  renderQuestion();
 </script>
-
-<style>
-  @keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .animate-fade-in {
-    animation: fade-in 0.3s ease-out;
-  }
-</style>
