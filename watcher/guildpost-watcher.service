@@ -10,6 +10,7 @@ WorkingDirectory=/opt/watcher
 ExecStart=/opt/watcher/watcher
 Environment="SUPABASE_URL=https://wpxutsdbiampnxfgkjwq.supabase.co"
 Environment="SUPABASE_SERVICE_KEY=YOUR_SERVICE_KEY_HERE"
+Environment="PING_API_URL=https://guildpost.pages.dev"
 Environment="POLL_INTERVAL=300"
 Environment="WORKER_COUNT=5"
 Environment="LISTEN_ADDR=:8080"

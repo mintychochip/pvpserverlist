@@ -41,10 +41,27 @@ type PingResult struct {
 	Error         string
 }
 
+// PingAPIResponse from the ping API
+type PingAPIResponse struct {
+	Success    bool   `json:"success"`
+	Online     bool   `json:"online"`
+	Host       string `json:"host"`
+	Port       int    `json:"port"`
+	LatencyMs  int    `json:"latency_ms"`
+	Players    struct {
+		Online int `json:"online"`
+		Max    int `json:"max"`
+	} `json:"players"`
+	Version string `json:"version"`
+	Motd    string `json:"motd"`
+	Error   string `json:"error"`
+}
+
 // Config holds the application configuration
 type Config struct {
 	SupabaseURL    string
 	SupabaseKey    string
+	PingAPIURL     string
 	PollInterval   time.Duration
 	BatchSize      int
 	WorkerCount    int
@@ -105,6 +122,7 @@ func loadConfig() *Config {
 	return &Config{
 		SupabaseURL:  getEnv("SUPABASE_URL", ""),
 		SupabaseKey:  getEnv("SUPABASE_SERVICE_KEY", ""),
+		PingAPIURL:   getEnv("PING_API_URL", "https://guildpost.pages.dev"),
 		PollInterval: time.Duration(interval) * time.Second,
 		BatchSize:    batchSize,
 		WorkerCount:  workers,
@@ -262,29 +280,76 @@ func (w *Watcher) processBatches(servers []Server) []Server {
 	return results
 }
 
-// pingServer pings a Minecraft server
+// pingServer pings a Minecraft server via API
 func (w *Watcher) pingServer(server Server) Server {
-	address := fmt.Sprintf("%s:%d", server.IP, server.Port)
+	// Call the ping API
+	pingURL := fmt.Sprintf("%s/api/ping?host=%s&port=%d&timeout=5000", 
+		w.config.PingAPIURL, server.IP, server.Port)
 	
-	// Simple TCP connect with timeout
-	start := time.Now()
-	conn, err := net.DialTimeout("tcp", address, 5*time.Second)
-	latency := time.Since(start)
-
+	resp, err := http.Get(pingURL)
 	if err != nil {
 		server.Status = "offline"
 		server.PlayersOnline = 0
+		w.storePingHistory(server, false, 0, 0, 0, "", err.Error())
 		return server
 	}
-	defer conn.Close()
-
-	// For now, just mark as online if TCP connects
-	// In production, you'd implement the full Minecraft ping protocol
-	server.Status = "online"
-	server.PlayersOnline = 0 // Would parse from server response
+	defer resp.Body.Close()
 	
-	log.Printf("  ✓ %s (%s): online (%v)", server.Name, address, latency)
+	var pingResult PingAPIResponse
+	if err := json.NewDecoder(resp.Body).Decode(&pingResult); err != nil {
+		server.Status = "offline"
+		server.PlayersOnline = 0
+		w.storePingHistory(server, false, 0, 0, 0, "", err.Error())
+		return server
+	}
+	
+	if pingResult.Online {
+		server.Status = "online"
+		server.PlayersOnline = pingResult.Players.Online
+		server.MaxPlayers = pingResult.Players.Max
+		server.Version = pingResult.Version
+		server.Motd = pingResult.Motd
+		
+		log.Printf("  ✓ %s: online (%d/%d players, %dms)", 
+			server.Name, pingResult.Players.Online, pingResult.Players.Max, pingResult.LatencyMs)
+		
+		// Store ping history
+		w.storePingHistory(server, true, pingResult.Players.Online, pingResult.Players.Max, 
+			pingResult.LatencyMs, pingResult.Version, "")
+	} else {
+		server.Status = "offline"
+		server.PlayersOnline = 0
+		
+		log.Printf("  ✗ %s: offline (%s)", server.Name, pingResult.Error)
+		
+		// Store ping history
+		w.storePingHistory(server, false, 0, 0, 0, "", pingResult.Error)
+	}
+	
 	return server
+}
+
+// storePingHistory stores ping result for analytics
+func (w *Watcher) storePingHistory(server Server, online bool, playersOnline, maxPlayers, latency int, version, error string) {
+	data := map[string]interface{}{
+		"server_id":      server.ID,
+		"online":         online,
+		"players_online": playersOnline,
+		"max_players":    maxPlayers,
+		"latency_ms":     latency,
+		"version":        version,
+		"error":          error,
+		"ip_address":     server.IP,
+		"port":           server.Port,
+		"pinged_at":      time.Now().Format(time.RFC3339),
+	}
+	
+	resp := w.client.From("server_ping_history").Insert(data, "", "")
+	
+	var result interface{}
+	if err := resp.Execute(&result); err != nil {
+		log.Printf("    ✗ Failed to store ping history for %s: %v", server.Name, err)
+	}
 }
 
 // updateServers updates the database with ping results
@@ -294,6 +359,9 @@ func (w *Watcher) updateServers(servers []Server) {
 		data := map[string]interface{}{
 			"status":         server.Status,
 			"players_online": server.PlayersOnline,
+			"max_players":    server.MaxPlayers,
+			"version":        server.Version,
+			"motd":           server.Motd,
 			"last_ping_at":   time.Now().Format(time.RFC3339),
 		}
 
@@ -306,6 +374,8 @@ func (w *Watcher) updateServers(servers []Server) {
 			log.Printf("  ✗ Failed to update %s: %v", server.Name, err)
 		}
 	}
+	
+	log.Printf("📊 Updated %d servers and stored ping history", len(servers))
 }
 
 // StartHTTPServer starts the HTTP control interface
