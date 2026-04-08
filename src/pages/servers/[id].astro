@@ -5,6 +5,10 @@ import Header from '../../components/Header.astro';
 import Reviews from '../../components/Reviews.astro';
 import MarkdownRenderer from '../../components/MarkdownRenderer.astro';
 
+export async function getStaticPaths() {
+  return [];
+}
+
 const { id } = Astro.params;
 
 // Server-side fetch from Supabase
