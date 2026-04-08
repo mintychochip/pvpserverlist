@@ -122,6 +122,9 @@ const categories = [
                     <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="alerts" data-server-id={server.id}>
                       Alerts
                     </button>
+                    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="reviews" data-server-id={server.id}>
+                      Reviews
+                    </button>
                     <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="votes" data-server-id={server.id}>
                       Votes
                     </button>
@@ -476,6 +479,106 @@ const categories = [
                         <div class="alert-history text-sm text-[#8892b0]">
                           Loading...
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Reviews Tab -->
+                  <div class="tab-content hidden" data-tab="reviews" data-server-id={server.id}>
+                    <div class="reviews-container" data-server-id={server.id}>
+                      <!-- Rating Summary -->
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <!-- Overall Rating -->
+                        <div class="p-6 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg">
+                          <h4 class="text-md font-bold text-white mb-4">Overall Rating</h4>
+                          <div class="flex items-center gap-4">
+                            <div class="text-5xl font-black text-[#00f5d4]" id={`rating-avg-${server.id}`}>--</div>
+                            <div>
+                              <div class="flex text-2xl text-yellow-500 mb-1" id={`rating-stars-${server.id}`}>
+                                ☆☆☆☆☆
+                              </div>
+                              <p class="text-[#8892b0] text-sm" id={`rating-count-${server.id}`}>No reviews yet</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- Rating Breakdown -->
+                        <div class="p-6 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg">
+                          <h4 class="text-md font-bold text-white mb-4">Rating Breakdown</h4>
+                          <div class="space-y-2" id={`rating-bars-${server.id}`}>
+                            <div class="flex items-center gap-2 text-sm">
+                              <span class="text-[#8892b0] w-8">5★</span>
+                              <div class="flex-1 h-2 bg-[#1a1a25] rounded-full overflow-hidden">
+                                <div class="h-full bg-[#00f5d4] rounded-full" style="width: 0%"></div>
+                              </div>
+                              <span class="text-[#8892b0] w-8 text-right">0</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm">
+                              <span class="text-[#8892b0] w-8">4★</span>
+                              <div class="flex-1 h-2 bg-[#1a1a25] rounded-full overflow-hidden">
+                                <div class="h-full bg-[#00d4b8] rounded-full" style="width: 0%"></div>
+                              </div>
+                              <span class="text-[#8892b0] w-8 text-right">0</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm">
+                              <span class="text-[#8892b0] w-8">3★</span>
+                              <div class="flex-1 h-2 bg-[#1a1a25] rounded-full overflow-hidden">
+                                <div class="h-full bg-yellow-500 rounded-full" style="width: 0%"></div>
+                              </div>
+                              <span class="text-[#8892b0] w-8 text-right">0</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm">
+                              <span class="text-[#8892b0] w-8">2★</span>
+                              <div class="flex-1 h-2 bg-[#1a1a25] rounded-full overflow-hidden">
+                                <div class="h-full bg-orange-500 rounded-full" style="width: 0%"></div>
+                              </div>
+                              <span class="text-[#8892b0] w-8 text-right">0</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm">
+                              <span class="text-[#8892b0] w-8">1★</span>
+                              <div class="flex-1 h-2 bg-[#1a1a25] rounded-full overflow-hidden">
+                                <div class="h-full bg-[#ff3864] rounded-full" style="width: 0%"></div>
+                              </div>
+                              <span class="text-[#8892b0] w-8 text-right">0</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Review Filters -->
+                      <div class="flex flex-wrap gap-2 mb-4">
+                        <button class="review-filter-btn px-3 py-1.5 bg-[#00f5d4] text-[#0a0a0f] text-sm font-medium rounded transition-colors active" data-filter="all" data-server-id={server.id}>
+                          All Reviews
+                        </button>
+                        <button class="review-filter-btn px-3 py-1.5 bg-[#1a1a25] text-[#8892b0] text-sm rounded hover:bg-[#2a2a3a] transition-colors" data-filter="verified" data-server-id={server.id}>
+                          Verified Only
+                        </button>
+                        <button class="review-filter-btn px-3 py-1.5 bg-[#1a1a25] text-[#8892b0] text-sm rounded hover:bg-[#2a2a3a] transition-colors" data-filter="featured" data-server-id={server.id}>
+                          Featured
+                        </button>
+                        <button class="review-filter-btn px-3 py-1.5 bg-[#1a1a25] text-[#8892b0] text-sm rounded hover:bg-[#2a2a3a] transition-colors" data-filter="positive" data-server-id={server.id}>
+                          4-5 Stars
+                        </button>
+                        <button class="review-filter-btn px-3 py-1.5 bg-[#1a1a25] text-[#8892b0] text-sm rounded hover:bg-[#2a2a3a] transition-colors" data-filter="critical" data-server-id={server.id}>
+                          1-2 Stars
+                        </button>
+                      </div>
+                      
+                      <!-- Reviews List -->
+                      <div class="reviews-list space-y-4" data-server-id={server.id}>
+                        <div class="text-center py-8">
+                          <div class="w-12 h-12 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-3">
+                            <div class="animate-spin w-6 h-6 border-2 border-[#00f5d4] border-t-transparent rounded-full"></div>
+                          </div>
+                          <p class="text-[#8892b0] text-sm">Loading reviews...</p>
+                        </div>
+                      </div>
+                      
+                      <!-- Load More -->
+                      <div class="mt-4 text-center">
+                        <button class="load-more-reviews-btn px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded transition-colors hidden" data-server-id={server.id}>
+                          Load More Reviews
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -1081,4 +1184,257 @@ const categories = [
     };
     return icons[type] || '🔔';
   }
+  
+  // Reviews Tab Functionality
+  document.querySelectorAll('.tab-btn[data-tab="reviews"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const serverId = btn.getAttribute('data-server-id');
+      if (serverId) {
+        loadReviews(serverId);
+      }
+    });
+  });
+  
+  // Review filter handlers
+  document.querySelectorAll('.review-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.getAttribute('data-filter');
+      const serverId = btn.getAttribute('data-server-id');
+      
+      if (!serverId) return;
+      
+      // Update active state
+      document.querySelectorAll(`.review-filter-btn[data-server-id="${serverId}"]`).forEach(b => {
+        b.classList.remove('bg-[#00f5d4]', 'text-[#0a0a0f]', 'font-medium');
+        b.classList.add('bg-[#1a1a25]', 'text-[#8892b0]');
+      });
+      btn.classList.remove('bg-[#1a1a25]', 'text-[#8892b0]');
+      btn.classList.add('bg-[#00f5d4]', 'text-[#0a0a0f]', 'font-medium');
+      
+      loadReviews(serverId, filter as any);
+    });
+  });
+  
+  let reviewsOffset: {[key: string]: number} = {};
+  
+  async function loadReviews(serverId: string, filter: 'all' | 'verified' | 'featured' | 'positive' | 'critical' = 'all', append = false) {
+    const container = document.querySelector(`.reviews-list[data-server-id="${serverId}"]`);
+    if (!container) return;
+    
+    if (!append) {
+      reviewsOffset[serverId] = 0;
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <div class="w-12 h-12 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-3">
+            <div class="animate-spin w-6 h-6 border-2 border-[#00f5d4] border-t-transparent rounded-full"></div>
+          </div>
+          <p class="text-[#8892b0] text-sm">Loading reviews...</p>
+        </div>
+      `;
+    }
+    
+    try {
+      const response = await fetch(`/api/servers/${encodeURIComponent(serverId)}/reviews?filter=${filter}&limit=10&offset=${reviewsOffset[serverId] || 0}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to load reviews');
+      }
+      
+      // Update summary
+      updateReviewSummary(serverId, data.summary);
+      
+      if (!append && (!data.reviews || data.reviews.length === 0)) {
+        container.innerHTML = `
+          <div class="text-center py-8">
+            <div class="w-12 h-12 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h4 class="text-white font-bold mb-1">No reviews yet</h4>
+            <p class="text-[#8892b0] text-sm">Reviews will appear here once players submit them.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      if (!append) {
+        container.innerHTML = '';
+      }
+      
+      data.reviews.forEach((review: any) => {
+        const reviewEl = document.createElement('div');
+        reviewEl.className = 'review-item p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg';
+        reviewEl.innerHTML = renderReviewHTML(review);
+        container.appendChild(reviewEl);
+      });
+      
+      // Update offset
+      reviewsOffset[serverId] = (reviewsOffset[serverId] || 0) + data.reviews.length;
+      
+      // Show/hide load more button
+      const loadMoreBtn = document.querySelector(`.load-more-reviews-btn[data-server-id="${serverId}"]`) as HTMLButtonElement;
+      if (loadMoreBtn) {
+        if (data.pagination.has_more) {
+          loadMoreBtn.classList.remove('hidden');
+          loadMoreBtn.onclick = () => loadReviews(serverId, filter, true);
+        } else {
+          loadMoreBtn.classList.add('hidden');
+        }
+      }
+      
+    } catch (err: any) {
+      if (!append) {
+        container.innerHTML = `
+          <div class="text-center py-8">
+            <p class="text-[#ff3864] text-sm">Failed to load reviews</p>
+          </div>
+        `;
+      }
+    }
+  }
+  
+  function updateReviewSummary(serverId: string, summary: any) {
+    const avgEl = document.getElementById(`rating-avg-${serverId}`);
+    const starsEl = document.getElementById(`rating-stars-${serverId}`);
+    const countEl = document.getElementById(`rating-count-${serverId}`);
+    const barsEl = document.getElementById(`rating-bars-${serverId}`);
+    
+    if (avgEl) avgEl.textContent = summary.avg_rating?.toFixed(1) || '--';
+    if (starsEl) starsEl.innerHTML = renderStars(summary.avg_rating || 0);
+    if (countEl) countEl.textContent = `${summary.total_reviews} reviews${summary.verified_reviews > 0 ? ` • ${summary.verified_reviews} verified` : ''}`;
+    
+    if (barsEl && summary.distribution) {
+      const total = summary.total_reviews || 1;
+      barsEl.innerHTML = `
+        ${[5, 4, 3, 2, 1].map(rating => {
+          const count = summary.distribution[rating] || 0;
+          const percentage = (count / total) * 100;
+          const colors: {[key: number]: string} = {
+            5: '#00f5d4',
+            4: '#00d4b8',
+            3: '#eab308',
+            2: '#f97316',
+            1: '#ff3864'
+          };
+          return `
+            <div class="flex items-center gap-2 text-sm">
+              <span class="text-[#8892b0] w-8">${rating}★</span>
+              <div class="flex-1 h-2 bg-[#1a1a25] rounded-full overflow-hidden">
+                <div class="h-full rounded-full" style="width: ${percentage}%; background-color: ${colors[rating]}"></div>
+              </div>
+              <span class="text-[#8892b0] w-8 text-right">${count}</span>
+            </div>
+          `;
+        }).join('')}
+      `;
+    }
+  }
+  
+  function renderReviewHTML(review: any) {
+    const stars = renderStars(review.rating);
+    const verifiedBadge = review.is_verified 
+      ? `<span class="px-2 py-0.5 bg-green-500/20 text-green-500 text-xs rounded flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Verified Player
+         </span>` 
+      : '';
+    const featuredBadge = review.is_featured 
+      ? `<span class="px-2 py-0.5 bg-[#ffd700]/20 text-[#ffd700] text-xs rounded">Featured</span>` 
+      : '';
+    
+    const ownerResponse = review.owner_response 
+      ? `
+        <div class="mt-4 p-3 bg-[#1a1a25] border-l-2 border-[#00f5d4] rounded-r">
+          <p class="text-xs text-[#00f5d4] font-medium mb-1">Server Owner Response</p>
+          <p class="text-[#8892b0] text-sm">${review.owner_response}</p>
+        </div>
+      ` 
+      : '';
+    
+    return `
+      <div class="flex items-start gap-4">
+        <div class="flex-shrink-0 w-10 h-10 bg-[#12121a] rounded-full flex items-center justify-center border border-[#2a2a3a]">
+          <span class="text-lg">👤</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2 mb-1">
+            <span class="text-white font-medium">${review.reviewer_minecraft_username}</span>
+            ${verifiedBadge}
+            ${featuredBadge}
+          </div>
+          <div class="flex items-center gap-1 text-yellow-500 text-sm mb-2">${stars}</div>
+          ${review.title ? `<h5 class="text-white font-bold mb-1">${review.title}</h5>` : ''}
+          <p class="text-[#8892b0] text-sm">${review.content}</p>
+          
+          <div class="flex items-center gap-4 mt-3 text-xs text-[#8892b0]">
+            <span>${new Date(review.created_at).toLocaleDateString()}</span>
+            <button class="flex items-center gap-1 hover:text-[#00f5d4] transition-colors" onclick="voteReview('${review.id}', true)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+              </svg>
+              Helpful (${review.helpful_count})
+            </button>
+            <button class="flex items-center gap-1 hover:text-[#ff3864] transition-colors" onclick="voteReview('${review.id}', false)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path>
+              </svg>
+              Not Helpful (${review.not_helpful_count})
+            </button>
+          </div>
+          
+          ${ownerResponse}
+        </div>
+      </div>
+    `;
+  }
+  
+  function renderStars(rating: number) {
+    const fullStars = Math.floor(rating);
+    const hasHalf = rating % 1 >= 0.5;
+    let stars = '';
+    
+    for (let i = 0; i < fullStars; i++) {
+      stars += '★';
+    }
+    if (hasHalf) {
+      stars += '½';
+    }
+    while (stars.length < 5) {
+      stars += '☆';
+    }
+    
+    return stars;
+  }
+  
+  // Global function for voting
+  (window as any).voteReview = async function(reviewId: string, isHelpful: boolean) {
+    const username = prompt('Enter your Minecraft username to vote:');
+    if (!username) return;
+    
+    try {
+      const response = await fetch(`/api/reviews/${reviewId}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          minecraft_username: username,
+          is_helpful: isHelpful
+        })
+      });
+      
+      if (response.ok) {
+        showToast('Vote recorded!', 'success');
+      } else {
+        const data = await response.json();
+        showToast(data.error || 'Failed to vote', 'error');
+      }
+    } catch (err: any) {
+      showToast('Failed to vote', 'error');
+    }
+  };
 </script>
