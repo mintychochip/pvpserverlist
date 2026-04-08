@@ -5,7 +5,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import AnimatedStat from '../components/AnimatedStat.astro';
-import SearchWithWizard from '../components/SearchWithWizard.astro';
+import GemmaWizard from '../components/GemmaWizard.astro';
 
 // Game categories data
 const gameCategories = [
@@ -71,7 +71,7 @@ const gameCategories = [
           <AnimatedStat value={0} label="Fake Reviews" color="#ff3864" />
         </div>
 
-        <!-- Search with Wizard Fallback -->
+        <!-- Gemma AI Wizard -->
         <div class="max-w-3xl mx-auto mt-8 mb-4">
           <div class="flex items-center justify-center gap-2 mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -79,9 +79,9 @@ const gameCategories = [
               <path d="M2 17l10 5 10-5"/>
               <path d="M2 12l10 5 10-5"/>
             </svg>
-            <span class="text-[#00f5d4] text-sm font-medium">AI-Powered Search</span>
+            <span class="text-[#00f5d4] text-sm font-medium">Powered by Gemini AI</span>
           </div>
-          <SearchWithWizard id="hero-search" />
+          <GemmaWizard id="hero-wizard" />
         </div>
 
         <!-- CTA Buttons -->

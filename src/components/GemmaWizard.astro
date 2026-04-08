@@ -1,0 +1,424 @@
+---
+// GemmaChat - AI-powered conversational wizard using Gemini
+
+export interface Props {
+  id?: string;
+}
+
+const { id = 'gemma-wizard' } = Astro.props;
+---
+
+<div id={id} class="gemma-wizard">
+  <!-- Search Bar -->
+  <div class="search-section">
+    <div class="search-wrapper">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input 
+        type="text" 
+        id={`${id}-input`}
+        placeholder="Describe your ideal server..."
+        class="search-input"
+      />
+      <button id={`${id}-btn`} class="search-btn">Find</button>
+    </div>
+    <div class="quick-pills">
+      <button data-query="survival smp with claims">🏕️ Survival SMP</button>
+      <button data-query="pvp factions">⚔️ PvP</button>
+      <button data-query="skyblock economy">🏝️ Skyblock</button>
+    </div>
+  </div>
+
+  <!-- AI Chat Interface -->
+  <div id={`${id}-chat`} class="chat-section hidden">
+    <div class="chat-header">
+      <span class="ai-badge">🤖 AI Assistant</span>
+      <button id={`${id}-close-chat`} class="close-btn">×</button>
+    </div>
+    <div id={`${id}-messages`} class="messages"></div>
+    <div class="chat-input-area">
+      <input id={`${id}-chat-input`} type="text" placeholder="Reply..." class="chat-input" />
+      <button id={`${id}-send`} class="send-btn">Send</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id={`${id}-results`} class="results-section"></div>
+</div>
+
+<style>
+  .gemma-wizard {
+    --primary: #00f5d4;
+    --bg-card: #12121a;
+    --bg-hover: #1a1a25;
+    --border: #2a2a3a;
+    --text: #ffffff;
+    --text-muted: #8892b0;
+  }
+
+  .search-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .search-wrapper {
+    display: flex;
+    gap: 8px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 14px 16px 14px 48px;
+    background: #0a0a0f;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 16px;
+  }
+
+  .search-input:focus {
+    border-color: var(--primary);
+    outline: none;
+  }
+
+  .search-btn {
+    padding: 14px 24px;
+    background: var(--primary);
+    border: none;
+    border-radius: 12px;
+    color: #0a0a0f;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .quick-pills {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .quick-pills button {
+    padding: 6px 14px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .quick-pills button:hover {
+    border-color: var(--primary);
+  }
+
+  /* Chat */
+  .chat-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .chat-section.hidden {
+    display: none;
+  }
+
+  .chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .ai-badge {
+    font-size: 13px;
+    color: var(--primary);
+  }
+
+  .close-btn {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  .messages {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .message {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .message.user {
+    flex-direction: row-reverse;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--bg-hover);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .bubble {
+    padding: 12px 16px;
+    border-radius: 16px;
+    max-width: 80%;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .bubble.ai {
+    background: var(--bg-hover);
+    color: var(--text);
+    border-bottom-left-radius: 4px;
+  }
+
+  .bubble.user {
+    background: var(--primary);
+    color: #0a0a0f;
+    border-bottom-right-radius: 4px;
+  }
+
+  .chat-input-area {
+    display: flex;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    background: #0a0a0f;
+  }
+
+  .chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+  }
+
+  .send-btn {
+    padding: 12px 20px;
+    background: var(--primary);
+    border: none;
+    border-radius: 8px;
+    color: #0a0a0f;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .typing {
+    display: flex;
+    gap: 4px;
+    padding: 16px;
+  }
+
+  .typing span {
+    width: 8px;
+    height: 8px;
+    background: var(--primary);
+    border-radius: 50%;
+    animation: bounce 1.4s infinite;
+  }
+
+  .typing span:nth-child(1) { animation-delay: -0.32s; }
+  .typing span:nth-child(2) { animation-delay: -0.16s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+  }
+</style>
+
+<script define:vars={{ wizardId: id }}>
+  const id = wizardId;
+  const container = document.getElementById(id);
+  if (!container) return;
+
+  const input = document.getElementById(`${id}-input`);
+  const btn = document.getElementById(`${id}-btn`);
+  const chat = document.getElementById(`${id}-chat`);
+  const messages = document.getElementById(`${id}-messages`);
+  const chatInput = document.getElementById(`${id}-chat-input`);
+  const sendBtn = document.getElementById(`${id}-send`);
+  const closeChat = document.getElementById(`${id}-close-chat`);
+  const results = document.getElementById(`${id}-results`);
+
+  let conversation = [];
+  let isSearching = false;
+
+  function addMessage(text, isUser = false) {
+    const div = document.createElement('div');
+    div.className = `message ${isUser ? 'user' : ''}`;
+    div.innerHTML = `
+      <div class="avatar">${isUser ? '👤' : '🤖'}</div>
+      <div class="bubble ${isUser ? 'user' : 'ai'}">${text}</div>
+    `;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function showTyping() {
+    const div = document.createElement('div');
+    div.id = `${id}-typing`;
+    div.className = 'typing';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function hideTyping() {
+    document.getElementById(`${id}-typing`)?.remove();
+  }
+
+  async function callGemma(userMessage) {
+    try {
+      const res = await fetch('/api/wizard/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: userMessage,
+          history: conversation
+        })
+      });
+      return await res.json();
+    } catch (e) {
+      return { 
+        response: "I understand you're looking for a server. Could you tell me more about what game and gamemode you prefer?",
+        readyToSearch: false
+      };
+    }
+  }
+
+  async function doSearch(query) {
+    results.innerHTML = '<p style="text-align:center;padding:40px;color:#8892b0">Searching...</p>';
+    
+    try {
+      const res = await fetch('/api/search/semantic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, limit: 9 })
+      });
+      const data = await res.json();
+
+      if (data.results?.length) {
+        results.innerHTML = `
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:24px">
+            ${data.results.map(s => `
+              <a href="/servers/${s.id}" style="display:block;padding:16px;background:#12121a;border:1px solid #2a2a3a;border-radius:12px;text-decoration:none;color:#fff">
+                <div style="display:flex;gap:12px;margin-bottom:12px">
+                  <div style="width:48px;height:48px;background:#1a1a25;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px">${s.icon ? `<img src="${s.icon}" style="width:100%;height:100%;border-radius:8px;object-fit:cover"/>` : '⛏️'}</div>
+                  <div>
+                    <h4 style="margin:0 0 4px;font-size:15px">${s.name}</h4>
+                    <p style="margin:0;font-size:12px;color:#8892b0;font-family:monospace">${s.ip}:${s.port}</p>
+                  </div>
+                </div>
+                <div style="font-size:13px;color:#8892b0">
+                  ${s.status === 'online' ? '🟢' : '⚫'} ${s.players_online || 0}/${s.max_players || '?'} players · 🔺 ${s.vote_count || 0}
+                </div>
+              </a>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        results.innerHTML = '<p style="text-align:center;padding:40px;color:#8892b0">No servers found. Try different keywords.</p>';
+      }
+    } catch (e) {
+      results.innerHTML = '<p style="text-align:center;padding:40px;color:#ff3864">Search failed. Please try again.</p>';
+    }
+  }
+
+  async function handleChat() {
+    const text = chatInput.value.trim();
+    if (!text || isSearching) return;
+    
+    chatInput.value = '';
+    addMessage(text, true);
+    conversation.push({ role: 'user', content: text });
+    
+    showTyping();
+    const response = await callGemma(text);
+    hideTyping();
+    
+    addMessage(response.response, false);
+    conversation.push({ role: 'assistant', content: response.response });
+    
+    if (response.readyToSearch && response.searchQuery) {
+      chat.classList.add('hidden');
+      await doSearch(response.searchQuery);
+    }
+  }
+
+  async function startWizard() {
+    const query = input.value.trim();
+    if (!query) return;
+    
+    btn.disabled = true;
+    conversation = [{ role: 'user', content: query }];
+    
+    showTyping();
+    const response = await callGemma(query);
+    hideTyping();
+    
+    if (response.readyToSearch && response.searchQuery) {
+      // Intent was clear, search immediately
+      await doSearch(response.searchQuery);
+    } else {
+      // Need clarification, show chat
+      chat.classList.remove('hidden');
+      messages.innerHTML = '';
+      addMessage(response.response, false);
+    }
+    
+    btn.disabled = false;
+  }
+
+  // Event listeners
+  btn?.addEventListener('click', startWizard);
+  input?.addEventListener('keypress', (e) => { if (e.key === 'Enter') startWizard(); });
+  sendBtn?.addEventListener('click', handleChat);
+  chatInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChat(); });
+  closeChat?.addEventListener('click', () => chat.classList.add('hidden'));
+
+  // Quick pills
+  container.querySelectorAll('.quick-pills button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      input.value = btn.dataset.query;
+      startWizard();
+    });
+  });
+</script>
