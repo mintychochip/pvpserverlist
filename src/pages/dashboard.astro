@@ -12,6 +12,16 @@ const isAuthenticated = !!authToken; // Simplified - would check Supabase Auth
 const ownedServers = [
   { id: '1', name: 'Test Server', ip: 'play.example.com', port: 25565, vote_count: 42, players_online: 15, status: 'online' }
 ];
+
+const categories = [
+  { id: 'tournament', name: 'Tournament', icon: '🏆' },
+  { id: 'drop', name: 'Drop/Giveaway', icon: '🎁' },
+  { id: 'update', name: 'Server Update', icon: '🚀' },
+  { id: 'pvp', name: 'PvP Event', icon: '⚔️' },
+  { id: 'building', name: 'Building Contest', icon: '🏗️' },
+  { id: 'social', name: 'Social Event', icon: '🎉' },
+  { id: 'other', name: 'Other', icon: '✨' },
+];
 ---
 
 <Layout 
@@ -70,7 +80,7 @@ const ownedServers = [
           ) : (
             <div class="grid grid-cols-1 gap-4">
               {ownedServers.map(server => (
-                <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+                <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg server-card" data-server-id={server.id}>
                   <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-4">
                       <div class={`w-3 h-3 rounded-full ${server.status === 'online' ? 'bg-green-500' : 'bg-gray-500'}`}></div>
@@ -95,26 +105,186 @@ const ownedServers = [
                     </div>
                   </div>
                   
-                  <div class="grid grid-cols-3 gap-4 mb-4">
-                    <div class="p-3 bg-[#0a0a0f] rounded text-center">
-                      <p class="text-2xl font-bold text-[#ff3864]">{server.vote_count}</p>
-                      <p class="text-[#8892b0] text-xs">Total Votes</p>
+                  <!-- Tab Navigation -->
+                  <div class="flex flex-wrap gap-2 mb-6 border-b border-[#2a2a3a] pb-4">
+                    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#00f5d4] text-[#0a0a0f]" data-tab="overview" data-server-id={server.id}>
+                      Overview
+                    </button>
+                    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="analytics" data-server-id={server.id}>
+                      Analytics
+                    </button>
+                    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="edit" data-server-id={server.id}>
+                      Edit
+                    </button>
+                    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="events" data-server-id={server.id}>
+                      Events
+                    </button>
+                    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="votes" data-server-id={server.id}>
+                      Votes
+                    </button>
+                  </div>
+                  
+                  <!-- Overview Tab -->
+                  <div class="tab-content" data-tab="overview" data-server-id={server.id}>
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                      <div class="p-3 bg-[#0a0a0f] rounded text-center">
+                        <p class="text-2xl font-bold text-[#ff3864]">{server.vote_count}</p>
+                        <p class="text-[#8892b0] text-xs">Total Votes</p>
+                      </div>
+                      <div class="p-3 bg-[#0a0a0f] rounded text-center">
+                        <p class="text-2xl font-bold text-white">{server.players_online}</p>
+                        <p class="text-[#8892b0] text-xs">Players Online</p>
+                      </div>
+                      <div class="p-3 bg-[#0a0a0f] rounded text-center">
+                        <p class="text-2xl font-bold text-[#00f5d4]">--</p>
+                        <p class="text-[#8892b0] text-xs">Uptime %</p>
+                      </div>
                     </div>
-                    <div class="p-3 bg-[#0a0a0f] rounded text-center">
-                      <p class="text-2xl font-bold text-white">{server.players_online}</p>
-                      <p class="text-[#8892b0] text-xs">Players Online</p>
-                    </div>
-                    <div class="p-3 bg-[#0a0a0f] rounded text-center">
-                      <p class="text-2xl font-bold text-[#00f5d4]">--</p>
-                      <p class="text-[#8892b0] text-xs">Uptime %</p>
+                    
+                    <!-- Vote Chart Placeholder -->
+                    <div class="p-4 bg-[#0a0a0f] rounded">
+                      <h3 class="text-sm font-bold text-[#8892b0] mb-2">Votes (Last 30 Days)</h3>
+                      <div class="h-24 bg-[#1a1a25] rounded flex items-center justify-center">
+                        <p class="text-[#8892b0] text-sm">📊 Vote chart coming soon</p>
+                      </div>
                     </div>
                   </div>
                   
-                  <!-- Vote Chart Placeholder -->
-                  <div class="p-4 bg-[#0a0a0f] rounded">
-                    <h3 class="text-sm font-bold text-[#8892b0] mb-2">Votes (Last 30 Days)</h3>
-                    <div class="h-24 bg-[#1a1a25] rounded flex items-center justify-center">
-                      <p class="text-[#8892b0] text-sm">📊 Vote chart coming soon</p>
+                  <!-- Analytics Tab -->
+                  <div class="tab-content hidden" data-tab="analytics" data-server-id={server.id}>
+                    <div class="p-8 bg-[#0a0a0f] rounded text-center">
+                      <p class="text-[#8892b0]">📈 Analytics coming soon</p>
+                    </div>
+                  </div>
+                  
+                  <!-- Edit Tab -->
+                  <div class="tab-content hidden" data-tab="edit" data-server-id={server.id}>
+                    <div class="p-8 bg-[#0a0a0f] rounded text-center">
+                      <p class="text-[#8892b0]">✏️ Server editor coming soon</p>
+                    </div>
+                  </div>
+                  
+                  <!-- Events Tab -->
+                  <div class="tab-content hidden" data-tab="events" data-server-id={server.id}>
+                    <!-- Create Event Button -->
+                    <div class="flex justify-between items-center mb-4">
+                      <h3 class="text-lg font-bold text-white">Server Events</h3>
+                      <button 
+                        class="create-event-btn px-4 py-2 bg-[#ff3864] hover:bg-[#e63357] text-white font-bold rounded-lg transition-colors flex items-center gap-2"
+                        data-server-id={server.id}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <line x1="12" y1="5" x2="12" y2="19"></line>
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Create Event
+                      </button>
+                    </div>
+                    
+                    <!-- Create Event Form -->
+                    <div class="create-event-form hidden mb-6 p-6 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg" data-server-id={server.id}>
+                      <h4 class="text-md font-bold text-white mb-4">Create New Event</h4>
+                      <form class="space-y-4" data-server-id={server.id}>
+                        <div>
+                          <label class="block text-sm font-medium text-[#8892b0] mb-1">Title *</label>
+                          <input 
+                            type="text" 
+                            name="title"
+                            placeholder="Event title (3-100 characters)"
+                            minlength="3"
+                            maxlength="100"
+                            required
+                            class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                          />
+                          <p class="text-xs text-[#8892b0] mt-1">Between 3 and 100 characters</p>
+                        </div>
+                        
+                        <div>
+                          <label class="block text-sm font-medium text-[#8892b0] mb-1">Category *</label>
+                          <select 
+                            name="category"
+                            required
+                            class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                          >
+                            <option value="">Select a category</option>
+                            {categories.map(cat => (
+                              <option value={cat.id}>{cat.icon} {cat.name}</option>
+                            ))}
+                          </select>
+                        </div>
+                        
+                        <div>
+                          <label class="block text-sm font-medium text-[#8892b0] mb-1">Description</label>
+                          <textarea 
+                            name="description"
+                            rows="3"
+                            placeholder="Describe your event (optional)"
+                            class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors resize-none"
+                          ></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label class="block text-sm font-medium text-[#8892b0] mb-1">Start Time *</label>
+                            <input 
+                              type="datetime-local" 
+                              name="start_time"
+                              required
+                              class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                            />
+                          </div>
+                          <div>
+                            <label class="block text-sm font-medium text-[#8892b0] mb-1">End Time (optional)</label>
+                            <input 
+                              type="datetime-local" 
+                              name="end_time"
+                              class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                            />
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label class="block text-sm font-medium text-[#8892b0] mb-1">Prizes</label>
+                          <input 
+                            type="text" 
+                            name="prizes"
+                            placeholder="e.g., $100 Cash Prize, VIP Rank, Legendary Items"
+                            class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white focus:border-[#00f5d4] focus:outline-none transition-colors"
+                          />
+                        </div>
+                        
+                        <div class="flex gap-3 pt-2">
+                          <button 
+                            type="submit"
+                            class="px-6 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded-lg transition-colors"
+                          >
+                            Create Event
+                          </button>
+                          <button 
+                            type="button"
+                            class="cancel-create-btn px-6 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] font-medium rounded-lg transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                    
+                    <!-- Events List -->
+                    <div class="events-list" data-server-id={server.id}>
+                      <div class="text-center py-8">
+                        <div class="w-12 h-12 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-3">
+                          <div class="animate-spin w-6 h-6 border-2 border-[#00f5d4] border-t-transparent rounded-full"></div>
+                        </div>
+                        <p class="text-[#8892b0] text-sm">Loading events...</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Votes Tab -->
+                  <div class="tab-content hidden" data-tab="votes" data-server-id={server.id}>
+                    <div class="p-8 bg-[#0a0a0f] rounded text-center">
+                      <p class="text-[#8892b0]">🗳️ Vote tracking coming soon</p>
                     </div>
                   </div>
                 </div>
@@ -127,4 +297,404 @@ const ownedServers = [
     
     <Footer />
   </div>
+  
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-4 right-4 px-6 py-4 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+    <span id="toast-message">Event created successfully!</span>
+  </div>
 </Layout>
+
+<script>
+  // Tab switching functionality
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.getAttribute('data-tab');
+      const serverId = btn.getAttribute('data-server-id');
+      
+      if (!tab || !serverId) return;
+      
+      // Update button styles
+      document.querySelectorAll(`.tab-btn[data-server-id="${serverId}"]`).forEach(b => {
+        b.classList.remove('bg-[#00f5d4]', 'text-[#0a0a0f]');
+        b.classList.add('bg-[#1a1a25]', 'text-[#8892b0]');
+      });
+      btn.classList.remove('bg-[#1a1a25]', 'text-[#8892b0]');
+      btn.classList.add('bg-[#00f5d4]', 'text-[#0a0a0f]');
+      
+      // Show/hide content
+      document.querySelectorAll(`.tab-content[data-server-id="${serverId}"]`).forEach(content => {
+        content.classList.add('hidden');
+      });
+      document.querySelector(`.tab-content[data-tab="${tab}"][data-server-id="${serverId}"]`)?.classList.remove('hidden');
+      
+      // Load events if events tab
+      if (tab === 'events') {
+        loadEvents(serverId);
+      }
+    });
+  });
+  
+  // Create event button handlers
+  document.querySelectorAll('.create-event-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const serverId = btn.getAttribute('data-server-id');
+      const form = document.querySelector(`.create-event-form[data-server-id="${serverId}"]`);
+      form?.classList.remove('hidden');
+      btn.classList.add('hidden');
+    });
+  });
+  
+  // Cancel create button handlers
+  document.querySelectorAll('.cancel-create-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const form = btn.closest('.create-event-form');
+      const serverId = form?.getAttribute('data-server-id');
+      const createBtn = document.querySelector(`.create-event-btn[data-server-id="${serverId}"]`);
+      
+      form?.classList.add('hidden');
+      createBtn?.classList.remove('hidden');
+      
+      // Reset form
+      const formElement = form?.querySelector('form');
+      formElement?.reset();
+    });
+  });
+  
+  // Toast notification
+  function showToast(message: string, type: 'success' | 'error' = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    
+    if (!toast || !toastMessage) return;
+    
+    toastMessage.textContent = message;
+    
+    if (type === 'error') {
+      toast.classList.remove('bg-[#00f5d4]', 'text-[#0a0a0f]');
+      toast.classList.add('bg-[#ff3864]', 'text-white');
+    } else {
+      toast.classList.remove('bg-[#ff3864]', 'text-white');
+      toast.classList.add('bg-[#00f5d4]', 'text-[#0a0a0f]');
+    }
+    
+    toast.classList.remove('translate-y-20', 'opacity-0');
+    toast.classList.add('translate-y-0', 'opacity-100');
+    
+    setTimeout(() => {
+      toast.classList.add('translate-y-20', 'opacity-0');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+    }, 3000);
+  }
+  
+  // Category helpers
+  function getCategoryIcon(category: string) {
+    const icons: {[key: string]: string} = {
+      tournament: '🏆',
+      drop: '🎁',
+      update: '🚀',
+      pvp: '⚔️',
+      building: '🏗️',
+      social: '🎉',
+      other: '✨'
+    };
+    return icons[category] || '📅';
+  }
+  
+  function getCategoryLabel(category: string) {
+    const labels: {[key: string]: string} = {
+      tournament: 'Tournament',
+      drop: 'Drop/Giveaway',
+      update: 'Server Update',
+      pvp: 'PvP Event',
+      building: 'Building Contest',
+      social: 'Social Event',
+      other: 'Event'
+    };
+    return labels[category] || 'Event';
+  }
+  
+  function formatTimeUntil(startDate: string) {
+    const now = new Date();
+    const start = new Date(startDate);
+    const diff = start.getTime() - now.getTime();
+    
+    if (diff < 0) return 'Started';
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (days > 0) return `in ${days}d ${hours}h`;
+    return `in ${hours}h`;
+  }
+  
+  // Load events for a server
+  async function loadEvents(serverId: string) {
+    const container = document.querySelector(`.events-list[data-server-id="${serverId}"]`);
+    if (!container) return;
+    
+    try {
+      const response = await fetch(`/api/events?server_id=${encodeURIComponent(serverId)}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to load events');
+      }
+      
+      const events = data.events || [];
+      
+      if (events.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8">
+            <div class="w-12 h-12 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <h4 class="text-white font-bold mb-1">No events yet</h4>
+            <p class="text-[#8892b0] text-sm">Create your first event to engage your community.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = events.map((event: any) => {
+        const startTime = new Date(event.start_time);
+        const endTime = event.end_time ? new Date(event.end_time) : null;
+        const isLive = new Date() >= startTime && (!endTime || new Date() < endTime);
+        const isPast = endTime && new Date() > endTime;
+        const isUpcoming = new Date() < startTime;
+        
+        let statusBadge = '';
+        if (isLive) {
+          statusBadge = '<span class="px-2 py-1 bg-red-500/20 text-red-500 text-xs rounded font-medium">LIVE</span>';
+        } else if (isPast) {
+          statusBadge = '<span class="px-2 py-1 bg-gray-500/20 text-gray-500 text-xs rounded font-medium">Ended</span>';
+        } else {
+          statusBadge = '<span class="px-2 py-1 bg-[#00f5d4]/10 text-[#00f5d4] text-xs rounded font-medium">' + formatTimeUntil(event.start_time) + '</span>';
+        }
+        
+        return `
+          <div class="event-card p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg mb-3 hover:border-[#2a2a3a] transition-all" data-event-id="${event.id}">
+            <div class="flex items-start gap-4">
+              <!-- Event Icon -->
+              <div class="flex-shrink-0 w-12 h-12 bg-[#12121a] rounded-lg flex items-center justify-center border border-[#2a2a3a]">
+                <span class="text-xl">${getCategoryIcon(event.category)}</span>
+              </div>
+              
+              <!-- Event Info -->
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <span class="px-2 py-0.5 bg-[#00f5d4]/10 text-[#00f5d4] text-xs rounded">
+                    ${getCategoryLabel(event.category)}
+                  </span>
+                  ${statusBadge}
+                  ${event.featured ? '<span class="px-2 py-0.5 bg-[#ff3864]/10 text-[#ff3864] text-xs rounded">FEATURED</span>' : ''}
+                </div>
+                
+                <h4 class="text-white font-bold truncate">${event.title}</h4>
+                
+                ${event.description ? `<p class="text-[#8892b0] text-sm line-clamp-2 mt-1">${event.description}</p>` : ''}
+                
+                <div class="flex flex-wrap items-center gap-3 mt-2 text-xs text-[#8892b0]">
+                  <span class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    ${startTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                  ${event.end_time ? `
+                    <span class="flex items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                      </svg>
+                      ${new Date(event.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  ` : ''}
+                  ${event.prizes ? `
+                    <span class="flex items-center gap-1 text-[#ffd700]">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="7"></circle>
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                      </svg>
+                      ${event.prizes}
+                    </span>
+                  ` : ''}
+                </div>
+              </div>
+              
+              <!-- Action Buttons -->
+              <div class="flex flex-col gap-2">
+                <button 
+                  class="edit-event-btn p-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] hover:text-white rounded transition-colors"
+                  data-event-id="${event.id}"
+                  title="Edit event"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </button>
+                <button 
+                  class="delete-event-btn p-2 bg-[#1a1a25] hover:bg-[#ff3864]/20 text-[#8892b0] hover:text-[#ff3864] rounded transition-colors"
+                  data-event-id="${event.id}"
+                  title="Delete event"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Attach event handlers to edit/delete buttons
+      attachEventCardHandlers(serverId);
+      
+    } catch (err: any) {
+      container.innerHTML = `
+        <div class="text-center py-8">
+          <div class="w-12 h-12 bg-[#ff3864]/10 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <p class="text-[#ff3864] text-sm">${err.message || 'Failed to load events'}</p>
+          <button class="retry-load-btn mt-3 px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded-lg text-sm" data-server-id="${serverId}">
+            Retry
+          </button>
+        </div>
+      `;
+      
+      document.querySelector(`.retry-load-btn[data-server-id="${serverId}"]`)?.addEventListener('click', () => loadEvents(serverId));
+    }
+  }
+  
+  // Attach event card handlers
+  function attachEventCardHandlers(serverId: string) {
+    // Edit event handlers
+    document.querySelectorAll(`.events-list[data-server-id="${serverId}"] .edit-event-btn`).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const eventId = btn.getAttribute('data-event-id');
+        showToast('Edit feature coming soon!', 'error');
+      });
+    });
+    
+    // Delete event handlers
+    document.querySelectorAll(`.events-list[data-server-id="${serverId}"] .delete-event-btn`).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const eventId = btn.getAttribute('data-event-id');
+        if (!eventId) return;
+        
+        if (!confirm('Are you sure you want to delete this event?')) {
+          return;
+        }
+        
+        try {
+          const response = await fetch(`/api/events/${eventId}?owner_email=owner@example.com`, {
+            method: 'DELETE'
+          });
+          
+          const data = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(data.error || 'Failed to delete event');
+          }
+          
+          showToast('Event deleted successfully!', 'success');
+          loadEvents(serverId);
+        } catch (err: any) {
+          showToast(err.message || 'Failed to delete event', 'error');
+        }
+      });
+    });
+  }
+  
+  // Form submission handlers
+  document.querySelectorAll('.create-event-form form').forEach(form => {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const serverId = form.getAttribute('data-server-id');
+      if (!serverId) return;
+      
+      const formData = new FormData(form as HTMLFormElement);
+      const title = formData.get('title') as string;
+      const category = formData.get('category') as string;
+      const description = formData.get('description') as string;
+      const startTime = formData.get('start_time') as string;
+      const endTime = formData.get('end_time') as string;
+      const prizes = formData.get('prizes') as string;
+      
+      // Client-side validation
+      if (!title || title.length < 3 || title.length > 100) {
+        showToast('Title must be between 3 and 100 characters', 'error');
+        return;
+      }
+      
+      if (!category) {
+        showToast('Please select a category', 'error');
+        return;
+      }
+      
+      if (!startTime) {
+        showToast('Please select a start time', 'error');
+        return;
+      }
+      
+      if (new Date(startTime) < new Date()) {
+        showToast('Start time must be in the future', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            server_id: serverId,
+            title: title.trim(),
+            category,
+            description: description?.trim() || null,
+            start_time: startTime,
+            end_time: endTime || null,
+            prizes: prizes?.trim() || null,
+            owner_email: 'owner@example.com'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create event');
+        }
+        
+        // Show success toast
+        showToast('Event created successfully!', 'success');
+        
+        // Reset form and hide it
+        (form as HTMLFormElement).reset();
+        const formContainer = form.closest('.create-event-form');
+        formContainer?.classList.add('hidden');
+        const createBtn = document.querySelector(`.create-event-btn[data-server-id="${serverId}"]`);
+        createBtn?.classList.remove('hidden');
+        
+        // Reload events list
+        loadEvents(serverId);
+        
+      } catch (err: any) {
+        showToast(err.message || 'Failed to create event', 'error');
+      }
+    });
+  });
+</script>
