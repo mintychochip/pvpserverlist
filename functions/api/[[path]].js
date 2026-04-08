@@ -54,6 +54,11 @@ export default {
         return await handlePing(request, env);
       }
 
+      // Trigger batch ping (cron-style)
+      if (path === '/api/cron/ping' && request.method === 'POST') {
+        return await handleCronPing(request, env);
+      }
+
       return new Response('Not Found', { status: 404, headers: corsHeaders });
     } catch (err) {
       console.error('Worker error:', err);
@@ -61,6 +66,18 @@ export default {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
+    }
+  },
+
+  // Cron trigger handler - runs every 5 minutes
+  async scheduled(event, env, ctx) {
+    console.log('⏰ Cron triggered at:', new Date().toISOString());
+    
+    try {
+      const result = await runBatchPing(env);
+      console.log('✅ Cron completed:', result);
+    } catch (err) {
+      console.error('❌ Cron failed:', err);
     }
   }
 };
@@ -388,4 +405,106 @@ async function handlePing(request, env) {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
   }
+}
+
+// Cron endpoint handler
+async function handleCronPing(request, env) {
+  const authHeader = request.headers.get('Authorization');
+  const expectedSecret = env.CRON_SECRET;
+  
+  if (expectedSecret && authHeader !== `Bearer ${expectedSecret}`) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+  
+  const result = await runBatchPing(env);
+  return new Response(JSON.stringify(result), {
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+  });
+}
+
+// Batch ping all servers (used by cron)
+async function runBatchPing(env) {
+  const supabaseUrl = env.SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_SERVICE_KEY;
+  
+  if (!supabaseKey) {
+    throw new Error('SUPABASE_SERVICE_KEY not configured');
+  }
+  
+  // Fetch all active servers
+  const serversResp = await fetch(
+    `${supabaseUrl}/rest/v1/servers?select=id,host,port&limit=5000`,
+    {
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`
+      }
+    }
+  );
+  
+  if (!serversResp.ok) {
+    throw new Error(`Failed to fetch servers: ${serversResp.status}`);
+  }
+  
+  const servers = await serversResp.json();
+  console.log(`📋 Found ${servers.length} servers to ping`);
+  
+  let success = 0;
+  let failed = 0;
+  
+  // Ping each server (with small delay between to avoid rate limits)
+  for (const server of servers) {
+    try {
+      await pingServerInternal(env, server.id);
+      success++;
+    } catch (err) {
+      console.error(`❌ Failed to ping server ${server.id}:`, err.message);
+      failed++;
+    }
+    
+    // Small delay to avoid overwhelming Supabase
+    await new Promise(r => setTimeout(r, 50));
+  }
+  
+  const result = {
+    total: servers.length,
+    success,
+    failed,
+    timestamp: new Date().toISOString()
+  };
+  
+  console.log('✅ Batch ping complete:', result);
+  return result;
+}
+
+// Internal ping function (reused by both API and cron)
+async function pingServerInternal(env, serverId) {
+  const supabaseUrl = env.SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_SERVICE_KEY;
+  
+  const startTime = Date.now();
+  
+  // Update last_ping timestamp
+  const response = await fetch(`${supabaseUrl}/rest/v1/servers?id=eq.${serverId}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': supabaseKey,
+      'Authorization': `Bearer ${supabaseKey}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ 
+      last_ping: new Date().toISOString(),
+      status: 'online'
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Update failed: ${response.status}`);
+  }
+  
+  return { serverId, latency: Date.now() - startTime };
 }
