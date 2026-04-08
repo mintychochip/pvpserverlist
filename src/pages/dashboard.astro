@@ -119,6 +119,9 @@ const categories = [
                     <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="events" data-server-id={server.id}>
                       Events
                     </button>
+                    <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="alerts" data-server-id={server.id}>
+                      Alerts
+                    </button>
                     <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#1a1a25] text-[#8892b0] hover:text-white" data-tab="votes" data-server-id={server.id}>
                       Votes
                     </button>
@@ -277,6 +280,202 @@ const categories = [
                           <div class="animate-spin w-6 h-6 border-2 border-[#00f5d4] border-t-transparent rounded-full"></div>
                         </div>
                         <p class="text-[#8892b0] text-sm">Loading events...</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Alerts Tab -->
+                  <div class="tab-content hidden" data-tab="alerts" data-server-id={server.id}>
+                    <div class="alerts-container" data-server-id={server.id}>
+                      <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-white">Health Alerts</h3>
+                        <button 
+                          class="refresh-alerts-btn px-3 py-1.5 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded transition-colors text-sm"
+                          data-server-id={server.id}
+                        >
+                          Refresh
+                        </button>
+                      </div>
+                      
+                      <!-- Alert Configurations -->
+                      <div class="space-y-4">
+                        <!-- Offline Alert -->
+                        <div class="alert-config p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg" data-alert-type="offline" data-server-id={server.id}>
+                          <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                              <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-xl">🔴</span>
+                              </div>
+                              <div>
+                                <h4 class="text-white font-bold">Server Offline</h4>
+                                <p class="text-[#8892b0] text-sm">Get notified when your server goes down</p>
+                              </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" class="alert-toggle sr-only peer" data-alert-type="offline">
+                              <div class="w-11 h-6 bg-[#2a2a3a] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00f5d4]"></div>
+                            </label>
+                          </div>
+                          
+                          <div class="alert-settings hidden space-y-3 pt-3 border-t border-[#2a2a3a]">
+                            <div>
+                              <label class="block text-sm text-[#8892b0] mb-1">Discord Webhook URL</label>
+                              <input 
+                                type="url" 
+                                class="discord-webhook w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded text-white text-sm focus:border-[#00f5d4] focus:outline-none"
+                                placeholder="https://discord.com/api/webhooks/..."
+                              />
+                            </div>
+                            <div class="flex gap-2">
+                              <button class="save-alert-btn px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded text-sm transition-colors">
+                                Save
+                              </button>
+                              <button class="test-alert-btn px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded text-sm transition-colors">
+                                Test
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- Online Alert -->
+                        <div class="alert-config p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg" data-alert-type="online" data-server-id={server.id}>
+                          <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                              <div class="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-xl">🟢</span>
+                              </div>
+                              <div>
+                                <h4 class="text-white font-bold">Server Online</h4>
+                                <p class="text-[#8892b0] text-sm">Get notified when your server comes back up</p>
+                              </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" class="alert-toggle sr-only peer" data-alert-type="online">
+                              <div class="w-11 h-6 bg-[#2a2a3a] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00f5d4]"></div>
+                            </label>
+                          </div>
+                          
+                          <div class="alert-settings hidden space-y-3 pt-3 border-t border-[#2a2a3a]">
+                            <div>
+                              <label class="block text-sm text-[#8892b0] mb-1">Discord Webhook URL</label>
+                              <input 
+                                type="url" 
+                                class="discord-webhook w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded text-white text-sm focus:border-[#00f5d4] focus:outline-none"
+                                placeholder="https://discord.com/api/webhooks/..."
+                              />
+                            </div>
+                            <div class="flex gap-2">
+                              <button class="save-alert-btn px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded text-sm transition-colors">
+                                Save
+                              </button>
+                              <button class="test-alert-btn px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded text-sm transition-colors">
+                                Test
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- Player Drop Alert -->
+                        <div class="alert-config p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg" data-alert-type="player_drop" data-server-id={server.id}>
+                          <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                              <div class="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-xl">📉</span>
+                              </div>
+                              <div>
+                                <h4 class="text-white font-bold">Player Drop</h4>
+                                <p class="text-[#8892b0] text-sm">Alert when player count drops below threshold</p>
+                              </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" class="alert-toggle sr-only peer" data-alert-type="player_drop">
+                              <div class="w-11 h-6 bg-[#2a2a3a] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00f5d4]"></div>
+                            </label>
+                          </div>
+                          
+                          <div class="alert-settings hidden space-y-3 pt-3 border-t border-[#2a2a3a]">
+                            <div>
+                              <label class="block text-sm text-[#8892b0] mb-1">Alert when players drop below</label>
+                              <input 
+                                type="number" 
+                                class="player-threshold w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded text-white text-sm focus:border-[#00f5d4] focus:outline-none"
+                                placeholder="10"
+                                min="1"
+                              />
+                            </div>
+                            <div>
+                              <label class="block text-sm text-[#8892b0] mb-1">Discord Webhook URL</label>
+                              <input 
+                                type="url" 
+                                class="discord-webhook w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded text-white text-sm focus:border-[#00f5d4] focus:outline-none"
+                                placeholder="https://discord.com/api/webhooks/..."
+                              />
+                            </div>
+                            <div class="flex gap-2">
+                              <button class="save-alert-btn px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded text-sm transition-colors">
+                                Save
+                              </button>
+                              <button class="test-alert-btn px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded text-sm transition-colors">
+                                Test
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- Vote Milestone Alert -->
+                        <div class="alert-config p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg" data-alert-type="vote_milestone" data-server-id={server.id}>
+                          <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                              <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                <span class="text-xl">🗳️</span>
+                              </div>
+                              <div>
+                                <h4 class="text-white font-bold">Vote Milestones</h4>
+                                <p class="text-[#8892b0] text-sm">Celebrate vote milestones (every X votes)</p>
+                              </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" class="alert-toggle sr-only peer" data-alert-type="vote_milestone">
+                              <div class="w-11 h-6 bg-[#2a2a3a] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00f5d4]"></div>
+                            </label>
+                          </div>
+                          
+                          <div class="alert-settings hidden space-y-3 pt-3 border-t border-[#2a2a3a]">
+                            <div>
+                              <label class="block text-sm text-[#8892b0] mb-1">Alert every X votes</label>
+                              <input 
+                                type="number" 
+                                class="vote-threshold w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded text-white text-sm focus:border-[#00f5d4] focus:outline-none"
+                                placeholder="100"
+                                min="10"
+                              />
+                            </div>
+                            <div>
+                              <label class="block text-sm text-[#8892b0] mb-1">Discord Webhook URL</label>
+                              <input 
+                                type="url" 
+                                class="discord-webhook w-full px-3 py-2 bg-[#12121a] border border-[#2a2a3a] rounded text-white text-sm focus:border-[#00f5d4] focus:outline-none"
+                                placeholder="https://discord.com/api/webhooks/..."
+                              />
+                            </div>
+                            <div class="flex gap-2">
+                              <button class="save-alert-btn px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold rounded text-sm transition-colors">
+                                Save
+                              </button>
+                              <button class="test-alert-btn px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded text-sm transition-colors">
+                                Test
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Alert History -->
+                      <div class="mt-6">
+                        <h4 class="text-md font-bold text-white mb-3">Recent Alerts</h4>
+                        <div class="alert-history text-sm text-[#8892b0]">
+                          Loading...
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -697,4 +896,189 @@ const categories = [
       }
     });
   });
+  
+  // Alert Configuration System
+  document.querySelectorAll('.tab-btn[data-tab="alerts"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const serverId = btn.getAttribute('data-server-id');
+      if (serverId) {
+        loadAlerts(serverId);
+        loadAlertHistory(serverId);
+      }
+    });
+  });
+  
+  // Alert toggle handlers
+  document.querySelectorAll('.alert-toggle').forEach(toggle => {
+    toggle.addEventListener('change', (e) => {
+      const checkbox = e.target as HTMLInputElement;
+      const alertConfig = checkbox.closest('.alert-config');
+      const settings = alertConfig?.querySelector('.alert-settings');
+      
+      if (checkbox.checked) {
+        settings?.classList.remove('hidden');
+      } else {
+        settings?.classList.add('hidden');
+      }
+    });
+  });
+  
+  // Save alert configuration
+  document.querySelectorAll('.save-alert-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const alertConfig = btn.closest('.alert-config');
+      const serverId = alertConfig?.getAttribute('data-server-id');
+      const alertType = alertConfig?.getAttribute('data-alert-type');
+      const toggle = alertConfig?.querySelector('.alert-toggle') as HTMLInputElement;
+      
+      if (!serverId || !alertType) return;
+      
+      const discordWebhook = (alertConfig?.querySelector('.discord-webhook') as HTMLInputElement)?.value;
+      const playerThreshold = (alertConfig?.querySelector('.player-threshold') as HTMLInputElement)?.value;
+      const voteThreshold = (alertConfig?.querySelector('.vote-threshold') as HTMLInputElement)?.value;
+      
+      try {
+        const response = await fetch('/api/alerts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            server_id: serverId,
+            alert_type: alertType,
+            is_enabled: toggle?.checked ?? false,
+            discord_enabled: !!discordWebhook,
+            discord_webhook_url: discordWebhook || null,
+            player_drop_threshold: playerThreshold ? parseInt(playerThreshold) : null,
+            vote_milestone_threshold: voteThreshold ? parseInt(voteThreshold) : null,
+            owner_email: 'owner@example.com'
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to save alert');
+        }
+        
+        showToast('Alert configuration saved!', 'success');
+      } catch (err: any) {
+        showToast(err.message || 'Failed to save alert', 'error');
+      }
+    });
+  });
+  
+  // Test alert
+  document.querySelectorAll('.test-alert-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const alertConfig = btn.closest('.alert-config');
+      const serverId = alertConfig?.getAttribute('data-server-id');
+      const alertType = alertConfig?.getAttribute('data-alert-type');
+      const discordWebhook = (alertConfig?.querySelector('.discord-webhook') as HTMLInputElement)?.value;
+      
+      if (!serverId || !alertType) return;
+      
+      try {
+        const response = await fetch('/api/alerts/test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            server_id: serverId,
+            alert_type: alertType,
+            test_discord: discordWebhook || null
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.channels?.discord?.success) {
+          showToast('Test alert sent to Discord!', 'success');
+        } else {
+          showToast(data.channels?.discord?.message || 'Test failed', 'error');
+        }
+      } catch (err: any) {
+        showToast(err.message || 'Failed to send test alert', 'error');
+      }
+    });
+  });
+  
+  // Load alerts configuration
+  async function loadAlerts(serverId: string) {
+    try {
+      const response = await fetch(`/api/alerts?server_id=${encodeURIComponent(serverId)}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to load alerts');
+      }
+      
+      // Update UI with loaded configurations
+      (data.alerts || []).forEach((alert: any) => {
+        const alertConfig = document.querySelector(`.alert-config[data-alert-type="${alert.alert_type}"][data-server-id="${serverId}"]`);
+        if (!alertConfig) return;
+        
+        const toggle = alertConfig.querySelector('.alert-toggle') as HTMLInputElement;
+        const settings = alertConfig.querySelector('.alert-settings');
+        const discordWebhook = alertConfig.querySelector('.discord-webhook') as HTMLInputElement;
+        const playerThreshold = alertConfig.querySelector('.player-threshold') as HTMLInputElement;
+        const voteThreshold = alertConfig.querySelector('.vote-threshold') as HTMLInputElement;
+        
+        if (toggle) toggle.checked = alert.is_enabled;
+        if (alert.is_enabled) {
+          settings?.classList.remove('hidden');
+        }
+        
+        if (discordWebhook && alert.discord_webhook_url) {
+          discordWebhook.value = alert.discord_webhook_url;
+        }
+        if (playerThreshold && alert.player_drop_threshold) {
+          playerThreshold.value = alert.player_drop_threshold.toString();
+        }
+        if (voteThreshold && alert.vote_milestone_threshold) {
+          voteThreshold.value = alert.vote_milestone_threshold.toString();
+        }
+      });
+    } catch (err: any) {
+      console.error('Failed to load alerts:', err);
+    }
+  }
+  
+  // Load alert history
+  async function loadAlertHistory(serverId: string) {
+    const container = document.querySelector(`.alerts-container[data-server-id="${serverId}"] .alert-history`);
+    if (!container) return;
+    
+    try {
+      const response = await fetch(`/api/alerts/history?server_id=${encodeURIComponent(serverId)}`);
+      const data = await response.json();
+      
+      if (!response.ok || !data.history?.length) {
+        container.innerHTML = '<p class="text-[#8892b0] text-center py-4">No alerts sent yet</p>';
+        return;
+      }
+      
+      container.innerHTML = data.history.slice(0, 10).map((alert: any) => `
+        <div class="flex items-center gap-3 p-3 bg-[#1a1a25] rounded-lg mb-2">
+          <span class="text-lg">${getAlertIcon(alert.alert_type)}</span>
+          <div class="flex-1">
+            <p class="text-white">${alert.trigger_reason}</p>
+            <p class="text-xs text-[#8892b0]">${new Date(alert.created_at).toLocaleString()}</p>
+          </div>
+          <span class="px-2 py-1 ${alert.notification_sent ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'} text-xs rounded">
+            ${alert.notification_sent ? 'Sent' : 'Failed'}
+          </span>
+        </div>
+      `).join('');
+    } catch (err: any) {
+      container.innerHTML = '<p class="text-[#8892b0] text-center py-4">Failed to load alert history</p>';
+    }
+  }
+  
+  function getAlertIcon(type: string) {
+    const icons: {[key: string]: string} = {
+      offline: '🔴',
+      online: '🟢',
+      player_drop: '📉',
+      vote_milestone: '🗳️'
+    };
+    return icons[type] || '🔔';
+  }
 </script>
