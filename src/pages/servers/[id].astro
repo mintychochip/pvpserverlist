@@ -3,6 +3,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Reviews from '../../components/Reviews.astro';
+import MarkdownRenderer from '../../components/MarkdownRenderer.astro';
 
 const { id } = Astro.params;
 
@@ -14,8 +15,8 @@ let server = null;
 let relatedServers = [];
 let reviews = [];
 let uptimeStats = null;
-let staffMembers = [];
-let posts = [];
+let serverRules = null;
+let hasRules = false;
 let error = null;
 
 try {
@@ -63,22 +64,17 @@ try {
         uptimeStats = uptimeData[0] || null;
       }
       
-      // Fetch staff members
-      const staffRes = await fetch(
-        `${supabaseUrl}/rest/v1/staff_members?server_id=eq.${id}&is_active=eq.true&order=sort_order.asc,role.asc`,
+      // Fetch server rules
+      const rulesRes = await fetch(
+        `${supabaseUrl}/rest/v1/server_rules?server_id=eq.${id}&select=*`,
         { headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` }}
       );
-      if (staffRes.ok) {
-        staffMembers = await staffRes.json();
-      }
-      
-      // Fetch blog posts
-      const postsRes = await fetch(
-        `${supabaseUrl}/rest/v1/server_posts?server_id=eq.${id}&is_published=eq.true&order=is_pinned.desc,published_at.desc&limit=10`,
-        { headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` }}
-      );
-      if (postsRes.ok) {
-        posts = await postsRes.json();
+      if (rulesRes.ok) {
+        const rulesData = await rulesRes.json();
+        if (rulesData.length > 0) {
+          serverRules = rulesData[0];
+          hasRules = true;
+        }
       }
     }
   } else {
@@ -135,13 +131,39 @@ const isOnline = server.status === 'online';
                 )}
               </div>
               <div class="flex-1">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 flex-wrap">
                   <h1 class="text-2xl font-bold text-white">{server.name}</h1>
                   {server.verified && (
                     <span class="px-2 py-1 bg-[#00f5d4]/20 text-[#00f5d4] text-xs font-bold rounded">
                       ✓ VERIFIED
                     </span>
                   )}
+                  {/* Platform Badge */}
+                  {(() => {
+                    const edition = (server.edition || 'java').toLowerCase();
+                    if (edition === 'bedrock') {
+                      return (
+                        <span class="px-2 py-1 bg-[#8b5cf6]/20 text-[#8b5cf6] text-xs font-bold rounded flex items-center gap-1.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"/><path d="M12 16l-4 4 4 4"/><path d="M8 20h8"/><path d="m6 6 6 6 6-6"/></svg>
+                          BEDROCK
+                        </span>
+                      );
+                    } else if (edition === 'crossplay' || edition === 'both' || edition === 'java+bedrock') {
+                      return (
+                        <span class="px-2 py-1 bg-[#f59e0b]/20 text-[#f59e0b] text-xs font-bold rounded flex items-center gap-1.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+                          CROSS-PLAY
+                        </span>
+                      );
+                    } else {
+                      return (
+                        <span class="px-2 py-1 bg-[#f59e0b]/20 text-[#f59e0b] text-xs font-bold rounded flex items-center gap-1.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+                          JAVA
+                        </span>
+                      );
+                    }
+                  })()}
                 </div>
                 <code class="text-[#8892b0]">{server.ip}:{server.port}</code>
               </div>
@@ -187,87 +209,6 @@ const isOnline = server.status === 'online';
               <p class="text-xs text-[#8892b0]">{isOnline ? 'Online' : 'Offline'}</p>
             </div>
           </div>
-
-          <!-- Staff/Team Section -->
-          {staffMembers.length > 0 && (
-            <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg" id="staff-section">
-              <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                  <span>👥</span> Staff Team
-                  <span class="text-sm font-normal text-[#8892b0]">({staffMembers.length})</span>
-                </h2>
-              </div>
-              
-              {/* Group staff by role */}
-              {['owner', 'admin', 'developer', 'moderator', 'helper', 'builder', 'content_creator'].map(role => {
-                const roleStaff = staffMembers.filter((s) => s.role === role);
-                if (roleStaff.length === 0) return null;
-                
-                const roleLabels = {
-                  owner: 'Owner',
-                  admin: 'Admin',
-                  developer: 'Developer',
-                  moderator: 'Moderator',
-                  helper: 'Helper',
-                  builder: 'Builder',
-                  content_creator: 'Content Creator'
-                };
-                
-                const roleColors = {
-                  owner: '#ff3864',
-                  admin: '#ff6b6b',
-                  developer: '#00f5d4',
-                  moderator: '#ffd93d',
-                  helper: '#6bcf7f',
-                  builder: '#a78bfa',
-                  content_creator: '#f472b6'
-                };
-                
-                return (
-                  <div class="mb-4 last:mb-0">
-                    <h3 class="text-sm font-bold uppercase tracking-wider mb-3" style={`color: ${roleColors[role]}`}>
-                      {roleLabels[role]}
-                    </h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                      {roleStaff.map((member: any) => (
-                        <div class="group relative bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg p-3 hover:border-[#00f5d4] transition-all cursor-pointer"
-                             data-staff-username={member.minecraft_username}>
-                          <div class="flex flex-col items-center text-center">
-                            <div class="w-14 h-14 mb-2 relative">
-                              <img 
-                                src={`https://mc-heads.net/avatar/${encodeURIComponent(member.minecraft_username)}/64`}
-                                alt={member.minecraft_username}
-                                class="w-full h-full rounded-lg pixelated"
-                                loading="lazy"
-                                onerror="this.src='https://mc-heads.net/avatar/Steve/64'"
-                              />
-                              <div class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs" style={`background-color: ${roleColors[role]}20`}>
-                                <span style={`color: ${roleColors[role]}`}>{role === 'owner' ? '👑' : role === 'admin' ? '⚔️' : role === 'developer' ? '💻' : role === 'moderator' ? '🛡️' : role === 'helper' ? '🤝' : role === 'builder' ? '🏗️' : '🎬'}</span>
-                              </div>
-                            </div>
-                            <p class="font-bold text-white text-sm truncate max-w-full">
-                              {member.display_name || member.minecraft_username}
-                            </p>
-                            {member.bio && (
-                              <p class="text-[#8892b0] text-xs mt-1 line-clamp-2">{member.bio}</p>
-                            )}
-                          </div>
-                          
-                          {/* Hover tooltip */}
-                          <div class="absolute inset-0 bg-[#0a0a0f]/95 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center p-2 pointer-events-none">
-                            <p class="font-bold text-white text-sm">{member.minecraft_username}</p>
-                            {member.discord_username && (
-                              <p class="text-[#00f5d4] text-xs mt-1">Discord: {member.discord_username}</p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
 
           <!-- Voting Section -->
           <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
@@ -355,76 +296,6 @@ const isOnline = server.status === 'online';
               • <a href={`/stats?server=${id}`} class="text-[#00f5d4] hover:underline">Global Stats</a>
             </p>
           </div>
-
-          <!-- Server Blog/News Section -->
-          {posts.length > 0 && (
-            <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
-              <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                  <span>📰</span> Server News
-                  <span class="text-sm font-normal text-[#8892b0]">({posts.length})</span>
-                </h2>
-                <a href={`/blog?server=${id}`} class="text-sm text-[#00f5d4] hover:underline">
-                  View All →
-                </a>
-              </div>
-              
-              <div class="space-y-4">
-                {posts.slice(0, 5).map(post => {
-                  const categoryLabels = {
-                    news: { emoji: '📰', label: 'News' },
-                    update: { emoji: '🔄', label: 'Update' },
-                    patch: { emoji: '📦', label: 'Patch' },
-                    event: { emoji: '🎉', label: 'Event' },
-                    announcement: { emoji: '📢', label: 'Announce' },
-                    other: { emoji: '📝', label: 'Post' }
-                  };
-                  const cat = categoryLabels[post.category] || categoryLabels.other;
-                  const date = new Date(post.published_at);
-                  const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                  
-                  // Strip HTML for summary
-                  const summary = post.summary || post.content?.replace(/<[^>]*>/g, ' ').substring(0, 150) + '...' || '';
-                  
-                  return (
-                    <div class={`p-4 bg-[#0a0a0f] rounded-lg border ${post.is_pinned ? 'border-[#ff3864]/50' : 'border-[#2a2a3a]'} hover:border-[#00f5d4]/50 transition-colors`}>
-                      <div class="flex items-start gap-3">
-                        <div class="flex-1 min-w-0">
-                          <div class="flex items-center gap-2 mb-1 flex-wrap">
-                            {post.is_pinned && (
-                              <span class="px-2 py-0.5 bg-[#ff3864]/20 text-[#ff3864] text-xs font-bold rounded">
-                                📌 PINNED
-                              </span>
-                            )}
-                            <span class="text-xs text-[#8892b0]">
-                              {cat.emoji} {cat.label}
-                            </span>
-                            <span class="text-xs text-[#8892b0]">•</span>
-                            <span class="text-xs text-[#8892b0]">{formattedDate}</span>
-                            <span class="text-xs text-[#8892b0]">•</span>
-                            <span class="text-xs text-[#8892b0]">👁 {post.view_count || 0}</span>
-                          </div>
-                          <h3 class="font-bold text-white mb-1 hover:text-[#00f5d4] transition-colors cursor-pointer" onclick={`showPostModal('${post.id}', '${post.title.replace(/'/g, "\\'")}', '${post.content.replace(/'/g, "\\'")}', '${post.author}', '${post.category}', '${post.published_at}')`}>
-                            {post.title}
-                          </h3>
-                          <p class="text-[#8892b0] text-sm line-clamp-2">{summary}</p>
-                          <p class="text-[#8892b0] text-xs mt-2">By {post.author}</p>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-              
-              {posts.length > 5 && (
-                <div class="mt-4 text-center">
-                  <a href={`/blog?server=${id}`} class="inline-block px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded-lg text-sm transition-colors">
-                    View {posts.length - 5} more posts →
-                  </a>
-                </div>
-              )}
-            </div>
-          )}
 
           <!-- Related Servers -->
           {relatedServers.length > 0 && (
@@ -553,6 +424,58 @@ const isOnline = server.status === 'online';
             </div>
           </div>
 
+          <!-- Version Compatibility -->
+          <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
+            <h3 class="font-bold text-white mb-3">Version Compatibility</h3>
+            {(() => {
+              const edition = (server.edition || 'java').toLowerCase();
+              const isBedrock = edition === 'bedrock';
+              const isCrossplay = edition === 'crossplay' || edition === 'both' || edition === 'java+bedrock';
+              const isJava = edition === 'java' || (!edition && !isBedrock && !isCrossplay);
+              
+              return (
+                <div class="space-y-3">
+                  {/* Java Edition */}
+                  <div class={`flex items-center gap-3 p-2 rounded-lg ${isJava || isCrossplay ? 'bg-[#f59e0b]/10' : 'bg-[#1a1a25] opacity-50'}`}>
+                    <div class={`w-10 h-10 rounded-lg flex items-center justify-center ${isJava || isCrossplay ? 'bg-[#f59e0b]/20' : 'bg-[#1a1a25]'}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isJava || isCrossplay ? '#f59e0b' : '#8892b0'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+                    </div>
+                    <div class="flex-1">
+                      <p class={`font-bold text-sm ${isJava || isCrossplay ? 'text-[#f59e0b]' : 'text-[#8892b0]'}`}>
+                        Java Edition
+                      </p>
+                      <p class="text-xs text-[#8892b0]">
+                        {isJava ? '✓ Supported' : isCrossplay ? '✓ Supported via Geyser' : '✗ Not supported'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Bedrock Edition */}
+                  <div class={`flex items-center gap-3 p-2 rounded-lg ${isBedrock || isCrossplay ? 'bg-[#8b5cf6]/10' : 'bg-[#1a1a25] opacity-50'}`}>
+                    <div class={`w-10 h-10 rounded-lg flex items-center justify-center ${isBedrock || isCrossplay ? 'bg-[#8b5cf6]/20' : 'bg-[#1a1a25]'}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={isBedrock || isCrossplay ? '#8b5cf6' : '#8892b0'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+                    </div>
+                    <div class="flex-1">
+                      <p class={`font-bold text-sm ${isBedrock || isCrossplay ? 'text-[#8b5cf6]' : 'text-[#8892b0]'}`}>
+                        Bedrock Edition
+                      </p>
+                      <p class="text-xs text-[#8892b0]">
+                        {isBedrock ? '✓ Native Support' : isCrossplay ? '✓ Supported via Geyser' : '✗ Not supported'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Console/Mobile Note */}
+                  {(isBedrock || isCrossplay) && (
+                    <p class="text-xs text-[#8892b0] mt-2">
+                      💡 Console (Xbox/PlayStation/Switch) and mobile players can join using Bedrock Edition
+                    </p>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
+
           <!-- Share -->
           <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
             <h3 class="font-bold text-white mb-3">Share</h3>
@@ -581,27 +504,41 @@ const isOnline = server.status === 'online';
         </div>
       </div>
       
-      <!-- Gallery Section -->
-      <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg" id="gallery-section">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-bold text-white flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-            Gallery
-          </h2>
-          <span id="gallery-count" class="text-[#8892b0] text-sm">Loading...</span>
-        </div>
-        
-        <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-          <div class="col-span-full text-center py-8">
-            <div class="animate-spin w-6 h-6 border-2 border-[#00f5d4] border-t-transparent rounded-full mx-auto"></div>
-            <p class="text-[#8892b0] text-sm mt-2">Loading screenshots...</p>
+      <!-- Server Rules Section -->
+      {hasRules && (
+        <div class="mt-8 mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+              <div class="w-10 h-10 bg-[#00f5d4]/10 rounded-lg flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </div>
+              Server Rules
+            </h2>
+            <a 
+              href={`/rules/${id}`}
+              class="px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-[#8892b0] rounded-lg transition-colors text-sm flex items-center gap-2"
+            >
+              View Full Page
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+          <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg p-6">
+            <div class="max-h-96 overflow-y-auto pr-2">
+              <MarkdownRenderer content={serverRules.content} />
+            </div>
           </div>
         </div>
-        
-        <p class="text-[#8892b0] text-xs mt-4 text-center">
-          Screenshots showcase this server's world, builds, and events
-        </p>
-      </div>
+      )}
 
       <!-- Reviews Section -->
       <Reviews serverId={id} reviews={reviews} />
@@ -1008,376 +945,4 @@ const isOnline = server.status === 'online';
   
   // Load initial analytics
   loadAnalytics('24h');
-  
-  // Load gallery screenshots
-  loadGallery();
-  
-  async function loadGallery() {
-    const grid = document.getElementById('gallery-grid');
-    const countEl = document.getElementById('gallery-count');
-    
-    if (!grid) return;
-    
-    try {
-      const response = await fetch(`/api/servers/${serverId}/screenshots`);
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to load gallery');
-      }
-      
-      const screenshots = data.screenshots || [];
-      
-      if (screenshots.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full text-center py-8">
-            <div class="w-12 h-12 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-3">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8892b0" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-            </div>
-            <p class="text-[#8892b0] text-sm">No screenshots yet</p>
-            <p class="text-[#8892b0] text-xs mt-1">Server owner can upload screenshots in their dashboard</p>
-          </div>
-        `;
-        if (countEl) countEl.textContent = '0 screenshots';
-        return;
-      }
-      
-      if (countEl) countEl.textContent = `${screenshots.length} screenshot${screenshots.length !== 1 ? 's' : ''}`;
-      
-      grid.innerHTML = screenshots.map((screenshot: any, index: number) => `
-        <div class="gallery-item relative aspect-video rounded-lg overflow-hidden cursor-pointer border border-[#2a2a3a] hover:border-[#00f5d4] transition-all group"
-             onclick="openLightbox(${index})"
-             data-index="${index}">
-          <img src="${screenshot.url}" 
-               alt="${screenshot.caption || 'Server screenshot'}" 
-               class="w-full h-full object-cover transition-transform group-hover:scale-105"
-               loading="lazy">
-          ${screenshot.caption ? `
-            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-              <p class="text-white text-xs truncate">${screenshot.caption}</p>
-            </div>
-          ` : ''}
-        </div>
-      `).join('');
-      
-      // Store screenshots for lightbox
-      (window as any).galleryScreenshots = screenshots;
-      
-    } catch (err) {
-      console.error('Gallery load error:', err);
-      grid.innerHTML = `
-        <div class="col-span-full text-center py-8">
-          <p class="text-[#8892b0] text-sm">Failed to load gallery</p>
-        </div>
-      `;
-    }
-  }
-  
-  // Lightbox functionality
-  let currentLightboxIndex = 0;
-  
-  (window as any).openLightbox = function(index: number) {
-    const screenshots = (window as any).galleryScreenshots || [];
-    if (!screenshots.length) return;
-    
-    currentLightboxIndex = index;
-    const screenshot = screenshots[index];
-    
-    // Create lightbox if it doesn't exist
-    let lightbox = document.getElementById('gallery-lightbox');
-    if (!lightbox) {
-      lightbox = document.createElement('div');
-      lightbox.id = 'gallery-lightbox';
-      lightbox.className = 'fixed inset-0 bg-black/95 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300';
-      lightbox.innerHTML = `
-        <button onclick="closeLightbox()" class="absolute top-4 right-4 p-2 text-white hover:text-[#00f5d4] z-50">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </button>
-        <button onclick="prevScreenshot()" class="absolute left-4 p-2 text-white hover:text-[#00f5d4] z-50 hidden md:block">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
-        <button onclick="nextScreenshot()" class="absolute right-4 p-2 text-white hover:text-[#00f5d4] z-50 hidden md:block">
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
-        <div class="max-w-5xl max-h-[80vh] mx-auto px-4 flex flex-col items-center">
-          <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[70vh] object-contain rounded-lg shadow-2xl">
-          <p id="lightbox-caption" class="text-white text-center mt-4 px-4 max-w-2xl"></p>
-          <p id="lightbox-counter" class="text-[#8892b0] text-sm mt-2"></p>
-        </div>
-        <div id="lightbox-thumbnails" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 max-w-[90vw] overflow-x-auto px-4"></div>
-      `;
-      document.body.appendChild(lightbox);
-      
-      // Keyboard navigation
-      document.addEventListener('keydown', (e) => {
-        if (lightbox?.classList.contains('opacity-100')) {
-          if (e.key === 'Escape') (window as any).closeLightbox();
-          if (e.key === 'ArrowLeft') (window as any).prevScreenshot();
-          if (e.key === 'ArrowRight') (window as any).nextScreenshot();
-        }
-      });
-      
-      // Touch/swipe support
-      let touchStartX = 0;
-      lightbox.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-      }, { passive: true });
-      
-      lightbox.addEventListener('touchend', (e) => {
-        const touchEndX = e.changedTouches[0].clientX;
-        const diff = touchStartX - touchEndX;
-        if (Math.abs(diff) > 50) {
-          if (diff > 0) (window as any).nextScreenshot();
-          else (window as any).prevScreenshot();
-        }
-      }, { passive: true });
-    }
-    
-    updateLightboxContent();
-    lightbox.classList.remove('opacity-0', 'pointer-events-none');
-    lightbox.classList.add('opacity-100', 'pointer-events-auto');
-    document.body.style.overflow = 'hidden';
-  };
-  
-  (window as any).closeLightbox = function() {
-    const lightbox = document.getElementById('gallery-lightbox');
-    if (lightbox) {
-      lightbox.classList.add('opacity-0', 'pointer-events-none');
-      lightbox.classList.remove('opacity-100', 'pointer-events-auto');
-      document.body.style.overflow = '';
-    }
-  };
-  
-  (window as any).prevScreenshot = function() {
-    const screenshots = (window as any).galleryScreenshots || [];
-    currentLightboxIndex = (currentLightboxIndex - 1 + screenshots.length) % screenshots.length;
-    updateLightboxContent();
-  };
-  
-  (window as any).nextScreenshot = function() {
-    const screenshots = (window as any).galleryScreenshots || [];
-    currentLightboxIndex = (currentLightboxIndex + 1) % screenshots.length;
-    updateLightboxContent();
-  };
-  
-  function updateLightboxContent() {
-    const screenshots = (window as any).galleryScreenshots || [];
-    const screenshot = screenshots[currentLightboxIndex];
-    
-    const img = document.getElementById('lightbox-img') as HTMLImageElement;
-    const caption = document.getElementById('lightbox-caption');
-    const counter = document.getElementById('lightbox-counter');
-    const thumbnails = document.getElementById('lightbox-thumbnails');
-    
-    if (img) {
-      img.style.opacity = '0';
-      setTimeout(() => {
-        img.src = screenshot.url;
-        img.alt = screenshot.caption || 'Server screenshot';
-        img.onload = () => { img.style.opacity = '1'; };
-      }, 150);
-    }
-    
-    if (caption) {
-      caption.textContent = screenshot.caption || '';
-      caption.style.display = screenshot.caption ? 'block' : 'none';
-    }
-    
-    if (counter) {
-      counter.textContent = `${currentLightboxIndex + 1} / ${screenshots.length}`;
-    }
-    
-    if (thumbnails && screenshots.length > 1) {
-      thumbnails.innerHTML = screenshots.map((s: any, i: number) => `
-        <button onclick="jumpToScreenshot(${i})" 
-                class="w-16 h-12 rounded overflow-hidden border-2 transition-colors flex-shrink-0 ${i === currentLightboxIndex ? 'border-[#00f5d4]' : 'border-transparent hover:border-[#8892b0]'}"
-                aria-label="Go to image ${i + 1}">
-          <img src="${s.url}" class="w-full h-full object-cover" alt="">
-        </button>
-      `).join('');
-    }
-  }
-  
-  (window as any).jumpToScreenshot = function(index: number) {
-    currentLightboxIndex = index;
-    updateLightboxContent();
-  };
-  
-  // Post Modal functionality
-  (window as any).showPostModal = function(postId: string, title: string, content: string, author: string, category: string, publishedAt: string) {
-    // Create modal if it doesn't exist
-    let modal = document.getElementById('post-modal');
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.id = 'post-modal';
-      modal.className = 'fixed inset-0 bg-black/80 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4';
-      modal.innerHTML = `
-        <div class="bg-[#12121a] border border-[#2a2a3a] rounded-lg max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-          <div class="p-4 border-b border-[#2a2a3a] flex items-center justify-between">
-            <h3 id="post-modal-title" class="text-xl font-bold text-white"></h3>
-            <button onclick="closePostModal()" class="text-[#8892b0] hover:text-white">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </button>
-          </div>
-          <div class="p-4 overflow-y-auto flex-1">
-            <div class="flex items-center gap-2 mb-4 text-sm text-[#8892b0]">
-              <span id="post-modal-category"></span>
-              <span>•</span>
-              <span id="post-modal-date"></span>
-              <span>•</span>
-              <span>By <span id="post-modal-author"></span></span>
-            </div>
-            <div id="post-modal-content" class="prose prose-invert prose-sm max-w-none"></div>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(modal);
-      
-      // Close on backdrop click
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closePostModal();
-      });
-      
-      // Close on escape
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closePostModal();
-      });
-    }
-    
-    // Update content
-    const titleEl = document.getElementById('post-modal-title');
-    const contentEl = document.getElementById('post-modal-content');
-    const authorEl = document.getElementById('post-modal-author');
-    const categoryEl = document.getElementById('post-modal-category');
-    const dateEl = document.getElementById('post-modal-date');
-    
-    if (titleEl) titleEl.textContent = title;
-    if (contentEl) contentEl.innerHTML = content;
-    if (authorEl) authorEl.textContent = author;
-    if (dateEl) dateEl.textContent = new Date(publishedAt).toLocaleDateString();
-    
-    const catLabels = {
-      news: '📰 News',
-      update: '🔄 Update',
-      patch: '📦 Patch',
-      event: '🎉 Event',
-      announcement: '📢 Announce',
-      other: '📝 Post'
-    };
-    if (categoryEl) categoryEl.textContent = catLabels[category] || catLabels.other;
-    
-    // Show modal
-    modal.classList.remove('opacity-0', 'pointer-events-none');
-    modal.classList.add('opacity-100', 'pointer-events-auto');
-    document.body.style.overflow = 'hidden';
-    
-    // Track view (async, don't wait)
-    fetch(`/api/servers/${serverId}/posts?view=${postId}`, { method: 'POST' }).catch(() => {});
-  };
-  
-  (window as any).closePostModal = function() {
-    const modal = document.getElementById('post-modal');
-    if (modal) {
-      modal.classList.add('opacity-0', 'pointer-events-none');
-      modal.classList.remove('opacity-100', 'pointer-events-auto');
-      document.body.style.overflow = '';
-    }
-  };
 </script>
-
-<style>
-  /* Line clamp utilities */
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  
-  /* Prose styling for rich text content */
-  .prose {
-    color: #8892b0;
-  }
-  .prose h1, .prose h2, .prose h3, .prose h4 {
-    color: white;
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
-  }
-  .prose p {
-    margin-bottom: 1em;
-    line-height: 1.6;
-  }
-  .prose ul, .prose ol {
-    margin-left: 1.5em;
-    margin-bottom: 1em;
-  }
-  .prose li {
-    margin-bottom: 0.25em;
-  }
-  .prose a {
-    color: #00f5d4;
-    text-decoration: underline;
-  }
-  .prose blockquote {
-    border-left: 3px solid #00f5d4;
-    padding-left: 1em;
-    margin-left: 0;
-    color: #a0aec0;
-  }
-  .prose code {
-    background: #1a1a25;
-    padding: 0.2em 0.4em;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 0.9em;
-  }
-  .prose pre {
-    background: #1a1a25;
-    padding: 1em;
-    border-radius: 8px;
-    overflow-x: auto;
-  }
-  .prose pre code {
-    background: none;
-    padding: 0;
-  }
-  .prose img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin: 1em 0;
-  }
-  .prose hr {
-    border: none;
-    border-top: 1px solid #2a2a3a;
-    margin: 2em 0;
-  }
-  
-  /* Custom scrollbar for modal */
-  #post-modal ::-webkit-scrollbar {
-    width: 8px;
-  }
-  #post-modal ::-webkit-scrollbar-track {
-    background: #0a0a0f;
-  }
-  #post-modal ::-webkit-scrollbar-thumb {
-    background: #2a2a3a;
-    border-radius: 4px;
-  }
-  #post-modal ::-webkit-scrollbar-thumb:hover {
-    background: #3a3a4a;
-  }
-</style>

@@ -1,0 +1,298 @@
+---
+// MarkdownRenderer - Client-side markdown rendering with syntax highlighting
+
+export interface Props {
+  content: string;
+  className?: string;
+}
+
+const { content, className = '' } = Astro.props;
+---
+
+<div class={`markdown-content ${className}`} data-markdown-content={content}>
+  <div class="markdown-body prose prose-invert prose-sm max-w-none">
+    <!-- Content will be rendered client-side -->
+    <div class="markdown-loading text-[#8892b0] text-sm">Loading content...</div>
+  </div>
+</div>
+
+<style>
+  .markdown-content :global(.markdown-body) {
+    color: #e6edf3;
+    line-height: 1.6;
+  }
+  
+  .markdown-content :global(.markdown-body h1) {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 1.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #2a2a3a;
+  }
+  
+  .markdown-content :global(.markdown-body h2) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 1.25rem 0 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid #2a2a3a;
+  }
+  
+  .markdown-content :global(.markdown-body h3) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 1rem 0 0.5rem;
+  }
+  
+  .markdown-content :global(.markdown-body h4) {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0.75rem 0 0.5rem;
+  }
+  
+  .markdown-content :global(.markdown-body p) {
+    margin: 0.75rem 0;
+    color: #8892b0;
+  }
+  
+  .markdown-content :global(.markdown-body ul),
+  .markdown-content :global(.markdown-body ol) {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .markdown-content :global(.markdown-body li) {
+    margin: 0.25rem 0;
+    color: #8892b0;
+  }
+  
+  .markdown-content :global(.markdown-body ul li) {
+    list-style-type: disc;
+  }
+  
+  .markdown-content :global(.markdown-body ol li) {
+    list-style-type: decimal;
+  }
+  
+  .markdown-content :global(.markdown-body blockquote) {
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    border-left: 4px solid #00f5d4;
+    background: rgba(0, 245, 212, 0.05);
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .markdown-content :global(.markdown-body blockquote p) {
+    margin: 0;
+    color: #e6edf3;
+    font-style: italic;
+  }
+  
+  .markdown-content :global(.markdown-body code) {
+    font-family: 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.875em;
+    padding: 0.2em 0.4em;
+    background: #1a1a25;
+    border-radius: 4px;
+    color: #ff7b72;
+  }
+  
+  .markdown-content :global(.markdown-body pre) {
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #0d1117;
+    border-radius: 8px;
+    border: 1px solid #2a2a3a;
+    overflow-x: auto;
+  }
+  
+  .markdown-content :global(.markdown-body pre code) {
+    padding: 0;
+    background: none;
+    color: #e6edf3;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  .markdown-content :global(.markdown-body a) {
+    color: #00f5d4;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  
+  .markdown-content :global(.markdown-body a:hover) {
+    color: #00d4b8;
+    text-decoration: underline;
+  }
+  
+  .markdown-content :global(.markdown-body hr) {
+    margin: 1.5rem 0;
+    border: none;
+    border-top: 1px solid #2a2a3a;
+  }
+  
+  .markdown-content :global(.markdown-body table) {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: collapse;
+  }
+  
+  .markdown-content :global(.markdown-body th),
+  .markdown-content :global(.markdown-body td) {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #2a2a3a;
+    text-align: left;
+  }
+  
+  .markdown-content :global(.markdown-body th) {
+    background: #1a1a25;
+    font-weight: 600;
+    color: #fff;
+  }
+  
+  .markdown-content :global(.markdown-body tr:nth-child(even)) {
+    background: rgba(26, 26, 37, 0.5);
+  }
+  
+  .markdown-content :global(.markdown-body img) {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1rem 0;
+  }
+  
+  .markdown-content :global(.markdown-body strong) {
+    color: #fff;
+    font-weight: 600;
+  }
+  
+  .markdown-content :global(.markdown-body em) {
+    color: #e6edf3;
+  }
+  
+  /* Task lists */
+  .markdown-content :global(.markdown-body input[type="checkbox"]) {
+    margin-right: 0.5rem;
+    accent-color: #00f5d4;
+  }
+  
+  /* Alert/Warning boxes */
+  .markdown-content :global(.markdown-body .alert) {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    border-left: 4px solid;
+  }
+  
+  .markdown-content :global(.markdown-body .alert-info) {
+    background: rgba(0, 245, 212, 0.1);
+    border-left-color: #00f5d4;
+  }
+  
+  .markdown-content :global(.markdown-body .alert-warning) {
+    background: rgba(255, 193, 7, 0.1);
+    border-left-color: #ffc107;
+  }
+  
+  .markdown-content :global(.markdown-body .alert-danger) {
+    background: rgba(255, 56, 100, 0.1);
+    border-left-color: #ff3864;
+  }
+</style>
+
+<script>
+  // Simple markdown parser
+  function parseMarkdown(text: string): string {
+    if (!text) return '';
+    
+    let html = text
+      // Escape HTML
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      
+      // Code blocks (must be before inline code)
+      .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+      
+      // Inline code
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      
+      // Headers
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      
+      // Bold and italic
+      .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/___(.*?)___/g, '<strong><em>$1</em></strong>')
+      .replace(/__(.*?)__/g, '<strong>$1</strong>')
+      .replace(/_(.*?)_/g, '<em>$1</em>')
+      
+      // Strikethrough
+      .replace(/~~(.*?)~~/g, '<del>$1</del>')
+      
+      // Blockquotes
+      .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
+      
+      // Links
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
+      
+      // Images
+      .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />')
+      
+      // Horizontal rules
+      .replace(/^---$/gim, '<hr />')
+      .replace(/^\*\*\*$/gim, '<hr />')
+      .replace(/^___$/gim, '<hr />')
+      
+      // Task lists
+      .replace(/^- \[x\] (.*$)/gim, '<div><input type="checkbox" checked disabled> $1</div>')
+      .replace(/^- \[ \] (.*$)/gim, '<div><input type="checkbox" disabled> $1</div>')
+      
+      // Unordered lists
+      .replace(/^\* (.*$)/gim, '<ul><li>$1</li></ul>')
+      .replace(/^- (.*$)/gim, '<ul><li>$1</li></ul>')
+      
+      // Ordered lists
+      .replace(/^\d+\. (.*$)/gim, '<ol><li>$1</li></ol>');
+    
+    // Fix nested lists (simplified approach)
+    html = html
+      .replace(/<\/ul>\s*<ul>/g, '')
+      .replace(/<\/ol>\s*<ol>/g, '');
+    
+    // Convert newlines to paragraphs (for text not in other elements)
+    const lines = html.split('\n');
+    let result = '';
+    let inBlock = false;
+    
+    for (const line of lines) {
+      const trimmed = line.trim();
+      
+      // Check if line is already wrapped in a block element
+      if (trimmed.startsWith('<h') || trimmed.startsWith('<p') || trimmed.startsWith('<ul') || 
+          trimmed.startsWith('<ol') || trimmed.startsWith('<pre') || trimmed.startsWith('<blockquote') ||
+          trimmed.startsWith('<div') || trimmed.startsWith('<hr') || trimmed === '') {
+        result += line + '\n';
+      } else {
+        result += '<p>' + line + '</p>\n';
+      }
+    }
+    
+    return result.trim();
+  }
+
+  // Render markdown on page load
+  document.querySelectorAll('[data-markdown-content]').forEach(container => {
+    const content = container.getAttribute('data-markdown-content') || '';
+    const body = container.querySelector('.markdown-body');
+    if (body) {
+      body.innerHTML = parseMarkdown(content);
+    }
+  });
+</script>

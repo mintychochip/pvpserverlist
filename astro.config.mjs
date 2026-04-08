@@ -15,7 +15,7 @@ export default defineConfig({
   vite: {
     build: {
       rollupOptions: {
-        external: ['minecraft-server-util']
+        external: ['minecraft-server-util', 'stripe']
       }
     }
   }
