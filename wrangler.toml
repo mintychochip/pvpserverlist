@@ -7,8 +7,8 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 SUPABASE_URL = "https://wpxutsdbiampnxfgkjwq.supabase.co"
-# SUPABASE_SERVICE_KEY should be set as a secret
-# GEMINI_API_KEY should be set as a secret
+# GEMINI_API_KEY - set as secret
+# SUPABASE_SERVICE_KEY - set as secret
 
 # Secrets (set these with wrangler secret put)
 # wrangler secret put SUPABASE_SERVICE_KEY

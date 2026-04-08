@@ -1,10 +1,16 @@
-/// <reference types="astro/client" />
+/// <reference path="../.astro/types.d.ts" />
+/// <reference types="astro/cloudflare" />
 
-interface ImportMetaEnv {
-  readonly PUBLIC_SUPABASE_URL: string;
-  readonly PUBLIC_SUPABASE_ANON_KEY: string;
+interface Env {
+  GEMINI_API_KEY: string;
+  SUPABASE_URL: string;
+  SUPABASE_SERVICE_KEY: string;
 }
 
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
+declare namespace App {
+  interface Locals {
+    runtime: {
+      env: Env;
+    };
+  }
 }
