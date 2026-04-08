@@ -168,10 +168,9 @@ const { id = 'intent-wizard', inline = false } = Astro.props;
 <link rel="stylesheet" href="/styles/intent-wizard.css" />
 
 <script define:vars={{ wizardId: id }}>
-  (function() {
-    const id = wizardId;
-    const wizard = document.getElementById(id);
-    if (!wizard) return;
+  const id = wizardId;
+  const wizard = document.getElementById(id);
+  if (!wizard) return;
 
     // State
     const state = {
@@ -371,5 +370,4 @@ const { id = 'intent-wizard', inline = false } = Astro.props;
     }
 
     updateProgress();
-  })();
 </script>
