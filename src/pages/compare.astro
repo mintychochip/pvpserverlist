@@ -2,6 +2,7 @@
 // Server Comparison Page
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
 // Get server IDs from query params
 const params = new URL(Astro.request.url).searchParams;
@@ -193,5 +194,6 @@ if (serverIds.length > 0) {
         </>
       )}
     </main>
+    <Footer />
   </div>
 </Layout>
