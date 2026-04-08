@@ -5,7 +5,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import AnimatedStat from '../components/AnimatedStat.astro';
-import SmartIntentSearch from '../components/SmartIntentSearch.astro';
+import SearchWithWizard from '../components/SearchWithWizard.astro';
 
 // Game categories data
 const gameCategories = [
@@ -71,7 +71,7 @@ const gameCategories = [
           <AnimatedStat value={0} label="Fake Reviews" color="#ff3864" />
         </div>
 
-        <!-- Smart Intent Search -->
+        <!-- Search with Wizard Fallback -->
         <div class="max-w-3xl mx-auto mt-8 mb-4">
           <div class="flex items-center justify-center gap-2 mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00f5d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -81,7 +81,7 @@ const gameCategories = [
             </svg>
             <span class="text-[#00f5d4] text-sm font-medium">AI-Powered Search</span>
           </div>
-          <SmartIntentSearch id="hero-search" />
+          <SearchWithWizard id="hero-search" />
         </div>
 
         <!-- CTA Buttons -->

@@ -1,0 +1,420 @@
+---
+// SearchWithWizardFallback - Search bar first, wizard appears if intent unclear
+
+export interface Props {
+  id?: string;
+}
+
+const { id = 'smart-search' } = Astro.props;
+---
+
+<div id={id} class="search-with-wizard">
+  <!-- Primary Search Bar -->
+  <div class="search-bar-container">
+    <div class="search-input-wrapper">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input 
+        type="text" 
+        id={`${id}-input`}
+        placeholder="Describe your ideal server (e.g., 'survival with economy and claims')..."
+        class="search-input"
+        autocomplete="off"
+      />
+      <button id={`${id}-btn`} class="search-button">
+        <span>Find</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="quick-tags">
+      <span class="tag-label">Quick:</span>
+      <button class="quick-tag" data-query="survival smp with claims">🏕️ Survival SMP</button>
+      <button class="quick-tag" data-query="pvp factions raiding">⚔️ PvP Factions</button>
+      <button class="quick-tag" data-query="skyblock economy">🏝️ Skyblock</button>
+      <button class="quick-tag" data-query="small friendly community">👥 Small Community</button>
+    </div>
+  </div>
+
+  <!-- Wizard Overlay (hidden initially) -->
+  <div id={`${id}-wizard`} class="wizard-overlay hidden">
+    <div class="wizard-backdrop"></div>
+    <div class="wizard-modal">
+      <button class="wizard-close" id={`${id}-close-wizard`}>×</button>
+      
+      <div class="wizard-header">
+        <h3>Help us find your perfect server</h3>
+        <p>You said: <span id={`${id}-original-query`} class="original-query"></span></p>
+        <p class="wizard-subtitle">Let's narrow it down with a few quick questions:</p>
+      </div>
+
+      <!-- Progress -->
+      <div class="wizard-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" id={`${id}-progress`}></div>
+        </div>
+        <span class="progress-text">Question <span id={`${id}-step-num`}>1</span> of 3</span>
+      </div>
+
+      <!-- Step 1: Gamemode -->
+      <div class="wizard-step active" data-step="1">
+        <h4>What gamemode interests you?</h4>
+        <div class="option-grid">
+          <button class="option-card" data-answer="survival">
+            <span class="option-icon">🛡️</span>
+            <span class="option-label">Survival</span>
+          </button>
+          <button class="option-card" data-answer="pvp">
+            <span class="option-icon">⚔️</span>
+            <span class="option-label">PvP</span>
+          </button>
+          <button class="option-card" data-answer="skyblock">
+            <span class="option-icon">🏝️</span>
+            <span class="option-label">Skyblock</span>
+          </button>
+          <button class="option-card" data-answer="creative">
+            <span class="option-icon">🎨</span>
+            <span class="option-label">Creative</span>
+          </button>
+          <button class="option-card" data-answer="minigames">
+            <span class="option-icon">🎲</span>
+            <span class="option-label">Minigames</span>
+          </button>
+          <button class="option-card" data-answer="hardcore">
+            <span class="option-icon">🔥</span>
+            <span class="option-label">Hardcore</span>
+          </button>
+          <button class="option-card skip" data-answer="any">
+            <span class="option-icon">🤷</span>
+            <span class="option-label">Not sure</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Features -->
+      <div class="wizard-step" data-step="2">
+        <h4>What features do you want?</h4>
+        <p class="step-subtitle">Select all that apply</p>
+        <div class="feature-chips">
+          <button class="feature-toggle" data-answer="economy">💰 Economy</button>
+          <button class="feature-toggle" data-answer="claims">🏠 Land Claims</button>
+          <button class="feature-toggle" data-answer="community">👥 Active Discord</button>
+          <button class="feature-toggle" data-answer="pvp">⚔️ PvP Enabled</button>
+          <button class="feature-toggle" data-answer="mmo">🏛️ McMMO/RPG</button>
+          <button class="feature-toggle" data-answer="events">🌍 Events</button>
+          <button class="feature-toggle" data-answer="bedrock">📱 Bedrock Support</button>
+          <button class="feature-toggle" data-answer="shops">🏪 Player Shops</button>
+          <button class="feature-toggle" data-answer="towny">🏘️ Towny</button>
+          <button class="feature-toggle" data-answer="quests">📜 Quests</button>
+          <button class="feature-toggle" data-answer="vanilla">🌿 Vanilla+</button>
+        </div>
+        <button class="continue-btn" id={`${id}-continue-features`}>Continue</button>
+      </div>
+
+      <!-- Step 3: Size -->
+      <div class="wizard-step" data-step="3">
+        <h4>What community size?</h4>
+        <div class="size-options">
+          <button class="size-card" data-answer="small">
+            <span class="size-emoji">🌱</span>
+            <span class="size-label">Small</span>
+            <span class="size-desc">1-50 players, tight-knit</span>
+          </button>
+          <button class="size-card" data-answer="medium">
+            <span class="size-emoji">🌳</span>
+            <span class="size-label">Medium</span>
+            <span class="size-desc">50-200 players, active</span>
+          </button>
+          <button class="size-card" data-answer="large">
+            <span class="size-emoji">🌲</span>
+            <span class="size-label">Large</span>
+            <span class="size-desc">200+ players, bustling</span>
+          </button>
+          <button class="size-card skip" data-answer="any">
+            <span class="size-emoji">🎲</span>
+            <span class="size-label">Any size</span>
+            <span class="size-desc">Surprise me</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Searching State -->
+      <div class="wizard-step" data-step="searching">
+        <div class="searching-state">
+          <div class="spinner"></div>
+          <p>Finding your perfect server...</p>
+          <p class="search-query" id={`${id}-search-query`}></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id={`${id}-results`} class="results-container"></div>
+</div>
+
+<link rel="stylesheet" href="/styles/search-wizard.css" />
+
+<script define:vars={{ componentId: id }}>
+  const id = componentId;
+  const container = document.getElementById(id);
+  if (!container) return;
+
+  // Elements
+  const input = document.getElementById(`${id}-input`);
+  const btn = document.getElementById(`${id}-btn`);
+  const wizard = document.getElementById(`${id}-wizard`);
+  const closeWizard = document.getElementById(`${id}-close-wizard`);
+  const originalQuery = document.getElementById(`${id}-original-query`);
+  const progressFill = document.getElementById(`${id}-progress`);
+  const stepNum = document.getElementById(`${id}-step-num`);
+  const continueFeatures = document.getElementById(`${id}-continue-features`);
+  const searchQuery = document.getElementById(`${id}-search-query`);
+  const results = document.getElementById(`${id}-results`);
+
+  // State
+  let wizardData = {
+    originalQuery: '',
+    gamemode: null,
+    features: [],
+    size: null,
+    currentStep: 1
+  };
+
+  // Parse intent locally
+  function parseIntent(query) {
+    const lower = query.toLowerCase();
+    const intent = { gamemode: null, features: [], size: null, score: 0 };
+
+    // Gamemodes
+    const gamemodes = {
+      survival: ['survival', 'smp', 'semi-vanilla'],
+      pvp: ['pvp', 'factions', 'raid'],
+      skyblock: ['skyblock', 'island'],
+      creative: ['creative', 'build', 'plot'],
+      minigames: ['minigame', 'bedwars', 'skywars'],
+      hardcore: ['hardcore', 'deathban'],
+      prison: ['prison', 'mines'],
+      modded: ['modded', 'forge', 'fabric'],
+      rp: ['roleplay', 'rp', 'lore']
+    };
+
+    for (const [mode, keywords] of Object.entries(gamemodes)) {
+      if (keywords.some(k => lower.includes(k))) {
+        intent.gamemode = mode;
+        intent.score += 40;
+        break;
+      }
+    }
+
+    // Features
+    const features = {
+      economy: ['economy', 'money', 'trading'],
+      claims: ['claim', 'land', 'protect'],
+      community: ['community', 'discord', 'friendly'],
+      pvp: ['pvp', 'combat'],
+      mmo: ['mmo', 'mcmmo', 'rpg'],
+      events: ['events', 'bosses'],
+      bedrock: ['bedrock', 'console', 'mobile'],
+      shops: ['shop', 'market'],
+      towny: ['towny', 'town'],
+      quests: ['quests', 'missions'],
+      vanilla: ['vanilla', 'pure']
+    };
+
+    for (const [feature, keywords] of Object.entries(features)) {
+      if (keywords.some(k => lower.includes(k))) {
+        intent.features.push(feature);
+        intent.score += 20;
+      }
+    }
+
+    // Size
+    if (/\b(small|tiny)\b/.test(lower)) { intent.size = 'small'; intent.score += 15; }
+    else if (/\b(medium|mid)\b/.test(lower)) { intent.size = 'medium'; intent.score += 15; }
+    else if (/\b(large|big|huge)\b/.test(lower)) { intent.size = 'large'; intent.score += 15; }
+
+    return intent;
+  }
+
+  // Show wizard
+  function showWizard(query, intent) {
+    wizardData.originalQuery = query;
+    wizardData.gamemode = intent.gamemode;
+    wizardData.features = [...intent.features];
+    wizardData.size = intent.size;
+    wizardData.currentStep = 1;
+
+    originalQuery.textContent = `"${query}"`;
+    wizard.classList.remove('hidden');
+    
+    // Pre-select if detected
+    if (intent.gamemode) {
+      const btn = wizard.querySelector(`[data-step="1"] [data-answer="${intent.gamemode}"]`);
+      if (btn) btn.classList.add('selected');
+    }
+
+    intent.features.forEach(f => {
+      const btn = wizard.querySelector(`[data-step="2"] [data-answer="${f}"]`);
+      if (btn) btn.classList.add('selected');
+    });
+
+    updateWizardUI();
+  }
+
+  function hideWizard() {
+    wizard.classList.add('hidden');
+    resetWizard();
+  }
+
+  function resetWizard() {
+    wizardData = { originalQuery: '', gamemode: null, features: [], size: null, currentStep: 1 };
+    wizard.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+    wizard.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
+    wizard.querySelector('[data-step="1"]').classList.add('active');
+  }
+
+  function updateWizardUI() {
+    // Progress
+    const pct = (wizardData.currentStep / 3) * 100;
+    progressFill.style.width = `${pct}%`;
+    stepNum.textContent = wizardData.currentStep;
+
+    // Steps
+    wizard.querySelectorAll('.wizard-step').forEach(step => {
+      step.classList.toggle('active', parseInt(step.dataset.step) === wizardData.currentStep);
+    });
+  }
+
+  function goToStep(n) {
+    wizardData.currentStep = n;
+    updateWizardUI();
+  }
+
+  // Build final query
+  function buildQuery() {
+    const parts = ['minecraft'];
+    if (wizardData.gamemode && wizardData.gamemode !== 'any') parts.push(wizardData.gamemode);
+    parts.push(...wizardData.features);
+    if (wizardData.size && wizardData.size !== 'any') parts.push(wizardData.size);
+    return parts.join(' ');
+  }
+
+  // Search
+  async function doSearch(query) {
+    results.innerHTML = '<div class="loading-results"><div class="spinner"></div><p>Searching...</p></div>';
+    
+    try {
+      const res = await fetch('/api/search/semantic', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, limit: 9 })
+      });
+      const data = await res.json();
+
+      if (data.results?.length) {
+        results.innerHTML = `
+          <div class="results-header">
+            <h3>${data.results.length} servers found</h3>
+            <span class="query">${query}</span>
+          </div>
+          <div class="results-grid">
+            ${data.results.map(s => `
+              <a href="/servers/${s.id}" class="result-card">
+                <div class="card-header">
+                  <div class="server-icon">${s.icon ? `<img src="${s.icon}" alt="" />` : '⛏️'}</div>
+                  <div class="server-title">
+                    <h4>${s.name}</h4>
+                    <p>${s.ip}:${s.port}</p>
+                  </div>
+                </div>
+                <div class="card-meta">
+                  <span class="status ${s.status || 'offline'}">${s.status === 'online' ? '●' : '○'} ${s.players_online || 0}/${s.max_players || '?'}</span>
+                  <span class="votes">▲ ${s.vote_count || 0}</span>
+                </div>
+                ${s.tags?.length ? `<div class="card-tags">${s.tags.slice(0, 3).map(t => `<span>${t}</span>`).join('')}</div>` : ''}
+              </a>
+            `).join('')}
+          </div>
+        `;
+      } else {
+        results.innerHTML = `<div class="no-results"><p>No servers found for "${query}"</p><button onclick="document.getElementById('${id}-input').focus()">Try again</button></div>`;
+      }
+    } catch (e) {
+      results.innerHTML = '<div class="no-results"><p>Search failed. Please try again.</p></div>';
+    }
+  }
+
+  // Main search handler
+  async function handleSearch() {
+    const query = input.value.trim();
+    if (!query) return;
+
+    btn.disabled = true;
+    const intent = parseIntent(query);
+
+    if (intent.score >= 50) {
+      // Clear enough, search directly
+      const searchQ = ['minecraft', intent.gamemode, ...intent.features, intent.size].filter(Boolean).join(' ');
+      await doSearch(searchQ);
+    } else {
+      // Unclear, show wizard
+      showWizard(query, intent);
+    }
+
+    btn.disabled = false;
+  }
+
+  // Event listeners
+  btn?.addEventListener('click', handleSearch);
+  input?.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSearch(); });
+  closeWizard?.addEventListener('click', hideWizard);
+
+  // Wizard step 1 (gamemode)
+  wizard.querySelectorAll('[data-step="1"] .option-card').forEach(card => {
+    card.addEventListener('click', () => {
+      wizard.querySelectorAll('[data-step="1"] .option-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      wizardData.gamemode = card.dataset.answer;
+      setTimeout(() => goToStep(2), 200);
+    });
+  });
+
+  // Wizard step 2 (features) - multi-select
+  wizard.querySelectorAll('[data-step="2"] .feature-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('selected');
+      const answer = toggle.dataset.answer;
+      if (toggle.classList.contains('selected')) {
+        if (!wizardData.features.includes(answer)) wizardData.features.push(answer);
+      } else {
+        wizardData.features = wizardData.features.filter(f => f !== answer);
+      }
+    });
+  });
+
+  continueFeatures?.addEventListener('click', () => goToStep(3));
+
+  // Wizard step 3 (size)
+  wizard.querySelectorAll('[data-step="3"] .size-card').forEach(card => {
+    card.addEventListener('click', () => {
+      wizardData.size = card.dataset.answer;
+      goToStep('searching');
+      const query = buildQuery();
+      searchQuery.textContent = `Searching: ${query}`;
+      hideWizard();
+      doSearch(query);
+    });
+  });
+
+  // Quick tags
+  container.querySelectorAll('.quick-tag').forEach(tag => {
+    tag.addEventListener('click', () => {
+      input.value = tag.dataset.query;
+      handleSearch();
+    });
+  });
+</script>
