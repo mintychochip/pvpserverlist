@@ -4,6 +4,11 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import MarkdownRenderer from '../../components/MarkdownRenderer.astro';
 
+export async function getStaticPaths() {
+  // Server-rendered - return empty paths, will be generated on demand
+  return [];
+}
+
 const { id: serverId } = Astro.params;
 
 const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
