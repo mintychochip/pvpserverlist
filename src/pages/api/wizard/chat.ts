@@ -49,7 +49,7 @@ Rules:
 // Call Gemma via Google AI Studio API
 async function callGemma(messages: any[], apiKey: string) {
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemma-2-2b-it:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-4b-it:generateContent?key=${apiKey}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
