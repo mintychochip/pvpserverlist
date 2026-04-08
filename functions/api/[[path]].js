@@ -59,6 +59,11 @@ export default {
         return await handleCronPing(request, env);
       }
 
+      // Batch Embedding Generation (for populating server embeddings)
+      if (path === '/api/embeddings/batch' && request.method === 'POST') {
+        return await handleEmbeddingsBatch(request, env);
+      }
+
       return new Response('Not Found', { status: 404, headers: corsHeaders });
     } catch (err) {
       console.error('Worker error:', err);
@@ -273,6 +278,172 @@ async function handleEmbed(request, env) {
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// Build searchable text from server data
+function buildServerText(server) {
+  const parts = [
+    `Server: ${server.name}`,
+    server.description || '',
+    server.gamemode ? `Gamemode: ${server.gamemode}` : '',
+    server.tags?.length ? `Tags: ${server.tags.join(', ')}` : '',
+    server.features?.length ? `Features: ${server.features.join(', ')}` : '',
+    server.version ? `Version: ${server.version}` : '',
+    server.status ? `Status: ${server.status}` : '',
+  ];
+  return parts.filter(Boolean).join('. ').trim();
+}
+
+// Batch Embedding Generation - Populate server embeddings
+async function handleEmbeddingsBatch(request, env) {
+  // Verify cron secret
+  const authHeader = request.headers.get('Authorization');
+  const expectedSecret = env.CRON_SECRET;
+
+  const corsHeadersBatch = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+
+  if (expectedSecret && authHeader !== `Bearer ${expectedSecret}`) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { ...corsHeadersBatch, 'Content-Type': 'application/json' },
+    });
+  }
+
+  try {
+    const body = await request.json().catch(() => ({}));
+    const batchSize = Math.min(body.batchSize || 50, 100);
+    const dryRun = body.dryRun || false;
+
+    const supabaseUrl = env.SUPABASE_URL;
+    const supabaseKey = env.SUPABASE_SERVICE_KEY;
+    const geminiApiKey = env.GEMINI_API_KEY;
+
+    if (!supabaseKey || !geminiApiKey) {
+      return new Response(JSON.stringify({ error: 'Missing required secrets' }), {
+        status: 500,
+        headers: { ...corsHeadersBatch, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Check current status
+    const statusRes = await fetch(`${supabaseUrl}/rest/v1/rpc/servers_embedding_status`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+
+    const status = await statusRes.json();
+    const stats = status[0] || { total: 0, with_embeddings: 0, without_embeddings: 0 };
+
+    // Fetch servers without embeddings
+    const fetchRes = await fetch(
+      `${supabaseUrl}/rest/v1/servers?select=id,name,description,tags,gamemode,features,status,version&embedding=is.null&limit=${batchSize}`,
+      {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+        },
+      }
+    );
+
+    const servers = await fetchRes.json();
+
+    if (!Array.isArray(servers) || servers.length === 0) {
+      return new Response(JSON.stringify({
+        message: 'No servers need embeddings',
+        status: stats,
+        processed: 0,
+      }), {
+        headers: { ...corsHeadersBatch, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const results = {
+      processed: 0,
+      succeeded: 0,
+      failed: 0,
+      errors: [],
+    };
+
+    // Process each server
+    for (const server of servers) {
+      try {
+        const text = buildServerText(server);
+
+        if (dryRun) {
+          results.succeeded++;
+          results.processed++;
+          continue;
+        }
+
+        // Generate embedding
+        const embedding = await generateEmbedding(text, geminiApiKey);
+
+        // Update server
+        const updateRes = await fetch(`${supabaseUrl}/rest/v1/servers?id=eq.${server.id}`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({ embedding }),
+        });
+
+        if (!updateRes.ok) {
+          throw new Error(`Update failed: ${updateRes.status}`);
+        }
+
+        results.succeeded++;
+      } catch (err) {
+        results.failed++;
+        results.errors.push({ id: server.id, error: err.message });
+      }
+      results.processed++;
+    }
+
+    // Get updated status
+    const finalStatusRes = await fetch(`${supabaseUrl}/rest/v1/rpc/servers_embedding_status`, {
+      method: 'POST',
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+
+    const finalStatus = await finalStatusRes.json();
+
+    return new Response(JSON.stringify({
+      message: `Processed ${results.processed} servers`,
+      processed: results.processed,
+      succeeded: results.succeeded,
+      failed: results.failed,
+      dryRun,
+      batchSize,
+      status: finalStatus[0],
+      errors: results.errors.slice(0, 5),
+    }), {
+      headers: { ...corsHeadersBatch, 'Content-Type': 'application/json' },
+    });
+
+  } catch (err) {
+    console.error('Batch embedding error:', err);
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { ...corsHeadersBatch, 'Content-Type': 'application/json' },
     });
   }
 }
