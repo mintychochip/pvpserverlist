@@ -16,3 +16,6 @@ supabase/migrations/
 
 # Build artifacts
 *.tar.gz
+
+# Cloudflare wrangler cache
+.wrangler/cache/
