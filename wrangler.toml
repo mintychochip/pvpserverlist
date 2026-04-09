@@ -3,15 +3,12 @@
 # No 'main' field needed - this is NOT a Worker project
 
 name = "guildpost"
+pages_build_output_dir = "dist"
 compatibility_date = "2024-04-06"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
 SUPABASE_URL = "https://wpxutsdbiampnxfgkjwq.supabase.co"
-
-# Build configuration
-[build]
-command = "npm run build"
 
 # Note: Secrets are set via Cloudflare Dashboard or wrangler secret put
 # - SUPABASE_SERVICE_KEY

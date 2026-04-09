@@ -98,8 +98,9 @@ export async function onRequest(context) {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
-  }
 }
+
+// End of onRequest function
 
 // Generate embedding using Gemini gemini-embedding-001
 // Generate embeddings using Mixedbread (primary) with Gemini fallback
