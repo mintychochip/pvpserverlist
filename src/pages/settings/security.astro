@@ -3,15 +3,8 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import { getCurrentUser } from '../../lib/auth';
 
-// Check auth
-const user = await getCurrentUser();
-if (!user.user) {
-  return Astro.redirect('/login?redirect=/settings/security');
-}
-
-const has2FA = user.user.totp_enabled;
+// Auth is checked client-side to avoid build-time Supabase initialization issues
 ---
 
 <Layout 
@@ -37,16 +30,14 @@ const has2FA = user.user.totp_enabled;
             </div>
             <div>
               <h2 class="text-lg font-semibold text-white">Two-Factor Authentication</h2>
-              <p class="text-sm text-[var(--text-secondary)]">
-                {has2FA ? '✅ Enabled' : '⚠️ Not enabled'}
-              </p>
+              <p id="2fa-status-text" class="text-sm text-[var(--text-secondary)]">Loading...</p>
             </div>
           </div>
           <button 
             id="toggle-2fa-btn"
-            class={`px-4 py-2 rounded-lg font-medium transition-opacity ${has2FA ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' : 'bg-[var(--accent-primary)] text-[var(--bg-primary)] hover:opacity-90'}`}
+            class="px-4 py-2 rounded-lg font-medium transition-opacity bg-[var(--accent-primary)] text-[var(--bg-primary)] hover:opacity-90"
           >
-            {has2FA ? 'Disable 2FA' : 'Enable 2FA'}
+            Enable 2FA
           </button>
         </div>
         
@@ -231,6 +222,36 @@ const has2FA = user.user.totp_enabled;
       getCurrentUser, setupTOTP, enableTOTP, disableTOTP, 
       changePassword, getUserSessions, revokeSession, revokeAllOtherSessions 
     } from '../../lib/auth';
+    
+    // Check auth on load
+    let currentUser: any = null;
+    
+    async function init() {
+      const result = await getCurrentUser();
+      if (!result.user) {
+        window.location.href = '/login?redirect=/settings/security';
+        return;
+      }
+      currentUser = result.user;
+      
+      // Update 2FA UI based on user status
+      const has2FA = result.user.totp_enabled;
+      const statusText = document.getElementById('2fa-status-text');
+      const toggleBtn = document.getElementById('toggle-2fa-btn');
+      
+      if (statusText) {
+        statusText.textContent = has2FA ? '✅ Enabled' : '⚠️ Not enabled';
+      }
+      if (toggleBtn) {
+        toggleBtn.textContent = has2FA ? 'Disable 2FA' : 'Enable 2FA';
+        toggleBtn.className = has2FA 
+          ? 'px-4 py-2 rounded-lg font-medium transition-opacity bg-red-500/20 text-red-400 hover:bg-red-500/30'
+          : 'px-4 py-2 rounded-lg font-medium transition-opacity bg-[var(--accent-primary)] text-[var(--bg-primary)] hover:opacity-90';
+      }
+      
+      // Load sessions
+      await loadSessions();
+    }
     
     // =================== 2FA ===================
     const toggle2FABtn = document.getElementById('toggle-2fa-btn');
@@ -503,8 +524,8 @@ const has2FA = user.user.totp_enabled;
       }
     }
     
-    // Load sessions on page load
-    loadSessions();
+    // Initialize page - check auth and load data
+    init();
     
     // Revoke all other sessions
     document.getElementById('revoke-all-btn')?.addEventListener('click', async () => {
