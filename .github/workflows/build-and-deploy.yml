@@ -34,43 +34,30 @@ jobs:
       - name: Build Astro SSR
         run: npm run build
 
-      - name: Setup GCP credentials
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-
-      - name: Upload to Cloud Storage
+      - name: Setup SSH key
         run: |
-          # Create bucket if doesn't exist
-          gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }} || true
-          # Create deployment package
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H 34.169.176.57 >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Deploy to GCP VM
+        run: |
+          # Create tar.gz of dist
           tar -czf dist.tar.gz dist/ .env package.json
-          # Upload to bucket
-          gsutil cp dist.tar.gz gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }}/dist-latest.tar.gz
-          echo "Uploaded to gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }}/dist-latest.tar.gz"
-
-      - name: Deploy to VM via Serial Port (fallback) or SSH
-        run: |
-          # Try SSH first
-          gcloud compute ssh instance-20260409-000924 --zone=us-west1-b \
-            --command="
-              cd ~/guildpost &&
-              gsutil cp gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }}/dist-latest.tar.gz . &&
-              tar -xzf dist-latest.tar.gz &&
-              npm install --production &&
-              pm2 restart guildpost || pm2 start dist/server/entry.mjs --name guildpost &&
-              pm2 save &&
-              echo 'Deployment complete at' \$(date)
-            " 2>&1 && echo "SUCCESS: Deployed via SSH" || {
-              echo "SSH failed. VM will auto-deploy via cron or manual trigger."
-              echo "Files are ready at: gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }}/dist-latest.tar.gz"
-              exit 0
-            }
+          
+          # Copy to VM using SSH key
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -o ConnectTimeout=30 dist.tar.gz justin-lo@34.169.176.57:~/guildpost/
+          
+          # SSH to VM and setup
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -o ConnectTimeout=30 justin-lo@34.169.176.57 "
+            cd ~/guildpost &&
+            tar -xzf dist.tar.gz &&
+            npm install --production &&
+            pm2 restart guildpost || pm2 start dist/server/entry.mjs --name guildpost &&
+            pm2 save &&
+            echo 'Deployment complete at' \$(date)
+          "
 
       - name: Health check
         run: |
