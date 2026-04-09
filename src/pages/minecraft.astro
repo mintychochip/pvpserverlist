@@ -52,14 +52,14 @@ const VALID_CATEGORIES = [
             <button 
               id="ai-search-toggle"
               class="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1.5 bg-[#1a1a25] hover:bg-[#2a2a3a] text-xs text-[#8892b0] rounded border border-[#2a2a3a] transition-all flex items-center gap-1.5"
-              title="Toggle AI-powered semantic search (powered by Gemini)"
+              title="Toggle AI-powered hybrid search (semantic + keyword)"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 2L2 7l10 5 10-5-10-5z"/>
                 <path d="M2 17l10 5 10-5"/>
                 <path d="M2 12l10 5 10-5"/>
               </svg>
-              <span class="ai-label">Semantic</span>
+              <span class="ai-label">Hybrid</span>
             </button>
           </div>
           
@@ -658,7 +658,7 @@ const VALID_CATEGORIES = [
     return String.fromCodePoint(...codePoints);
   }
   
-  // AI-Powered Semantic Search (Gemini)
+  // AI-Powered Hybrid Search (Semantic + Keyword)
   let aiSearchEnabled = false;
   const aiSearchToggle = document.getElementById('ai-search-toggle');
   
@@ -668,11 +668,13 @@ const VALID_CATEGORIES = [
       aiSearchToggle.classList.add('bg-[#00f5d4]/20', 'border-[#00f5d4]', 'text-[#00f5d4]');
       aiSearchToggle.classList.remove('text-[#8892b0]', 'border-[#2a2a3a]');
       const aiLabel = aiSearchToggle.querySelector('.ai-label');
-      if (aiLabel) aiLabel.textContent = 'Semantic';
+      if (aiLabel) aiLabel.textContent = 'Hybrid';
       searchInput.placeholder = "Describe what you're looking for (e.g., 'pvp factions with economy')...";
     } else {
       aiSearchToggle.classList.remove('bg-[#00f5d4]/20', 'border-[#00f5d4]', 'text-[#00f5d4]');
       aiSearchToggle.classList.add('text-[#8892b0]', 'border-[#2a2a3a]');
+      const aiLabel = aiSearchToggle.querySelector('.ai-label');
+      if (aiLabel) aiLabel.textContent = 'Hybrid';
       searchInput.placeholder = "Search servers by name, IP, or describe what you're looking for...";
     }
   }
@@ -683,7 +685,7 @@ const VALID_CATEGORIES = [
       updateAIToggleUI();
 
       if (aiSearchEnabled) {
-        showToast('AI semantic search enabled (Gemini)', 'info');
+        showToast('AI hybrid search enabled (semantic + keyword)', 'info');
       }
     });
   }
@@ -717,7 +719,7 @@ const VALID_CATEGORIES = [
     `).join('');
     
     try {
-      const response = await fetch('/api/search/semantic', {
+      const response = await fetch('/api/search/hybrid', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, limit: 50 })
@@ -725,7 +727,7 @@ const VALID_CATEGORIES = [
       
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
-        throw new Error(error.error || 'AI search failed');
+        throw new Error(error.error || 'Hybrid search failed');
       }
       
       const data = await response.json();
@@ -740,13 +742,13 @@ const VALID_CATEGORIES = [
       currentPage = 1;
       updateDisplay();
       
-      if (data.semantic && filteredServers.length > 0) {
-        showToast(`Found ${filteredServers.length} servers matching "${query}"`, 'success');
+      if (data.searchType === 'hybrid' && filteredServers.length > 0) {
+        showToast(`Found ${filteredServers.length} servers matching "${query}" (hybrid search)`, 'success');
       } else if (filteredServers.length === 0) {
-        showToast('No semantic matches found, try different keywords', 'warning');
+        showToast('No matches found, try different keywords', 'warning');
       }
     } catch (err) {
-      console.error('AI search error:', err);
+      console.error('Hybrid search error:', err);
       showToast('AI search unavailable, using regular search', 'warning');
       return originalApplyFilters();
     }

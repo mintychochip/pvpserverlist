@@ -328,7 +328,7 @@ const { id = 'gemma-wizard' } = Astro.props;
     results.innerHTML = '<p style="text-align:center;padding:40px;color:#8892b0">Searching...</p>';
     
     try {
-      const res = await fetch('/api/search/semantic', {
+      const res = await fetch('/api/search/hybrid', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, limit: 9 })
