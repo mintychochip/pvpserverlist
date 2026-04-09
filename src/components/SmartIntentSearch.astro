@@ -194,9 +194,14 @@ const { id = 'smart-search' } = Astro.props;
 </div>
 
 <script define:vars={{ wizardId: id }}>
+  // Wait for DOM to be ready
+  function initWizard() {
   const id = wizardId;
   const container = document.getElementById(id);
-  if (!container) return;
+  if (!container) {
+    console.error('SmartIntentSearch: Container not found for id:', id);
+    return;
+  }
 
   const searchBar = document.getElementById(`${id}-search-bar`);
   const wizard = document.getElementById(`${id}-wizard`);
@@ -207,6 +212,11 @@ const { id = 'smart-search' } = Astro.props;
   const progressFill = document.getElementById(`${id}-progress`);
   const progressText = document.getElementById(`${id}-progress-text`);
   const searchingQuery = document.getElementById(`${id}-searching-query`);
+
+  if (!wizard) {
+    console.error('SmartIntentSearch: Wizard element not found');
+    return;
+  }
 
   let intent = { game: null, gamemode: null, features: [], size: null, originalQuery: '' };
   let currentStep = 1;
@@ -238,27 +248,27 @@ const { id = 'smart-search' } = Astro.props;
   }
 
   function showStep(n) {
+    if (!wizard) return;
     wizard.querySelectorAll('.wizard-step').forEach(s => s.classList.remove('active'));
     if (n === 'searching') {
-      wizard.querySelector('[data-step="searching"]').classList.add('active');
-      progressFill.style.width = '100%';
-      progressText.textContent = 'Searching...';
+      wizard.querySelector('[data-step="searching"]')?.classList.add('active');
+      if (progressFill) progressFill.style.width = '100%';
+      if (progressText) progressText.textContent = 'Searching...';
     } else {
-      wizard.querySelector(`[data-step="${n}"]`).classList.add('active');
-      progressFill.style.width = `${(n / 2) * 100}%`;
-      progressText.textContent = `Step ${n} of 2`;
+      wizard.querySelector(`[data-step="${n}"]`)?.classList.add('active');
+      if (progressFill) progressFill.style.width = `${(n / 2) * 100}%`;
+      if (progressText) progressText.textContent = `Step ${n} of 2`;
     }
     currentStep = n;
   }
 
   function openWizard() {
-    console.log('Opening wizard, wizard element:', wizard, 'searchBar element:', searchBar);
-    if (!wizard) {
-      console.error('Wizard element not found!');
+    if (!wizard || !searchBar) {
+      console.error('SmartIntentSearch: Cannot open wizard - elements not found', { wizard: !!wizard, searchBar: !!searchBar });
       return;
     }
     wizard.classList.remove('hidden');
-    if (searchBar) searchBar.classList.add('hidden');
+    searchBar.classList.add('hidden');
     
     // Determine starting step based on parsed intent
     if (!intent.game) {
@@ -271,8 +281,8 @@ const { id = 'smart-search' } = Astro.props;
   }
 
   function closeWizard() {
-    wizard.classList.add('hidden');
-    searchBar.classList.remove('hidden');
+    if (wizard) wizard.classList.add('hidden');
+    if (searchBar) searchBar.classList.remove('hidden');
   }
 
   function buildQuery() {
@@ -286,10 +296,12 @@ const { id = 'smart-search' } = Astro.props;
 
   async function doSearch() {
     showStep('searching');
-    searchingQuery.textContent = buildQuery();
+    if (searchingQuery) searchingQuery.textContent = buildQuery();
     
-    results.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Searching...</p></div>';
-    results.classList.remove('hidden');
+    if (results) {
+      results.innerHTML = '<div class="loading-state"><div class="spinner"></div><p>Searching...</p></div>';
+      results.classList.remove('hidden');
+    }
     
     try {
       const res = await fetch('/api/search/semantic', {
@@ -301,7 +313,7 @@ const { id = 'smart-search' } = Astro.props;
       
       closeWizard();
       
-      if (data.results?.length) {
+      if (data.results?.length && results) {
         results.innerHTML = `
           <div class="results-header"><h3>Found ${data.results.length} servers</h3></div>
           <div class="results-grid">
@@ -322,17 +334,18 @@ const { id = 'smart-search' } = Astro.props;
             `).join('')}
           </div>
         `;
-        refinements.classList.remove('hidden');
+        refinements?.classList.remove('hidden');
         updateRefinementUI();
-      } else {
+      } else if (results) {
         results.innerHTML = '<div class="empty-state"><p>No servers found. Try different terms.</p></div>';
       }
     } catch (e) {
-      results.innerHTML = '<div class="empty-state"><p>Search failed. Please try again.</p></div>';
+      if (results) results.innerHTML = '<div class="empty-state"><p>Search failed. Please try again.</p></div>';
     }
   }
 
   function updateRefinementUI() {
+    if (!container) return;
     container.querySelectorAll('.refine-chip').forEach(chip => {
       const type = chip.closest('.refinement-chips')?.dataset.refine;
       const value = chip.dataset.value;
@@ -343,38 +356,40 @@ const { id = 'smart-search' } = Astro.props;
   }
 
   // Event handlers
-  btn?.addEventListener('click', () => {
-    console.log('Find button clicked, btn:', btn, 'input:', input);
-    intent.originalQuery = input.value.trim();
-    intent = { ...intent, ...parseIntent(intent.originalQuery) };
-    console.log('Parsed intent:', intent);
-    openWizard();
-  });
-
-  input?.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
+  if (btn && input) {
+    btn.addEventListener('click', () => {
       intent.originalQuery = input.value.trim();
       intent = { ...intent, ...parseIntent(intent.originalQuery) };
       openWizard();
-    }
-  });
+    });
+
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        intent.originalQuery = input.value.trim();
+        intent = { ...intent, ...parseIntent(intent.originalQuery) };
+        openWizard();
+      }
+    });
+  }
 
   // Suggestion chips
-  container.querySelectorAll('.suggestion-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      input.value = chip.dataset.query;
-      intent.originalQuery = chip.dataset.query;
-      intent = { ...intent, ...parseIntent(intent.originalQuery) };
-      openWizard();
+  if (input) {
+    container.querySelectorAll('.suggestion-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        input.value = chip.dataset.query;
+        intent.originalQuery = chip.dataset.query;
+        intent = { ...intent, ...parseIntent(intent.originalQuery) };
+        openWizard();
+      });
     });
-  });
+  }
 
   // Step 1: Game selection
-  wizard.querySelectorAll('[data-step="1"] .option-card:not(.disabled)').forEach(card => {
+  wizard.querySelectorAll?.('[data-step="1"] .option-card:not(.disabled)').forEach(card => {
     card.addEventListener('click', () => {
       const value = card.dataset.value;
       if (value === 'other') {
-        document.getElementById(`${id}-game-other`).classList.remove('hidden');
+        document.getElementById(`${id}-game-other`)?.classList.remove('hidden');
       } else {
         intent.game = value;
         showStep(2);
@@ -391,15 +406,15 @@ const { id = 'smart-search' } = Astro.props;
   });
 
   // Step 2: Gamemode
-  wizard.querySelectorAll('[data-step="2"] .option-card:not(.other)').forEach(card => {
+  wizard.querySelectorAll?.('[data-step="2"] .option-card:not(.other)').forEach(card => {
     card.addEventListener('click', () => {
       intent.gamemode = card.dataset.value;
       doSearch();
     });
   });
 
-  wizard.querySelector('[data-step="2"] .option-card.other')?.addEventListener('click', () => {
-    document.getElementById(`${id}-mode-other`).classList.remove('hidden');
+  wizard.querySelector?.('[data-step="2"] .option-card.other')?.addEventListener('click', () => {
+    document.getElementById(`${id}-mode-other`)?.classList.remove('hidden');
   });
 
   document.getElementById(`${id}-mode-other`)?.querySelector('.confirm-btn')?.addEventListener('click', function() {
@@ -411,10 +426,10 @@ const { id = 'smart-search' } = Astro.props;
   });
 
   // Back button
-  wizard.querySelector('.back-btn')?.addEventListener('click', () => showStep(1));
+  wizard.querySelector?.('.back-btn')?.addEventListener('click', () => showStep(1));
 
   // Skip button
-  wizard.querySelector('.skip-btn')?.addEventListener('click', () => doSearch());
+  wizard.querySelector?.('.skip-btn')?.addEventListener('click', () => doSearch());
 
   // Refinement chips
   container.querySelectorAll('.refine-chip').forEach(chip => {
@@ -444,6 +459,14 @@ const { id = 'smart-search' } = Astro.props;
     updateRefinementUI();
     doSearch();
   });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWizard);
+  } else {
+    initWizard();
+  }
 </script>
 
 <style>
