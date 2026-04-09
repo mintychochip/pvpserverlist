@@ -98,7 +98,7 @@ async function processServers(index) {
   // We'll check Pinecone for existing embeddings
   const { data: servers, error, count } = await supabase
     .from('servers')
-    .select('id, name, description, tags, version, game_type', { count: 'exact' })
+    .select('id, name, description, tags, version', { count: 'exact' })
     .limit(100);
   
   if (error) {
@@ -143,7 +143,6 @@ async function processServers(index) {
       const text = [
         server.name,
         server.description,
-        `Game type: ${server.game_type || 'minecraft'}`,
         `Version: ${server.version || 'unknown'}`,
         ...(server.tags || [])
       ].filter(Boolean).join('. ');
@@ -173,7 +172,6 @@ async function processServers(index) {
         metadata: {
           name: server.name?.substring(0, 100) || '',
           description: server.description?.substring(0, 500) || '',
-          game_type: server.game_type || 'minecraft',
           version: server.version || 'unknown',
           tags: (server.tags || []).join(',')
         }

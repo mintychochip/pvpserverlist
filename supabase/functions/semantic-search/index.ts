@@ -201,7 +201,7 @@ Deno.serve(async (req: Request) => {
             inputs: { text: query },
             topK: limit
           },
-          fields: ['name', 'description', 'tags', 'game_type', 'version']
+          fields: ['name', 'description', 'tags', 'version']
         });
         
         // Transform to standard format
