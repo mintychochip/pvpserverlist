@@ -33,48 +33,48 @@ export async function onRequest(context) {
 
   try {
       // Semantic Search
-      if (path === '/api/search/semantic' && request.method === 'POST') {
+      if (path === '/search/semantic' && request.method === 'POST') {
         return await handleSemanticSearch(request, env);
       }
 
       // Search Suggestions
-      if (path === '/api/search/suggestions' && request.method === 'GET') {
+      if (path === '/search/suggestions' && request.method === 'GET') {
         return await handleSuggestions(request, env);
       }
       
       // Generate Embedding
-      if (path === '/api/embed' && request.method === 'POST') {
+      if (path === '/embed' && request.method === 'POST') {
         return await handleEmbed(request, env);
       }
 
       // Get Servers List (for watcher)
-      if ((path === '/api/servers' || path === '/api/servers/') && request.method === 'GET') {
+      if ((path === '/servers' || path === '/servers/') && request.method === 'GET') {
         return await handleServersList(request, env);
       }
 
       // Ping Server (for watcher)
-      if (path === '/api/ping' && request.method === 'POST') {
+      if (path === '/ping' && request.method === 'POST') {
         return await handlePing(request, env);
       }
 
       // Trigger batch ping (cron-style)
-      if (path === '/api/cron/ping' && request.method === 'POST') {
+      if (path === '/cron/ping' && request.method === 'POST') {
         return await handleCronPing(request, env);
       }
 
       // Batch Embedding Generation (for populating server embeddings)
-      if (path === '/api/embeddings/batch' && request.method === 'POST') {
+      if (path === '/embeddings/batch' && request.method === 'POST') {
         return await handleEmbeddingsBatch(request, env);
       }
 
       // Dashboard APIs - Server Edit
-      const editMatch = path.match(/^\/api\/servers\/([^\/]+)\/edit$/);
+      const editMatch = path.match(/^\/servers\/([^\/]+)\/edit$/);
       if (editMatch && request.method === 'POST') {
         return await handleServerEdit(editMatch[1], request, env);
       }
 
       // Dashboard APIs - Server Posts
-      const postsMatch = path.match(/^\/api\/servers\/([^\/]+)\/posts$/);
+      const postsMatch = path.match(/^\/servers\/([^\/]+)\/posts$/);
       if (postsMatch) {
         if (request.method === 'GET') {
           return await handleServerPostsGet(postsMatch[1], env);
@@ -85,7 +85,7 @@ export async function onRequest(context) {
       }
 
       // Dashboard APIs - Server Analytics
-      const analyticsMatch = path.match(/^\/api\/servers\/([^\/]+)\/analytics$/);
+      const analyticsMatch = path.match(/^\/servers\/([^\/]+)\/analytics$/);
       if (analyticsMatch && request.method === 'GET') {
         return await handleServerAnalytics(analyticsMatch[1], request, env);
       }
