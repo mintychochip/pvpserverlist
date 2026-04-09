@@ -44,23 +44,20 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Setup SSH
+
+      - name: Deploy to GCP VM via gcloud
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          echo "${{ secrets.VPS_KNOWN_HOST }}" >> ~/.ssh/known_hosts
+          # Ensure gcloud SSH works
+          gcloud compute config-ssh --quiet
           
-      - name: Deploy to GCP VM via SSH
-        run: |
-          # Deploy dist folder to VM
-          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -r dist/ justin-lo@34.169.176.57:~/guildpost/dist/
+          # Deploy dist folder to VM using gcloud
+          gcloud compute scp --recurse --zone=us-west1-b --quiet dist/ instance-20260409-000924:~/guildpost/dist/
           
           # Deploy package.json
-          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no package.json justin-lo@34.169.176.57:~/guildpost/
+          gcloud compute scp --zone=us-west1-b --quiet package.json instance-20260409-000924:~/guildpost/
           
-          # Restart the app on VM via SSH
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no justin-lo@34.169.176.57 "
+          # Restart the app on VM
+          gcloud compute ssh instance-20260409-000924 --zone=us-west1-b --quiet --command="
             cd ~/guildpost &&
             npm install --production &&
             pm2 restart guildpost || pm2 start dist/server/entry.mjs --name guildpost &&
