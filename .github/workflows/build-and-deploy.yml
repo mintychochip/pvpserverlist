@@ -1,9 +1,14 @@
-name: Build and Deploy to Cloudflare Pages
+name: Build and Deploy to GCP VM
 
 on:
   push:
     branches: [ master, main ]
   workflow_dispatch:
+
+env:
+  GCP_PROJECT: manifest-virtue-492800-p9
+  GCP_ZONE: us-west1-b
+  GCP_INSTANCE: guildpost-worker
 
 jobs:
   build-and-deploy:
@@ -30,9 +35,35 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMMA_API_KEY: ${{ secrets.GEMMA_API_KEY }}
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=guildpost
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GCP_SSH_KEY }}" > ~/.ssh/guildpost_deploy
+          chmod 600 ~/.ssh/guildpost_deploy
+          
+      - name: Add SSH key to VM
+        run: |
+          gcloud compute instances add-metadata $GCP_INSTANCE \
+            --zone=$GCP_ZONE \
+            --metadata-from-file ssh-keys="${{ secrets.GCP_SSH_KEY }}.pub"
+            
+      - name: Deploy to GCP VM
+        run: |
+          # Create tarball
+          tar -czf dist.tar.gz dist/
+          
+          # Copy to VM
+          gcloud compute scp --zone=$GCP_ZONE \
+            --ssh-key-file=~/.ssh/guildpost_deploy \
+            dist.tar.gz $GCP_INSTANCE:~/guildpost/
+            
+          # SSH and setup
+          gcloud compute ssh $GCP_INSTANCE --zone=$GCP_ZONE \
+            --ssh-key-file=~/.ssh/guildpost_deploy \
+            --command="
+              cd ~/guildpost &&
+              tar -xzf dist.tar.gz &&
+              npm install --production &&
+              pm2 restart guildpost || pm2 start dist/server/entry.mjs --name guildpost &&
+              pm2 save
+            "
