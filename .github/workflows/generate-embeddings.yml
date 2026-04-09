@@ -1,0 +1,36 @@
+name: Generate Server Embeddings
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Every hour
+  workflow_dispatch:      # Manual trigger
+
+jobs:
+  embed:
+    runs-on: ubuntu-latest
+    name: Generate Pinecone Embeddings
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: scripts/package-lock.json
+      
+      - name: Install dependencies
+        working-directory: scripts
+        run: npm install
+      
+      - name: Generate embeddings
+        working-directory: scripts
+        env:
+          SUPABASE_URL: https://wpxutsdbiampnxfgkjwq.supabase.co
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          PINECONE_INDEX: guildpost-servers
+        run: node generate-embeddings-pinecone.mjs
