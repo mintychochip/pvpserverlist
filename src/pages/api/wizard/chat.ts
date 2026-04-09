@@ -8,68 +8,44 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-// Simple keyword-based intent parser (no AI needed for basic wizard)
-function parseIntent(message: string) {
-  const lower = message.toLowerCase();
-  
-  // Game detection
-  let game = 'minecraft';
-  if (lower.includes('rust')) game = 'rust';
-  else if (lower.includes('cs2') || lower.includes('csgo')) game = 'cs2';
-  
-  // Gamemode detection
-  let gamemode = null;
-  const gamemodes = [
-    ['survival', 'survival'],
-    ['smp', 'survival'],
-    ['pvp', 'pvp'],
-    ['factions', 'factions'],
-    ['skyblock', 'skyblock'],
-    ['creative', 'creative'],
-    ['minigames', 'minigames'],
-    ['hardcore', 'hardcore'],
-    ['prison', 'prison'],
-    ['modded', 'modded'],
-    ['roleplay', 'rp'],
-    ['rp', 'rp'],
-    ['towny', 'towny'],
-  ];
-  
-  for (const [keyword, mode] of gamemodes) {
-    if (lower.includes(keyword)) {
-      gamemode = mode;
-      break;
-    }
-  }
-  
-  // Features detection
-  const features: string[] = [];
-  const featureMap: Record<string, string[]> = {
-    'economy': ['economy', 'money', 'shop', 'trading'],
-    'claims': ['claims', 'land claim', 'protection', 'grief protection'],
-    'discord': ['discord', 'community', 'voice chat'],
-    'events': ['events', 'tournaments', 'competitions'],
-    'bedrock': ['bedrock', 'crossplay', 'pe', 'pocket'],
-    'vanilla': ['vanilla', 'no plugins', 'pure'],
-    'modded': ['mods', 'modpack', 'forge', 'fabric'],
-    'quests': ['quests', 'missions', 'story'],
-    'mmo': ['mmo', 'rpg elements', 'skills', 'mcmmo'],
-  };
-  
-  for (const [feature, keywords] of Object.entries(featureMap)) {
-    if (keywords.some(k => lower.includes(k))) {
-      features.push(feature);
-    }
-  }
-  
-  return { game, gamemode, features };
-}
+// Call Gemini API for AI-powered responses
+async function callGemini(message: string, history: any[], apiKey: string) {
+  const prompt = `You are Gemma, an AI assistant for GuildPost - a game server discovery platform. Help users find their ideal Minecraft server.
 
-function buildSearchQuery(intent: { game: string; gamemode: string | null; features: string[] }) {
-  const parts = [intent.game];
-  if (intent.gamemode) parts.push(intent.gamemode);
-  parts.push(...intent.features);
-  return parts.join(' ');
+Available server types:
+- Gamemodes: survival, smp, pvp, factions, skyblock, creative, minigames, hardcore, prison, modded, roleplay, towny
+- Features: economy, claims, discord, events, bedrock, vanilla, quests, mmo, shops, crates, kits
+
+Conversation history:
+${history.map(h => `${h.role}: ${h.content}`).join('\n')}
+
+User: ${message}
+
+Respond naturally as a helpful assistant. If you have enough info to recommend servers (gamemode or specific features mentioned), include "SEARCH_READY: <query>" at the end where <query> is the search terms.
+
+Gemma:`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature: 0.8,
+          maxOutputTokens: 300
+        }
+      })
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Gemini API error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -83,42 +59,42 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (!message || message.length < 2) {
       return new Response(JSON.stringify({ 
-        response: 'Please tell me more about what kind of server you\'re looking for!',
+        response: 'Hey there! Tell me what kind of Minecraft server you\'re looking for. For example: "survival with claims" or "pvp factions"',
         readyToSearch: false 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    const intent = parseIntent(message);
+    // Get API key from environment
+    const apiKey = import.meta.env.GEMINI_API_KEY;
     
-    // If we have enough info, go straight to search
-    if (intent.gamemode || intent.features.length > 0) {
-      const searchQuery = buildSearchQuery(intent);
-      return new Response(JSON.stringify({
-        response: `I'll find you ${intent.gamemode || 'some'} ${intent.game} servers${intent.features.length > 0 ? ' with ' + intent.features.join(', ') : ''}!`,
-        readyToSearch: true,
-        searchQuery,
-        intent
+    if (!apiKey) {
+      // Fallback to basic responses if no API key
+      return new Response(JSON.stringify({ 
+        response: 'I understand you\'re looking for a server! Try being more specific about the gamemode (survival, pvp, skyblock, etc.) and any features you want.',
+        readyToSearch: false 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
+
+    // Call Gemini AI
+    const aiResponse = await callGemini(message, history, apiKey);
     
-    // Need more clarification
-    const responses = [
-      'What gamemode are you looking for? Popular options: Survival, PvP, Skyblock, Factions, Creative, Minigames',
-      'Are you looking for a specific type of server? For example: SMP, hardcore, modded, or roleplay?',
-      'Any specific features you want? Like economy, land claims, events, or Discord integration?',
-    ];
+    // Check if AI indicated search is ready
+    const searchMatch = aiResponse.match(/SEARCH_READY:\s*(.+)/i);
+    const readyToSearch = !!searchMatch;
+    const searchQuery = searchMatch ? searchMatch[1].trim() : null;
     
-    // Pick response based on conversation length
-    const responseIndex = Math.min(history.length / 2, responses.length - 1);
-    
+    // Clean up the response text
+    const cleanResponse = aiResponse.replace(/SEARCH_READY:.*/i, '').trim();
+
     return new Response(JSON.stringify({
-      response: responses[Math.floor(responseIndex)],
-      readyToSearch: false,
-      intent
+      response: cleanResponse || 'Tell me more about what kind of server you want!',
+      readyToSearch,
+      searchQuery,
+      ai: true
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
@@ -126,8 +102,9 @@ export const POST: APIRoute = async ({ request }) => {
   } catch (err) {
     console.error('Wizard chat error:', err);
     return new Response(JSON.stringify({ 
-      response: 'I had trouble understanding that. Could you try rephrasing?',
-      readyToSearch: false 
+      response: 'I\'m having trouble connecting to my AI brain right now. Try searching with keywords like "survival", "pvp", or "skyblock"!',
+      readyToSearch: false,
+      ai: false
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
