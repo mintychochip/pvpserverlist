@@ -4,7 +4,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   integrations: [tailwind()],
-  output: 'hybrid',
+  output: 'server',
   adapter: cloudflare(),
   // Deploying to root domain guildpost.tech
   build: {
