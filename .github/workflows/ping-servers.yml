@@ -17,7 +17,7 @@ jobs:
           response=$(curl -s -w "\nHTTP_CODE:%{http_code}" \
             -X POST \
             "https://wpxutsdbiampnxfgkjwq.supabase.co/functions/v1/ping-servers" \
-            -H "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
             -H "Content-Type: application/json")
           
           # Extract HTTP code
@@ -42,4 +42,4 @@ jobs:
           echo "🔴 Offline: $offline"
           
         env:
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.35hrTSgxQnICpLOY3g6W3eNxxe7DKCc3q165tyb0Ieo
