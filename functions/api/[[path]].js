@@ -19,17 +19,19 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-export default {
-  async fetch(request, env, ctx) {
-    // Handle CORS preflight
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { headers: corsHeaders });
-    }
+// Pages Function handler
+export async function onRequest(context) {
+  const { request, env } = context;
+  
+  // Handle CORS preflight
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
 
-    const url = new URL(request.url);
-    const path = url.pathname;
+  const url = new URL(request.url);
+  const path = url.pathname;
 
-    try {
+  try {
       // Semantic Search
       if (path === '/api/search/semantic' && request.method === 'POST') {
         return await handleSemanticSearch(request, env);
@@ -96,20 +98,8 @@ export default {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
-  },
-
-  // Cron trigger handler - runs every 5 minutes
-  async scheduled(event, env, ctx) {
-    console.log('⏰ Cron triggered at:', new Date().toISOString());
-    
-    try {
-      const result = await runBatchPing(env);
-      console.log('✅ Cron completed:', result);
-    } catch (err) {
-      console.error('❌ Cron failed:', err);
-    }
   }
-};
+}
 
 // Generate embedding using Gemini gemini-embedding-001
 // Generate embeddings using Mixedbread (primary) with Gemini fallback
