@@ -261,7 +261,7 @@ Deno.serve(async (req: Request) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data: servers, error: dbError } = await supabase
       .from('servers')
-      .select('id, name, description, ip, port, status, players_online, max_players, version, tags, banner_url, votes, server_type, game_type')
+      .select('id, name, description, ip, port, status, players_online, max_players, version, tags')
       .in('id', serverIds);
 
     if (dbError) {
