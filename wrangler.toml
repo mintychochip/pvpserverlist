@@ -1,26 +1,22 @@
-name = "guildpost-api"
-main = "functions/api/[[path]].js"
-compatibility_date = "2024-04-06"
+# Cloudflare Pages configuration
+# For Pages, the functions/ directory is automatically discovered
+# No 'main' field needed - this is NOT a Worker project
 
-# Node.js compatibility
+name = "guildpost"
+compatibility_date = "2024-04-06"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
 SUPABASE_URL = "https://wpxutsdbiampnxfgkjwq.supabase.co"
-# SUPABASE_SERVICE_KEY should be set as a secret
-# GEMINI_API_KEY should be set as a secret
-# CRON_SECRET for securing cron endpoints
 
-# Cron Triggers - Ping servers every 5 minutes
-[[triggers]]
-crons = ["*/5 * * * *"]
+# Build configuration
+[build]
+command = "npm run build"
 
-# Secrets (set these with wrangler secret put)
-# wrangler secret put SUPABASE_SERVICE_KEY
-# wrangler secret put GEMINI_API_KEY
-# wrangler secret put CRON_SECRET
-# Stripe Configuration (Premium Payments)
-# wrangler secret put STRIPE_SECRET_KEY        # sk_live_... or sk_test_...
-# wrangler secret put STRIPE_WEBHOOK_SECRET    # whsec_... (set after creating webhook endpoint)
-# wrangler secret put STRIPE_PRICE_PREMIUM     # price_... from Stripe dashboard
-# wrangler secret put STRIPE_PRICE_ELITE       # price_... from Stripe dashboard
+# Note: Secrets are set via Cloudflare Dashboard or wrangler secret put
+# - SUPABASE_SERVICE_KEY
+# - GEMINI_API_KEY  
+# - MIXEDBREAD_API_KEY
+# - CRON_SECRET
+# - STRIPE_SECRET_KEY
+# - STRIPE_WEBHOOK_SECRET
