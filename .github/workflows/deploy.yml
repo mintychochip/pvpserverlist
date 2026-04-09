@@ -1,8 +1,7 @@
 name: Deploy to Cloudflare Pages
 
 on:
-  push:
-    branches: [ master, main ]
+  # Cloudflare Pages auto-deploys from Git - no manual workflow needed
   workflow_dispatch:
 
 jobs:
