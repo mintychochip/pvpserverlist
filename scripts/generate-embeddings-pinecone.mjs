@@ -70,7 +70,7 @@ async function generateEmbedding(text) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'jina-embeddings-v3',
+      model: 'jina-embeddings-v2-base-en',
       input: [text]
     })
   });
@@ -87,6 +87,7 @@ async function generateEmbedding(text) {
     throw new Error('Empty embedding returned');
   }
   
+  console.log(`📐 ${values.length} dimensions`);
   return values;
 }
 

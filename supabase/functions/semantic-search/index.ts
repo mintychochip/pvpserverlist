@@ -101,7 +101,7 @@ async function generateEmbedding(text: string, apiKey: string): Promise<number[]
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'jina-embeddings-v3',
+      model: 'jina-embeddings-v2-base-en', // 768 dims
       input: [text]
     })
   });
@@ -112,7 +112,9 @@ async function generateEmbedding(text: string, apiKey: string): Promise<number[]
   }
 
   const data = await response.json();
-  return data.data[0].embedding;
+  const embedding = data.data[0].embedding;
+  console.log(`📐 Generated ${embedding.length}-dim embedding`);
+  return embedding;
 }
 
 // Generate sparse vector for keyword matching (BM25-like)
@@ -213,30 +215,15 @@ Deno.serve(async (req: Request) => {
           };
         }
       } catch (e) {
-        // Fall back to manual hybrid query
-        console.log('Integrated inference failed, using manual hybrid query');
+        // Fall back to dense-only query
+        console.log('Integrated inference failed, using dense-only query');
         
-        const response = await fetch(`https://${pineconeKey.includes('guildpost') ? 'guildpost-mre6ild.svc.aped-4627-b74a.pinecone.io' : ''}/query`, {
-          method: 'POST',
-          headers: {
-            'Api-Key': pineconeKey,
-            'Content-Type': 'application/json',
-            'X-Pinecone-API-Version': '2024-07'
-          },
-          body: JSON.stringify({
-            vector: queryEmbedding,
-            sparseVector: sparseVector,
-            topK: limit,
-            includeMetadata: true,
-            filter: Object.keys(filters).length > 0 ? filters : undefined
-          })
+        searchResults = await index.query({
+          vector: queryEmbedding,
+          topK: limit,
+          includeMetadata: true,
+          filter: Object.keys(filters).length > 0 ? filters : undefined
         });
-
-        if (!response.ok) {
-          throw new Error(`Pinecone query error: ${await response.text()}`);
-        }
-
-        searchResults = await response.json();
       }
     } else {
       // Dense only search
