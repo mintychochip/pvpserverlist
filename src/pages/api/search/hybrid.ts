@@ -46,11 +46,11 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // Get API keys from environment
-    const jinaKey = import.meta.env.JINA_API_KEY;
-    const pineconeKey = import.meta.env.PINECONE_API_KEY;
-    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-    const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+    // Get API keys from environment (supports both Vite import.meta.env and Cloudflare process.env)
+    const jinaKey = import.meta.env.JINA_API_KEY || process.env.JINA_API_KEY;
+    const pineconeKey = import.meta.env.PINECONE_API_KEY || process.env.PINECONE_API_KEY;
+    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || process.env.PUBLIC_SUPABASE_URL;
+    const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || process.env.PUBLIC_SUPABASE_ANON_KEY;
 
     if (!jinaKey || !pineconeKey) {
       return new Response(JSON.stringify({ error: 'API keys not configured' }), {

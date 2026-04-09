@@ -217,13 +217,14 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // Get API keys from environment
-    const geminiKey = import.meta.env.GEMINI_API_KEY;
+    // Get API keys from environment (supports both Vite import.meta.env and Cloudflare process.env)
+    const env = { ...import.meta.env, ...process.env };
+    const geminiKey = env.GEMINI_API_KEY;
     
     // If performSearch is true, skip AI and do hybrid search directly
     if (performSearch) {
       try {
-        const searchResults = await hybridSearch(message, 12, import.meta.env);
+        const searchResults = await hybridSearch(message, 12, env);
         return new Response(JSON.stringify({
           response: `Found ${searchResults.count} servers matching "${message}"`,
           readyToSearch: true,
@@ -270,7 +271,7 @@ export const POST: APIRoute = async ({ request }) => {
     let searchResults = null;
     if (readyToSearch && searchQuery) {
       try {
-        searchResults = await hybridSearch(searchQuery, 12, import.meta.env);
+        searchResults = await hybridSearch(searchQuery, 12, env);
       } catch (e) {
         console.error('Hybrid search error:', e);
       }
