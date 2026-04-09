@@ -2,7 +2,7 @@ name: Generate Server Embeddings
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Every hour
+    - cron: '*/5 * * * *'  # Every 5 minutes
   workflow_dispatch:      # Manual trigger
 
 jobs:

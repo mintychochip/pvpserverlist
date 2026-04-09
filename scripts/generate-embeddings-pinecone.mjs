@@ -99,7 +99,7 @@ async function processServers(index) {
   const { data: servers, error, count } = await supabase
     .from('servers')
     .select('id, name, description, tags, version', { count: 'exact' })
-    .limit(100);
+    .limit(500);
   
   if (error) {
     console.error('❌ Error fetching servers:', error);
