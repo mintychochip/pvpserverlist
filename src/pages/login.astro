@@ -51,7 +51,7 @@ const redirectTo = Astro.url.searchParams.get('redirect') || '/dashboard';
               <input type="checkbox" id="remember" class="mr-2" />
               Remember me
             </label>
-            <a href="/forgot-password" class="text-[var(--accent-primary)] hover:underline">Forgot password?</a>
+            <a href="/forgot-password" class="text-[var(--accent-primary)] hover:underline" onclick="event.preventDefault(); window.location.href='/forgot-password';">Forgot password?</a>
           </div>
           
           <button 
