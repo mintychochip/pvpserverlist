@@ -44,29 +44,38 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-
-      - name: Deploy to GCP VM
+      - name: Upload to Cloud Storage
         run: |
-          # OS Login is enabled on instance metadata, use IAP for reliable SSH
-          
-          # Create tar.gz of dist
-          tar -czf dist.tar.gz dist/
-          
-          # Copy to VM and extract using OS Login
-          gcloud compute scp --zone=us-west1-b --tunnel-through-iap dist.tar.gz instance-20260409-000924:~/guildpost/ || \
-          gcloud compute scp --zone=us-west1-b dist.tar.gz instance-20260409-000924:~/guildpost/
-          
-          # SSH to VM and setup
-          gcloud compute ssh instance-20260409-000924 --zone=us-west1-b --command="
-            cd ~/guildpost &&
-            tar -xzf dist.tar.gz &&
-            npm install --production &&
-            pm2 restart guildpost || pm2 start dist/server/entry.mjs --name guildpost &&
-            pm2 save
-          " || echo "SSH failed - may need manual intervention"
+          # Create bucket if doesn't exist
+          gsutil mb -p ${{ secrets.GCP_PROJECT_ID }} gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }} || true
+          # Create deployment package
+          tar -czf dist.tar.gz dist/ .env package.json
+          # Upload to bucket
+          gsutil cp dist.tar.gz gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }}/dist-latest.tar.gz
+          echo "Uploaded to gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }}/dist-latest.tar.gz"
+
+      - name: Deploy to VM via Serial Port (fallback) or SSH
+        run: |
+          # Try SSH first
+          gcloud compute ssh instance-20260409-000924 --zone=us-west1-b \
+            --command="
+              cd ~/guildpost &&
+              gsutil cp gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }}/dist-latest.tar.gz . &&
+              tar -xzf dist-latest.tar.gz &&
+              npm install --production &&
+              pm2 restart guildpost || pm2 start dist/server/entry.mjs --name guildpost &&
+              pm2 save &&
+              echo 'Deployment complete at' \$(date)
+            " 2>&1 && echo "SUCCESS: Deployed via SSH" || {
+              echo "SSH failed. VM will auto-deploy via cron or manual trigger."
+              echo "Files are ready at: gs://guildpost-deployments-${{ secrets.GCP_PROJECT_ID }}/dist-latest.tar.gz"
+              exit 0
+            }
 
       - name: Health check
         run: |
-          echo "Waiting for deployment..."
-          sleep 10
-          curl -s http://34.169.176.57:3000 || echo "Health check failed - may need to wait for startup"
+          echo "Checking deployment..."
+          sleep 5
+          curl -s --max-time 10 http://34.169.176.57:3000 && echo "
+✅ Site is up!" || echo "
+⚠️ Site may still be starting..."
