@@ -1,8 +1,9 @@
 name: Deploy to Cloudflare Pages
 
 on:
-  push:
-    branches: [ master, main ]
+  # Disabled - using GCP VM for SSR instead
+  # push:
+  #   branches: [ master, main ]
   workflow_dispatch:
 
 jobs:
