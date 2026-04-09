@@ -257,14 +257,13 @@ const gameCategories = [
 </Layout>
 
 <script>
-  import { createClient } from '@supabase/supabase-js';
-  
+  // Use global supabase from CDN library loaded in Layout.astro
   const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndweHV0c2RiaWFtcG54ZmdrandxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNTEwMDQsImV4cCI6MjA5MDkyNzAwNH0.35hrTSgxQnICpLOY3g6W3eNxxe7DKCc3q165tyb0Ieo';
   
   // Load featured servers
   async function loadServers() {
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
     const { data: servers, error } = await supabase
       .from('servers')
       .select('id, ip, port, name, description, version, tags, verified, vote_count, icon, banner, players_online, max_players, status')
