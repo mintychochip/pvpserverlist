@@ -4,10 +4,11 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && cp public/_routes.json dist/_routes.json && cp public/_routes.json . && cp -r functions dist/",
+    "build": "astro build && cp public/_routes.json dist/_routes.json",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run --passWithNoTests",
+    "deploy": "wrangler pages deploy dist",
     "test:watch": "vitest",
     "i18n:init": "crowdin init",
     "i18n:upload": "crowdin upload sources",
