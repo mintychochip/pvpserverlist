@@ -23,16 +23,28 @@ const corsHeaders = {
 export async function onRequest(context) {
   const { request, env } = context;
   
+  // Log all requests for debugging
+  const url = new URL(request.url);
+  const path = url.pathname.replace(/^\/api/, '') || '/';
+  console.log(`[API] ${request.method} ${url.pathname} (stripped: ${path})`);
+  
   // Handle CORS preflight
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const url = new URL(request.url);
-  // Strip /api/ prefix since Functions are mounted at /api/
-  const path = url.pathname.replace(/^\/api/, '') || '/';
-
   try {
+    // Check required env vars
+    if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_KEY) {
+      console.error('[API] Missing required env vars: SUPABASE_URL or SUPABASE_SERVICE_KEY');
+      return new Response(JSON.stringify({ 
+        error: 'Server configuration error',
+        detail: 'Missing required environment variables'
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
       // Semantic Search
       if (path === '/search/semantic' && request.method === 'POST') {
         return await handleSemanticSearch(request, env);
@@ -114,10 +126,31 @@ export async function onRequest(context) {
         return await handleServerUptime(uptimeMatch[1], request, env);
       }
 
-      return new Response('Not Found', { status: 404, headers: corsHeaders });
+      // No route matched - return JSON 404
+      console.log(`[API] No route matched for ${request.method} ${path}`);
+      return new Response(JSON.stringify({ 
+        error: 'Not Found',
+        path: path,
+        method: request.method,
+        availableRoutes: [
+          'GET /servers',
+          'GET /search/suggestions',
+          'POST /search/semantic',
+          'POST /search/hybrid',
+          'POST /wizard/chat',
+          'POST /ping',
+          'POST /cron/ping'
+        ]
+      }), { 
+        status: 404, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
     } catch (err) {
-      console.error('Worker error:', err);
-      return new Response(JSON.stringify({ error: err.message }), {
+      console.error('[API] Worker error:', err);
+      return new Response(JSON.stringify({ 
+        error: err.message,
+        stack: err.stack 
+      }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
