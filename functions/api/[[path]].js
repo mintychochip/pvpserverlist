@@ -58,8 +58,10 @@ export async function onRequest(context) {
         return await handleEmbed(request, env);
       }
 
-      // Get Servers List (for watcher)
+      // Get Servers List (for watcher) - DEBUG: Added logging
+      console.log('Checking servers route:', path, request.method);
       if ((path === '/servers' || path === '/servers/') && request.method === 'GET') {
+        console.log('Matched servers route, calling handler');
         return await handleServersList(request, env);
       }
 
