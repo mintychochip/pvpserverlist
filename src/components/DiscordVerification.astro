@@ -1,0 +1,153 @@
+---
+// Discord Verification Component
+// Shows verification button or verified badge
+
+interface Props {
+  serverId: string;
+  verified?: boolean;
+  guildName?: string;
+  verifiedAt?: string;
+}
+
+const { serverId, verified, guildName, verifiedAt } = Astro.props;
+
+// Format date
+function formatDate(dateString: string | undefined): string {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString();
+}
+---
+
+<div id="discord-verification-container" data-server-id={serverId}>
+  {verified ? (
+    <div class="flex items-center gap-2 text-sm">
+      <span class="inline-flex items-center gap-1 px-2 py-1 bg-[#5865F2]/20 text-[#5865F2] rounded-lg font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+        </svg>
+        Discord Verified
+      </span>
+      {guildName && (
+        <span class="text-[#8892b0]">{guildName}</span>
+      )}
+    </div>
+  ) : (
+    <div class="space-y-3">
+      <div class="flex items-center gap-2 text-sm text-[#8892b0]">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 8v4M12 16h.01"/>
+        </svg>
+        Discord not verified
+      </div>
+      
+      <div class="flex flex-wrap gap-2">
+        <button 
+          id="verify-discord-btn"
+          class="inline-flex items-center gap-2 px-3 py-2 bg-[#5865F2] hover:bg-[#4752c4] text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+          </svg>
+          Verify with Discord
+        </button>
+        
+        <button 
+          id="invite-bot-btn"
+          class="inline-flex items-center gap-2 px-3 py-2 bg-[#12121a] border border-[#2a2a3a] hover:border-[#5865F2] text-[#8892b0] hover:text-white text-sm font-medium rounded-lg transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 5v14M5 12h14"/>
+          </svg>
+          Invite Bot First
+        </button>
+      </div>
+      
+      <p class="text-xs text-[#5a6275]">
+        Step 1: Invite GuildPost bot to your Discord<br/>
+        Step 2: Click "Verify" to prove server ownership
+      </p>
+    </div>
+  )}
+</div>
+
+<script>
+  const container = document.getElementById('discord-verification-container');
+  const serverId = container?.dataset.serverId;
+  
+  // Bot invite button
+  document.getElementById('invite-bot-btn')?.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/discord/bot-invite');
+      const data = await response.json();
+      
+      if (data.inviteUrl) {
+        // Open bot invite in new window
+        const width = 500;
+        const height = 800;
+        const left = (window.screen.width - width) / 2;
+        const top = (window.screen.height - height) / 2;
+        
+        window.open(
+          data.inviteUrl,
+          'discord-bot-invite',
+          `width=${width},height=${height},left=${left},top=${top},popup=true`
+        );
+      }
+    } catch (e) {
+      console.error('Failed to get bot invite:', e);
+      alert('Failed to generate bot invite link');
+    }
+  });
+  
+  // Verify button
+  document.getElementById('verify-discord-btn')?.addEventListener('click', () => {
+    if (!serverId) return;
+    
+    // Redirect to Discord OAuth
+    const redirectUrl = encodeURIComponent(window.location.href);
+    window.location.href = `/api/auth/discord/initiate?server_id=${serverId}&redirect=${redirectUrl}`;
+  });
+  
+  // Check for verification result in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const verified = urlParams.get('discord_verified');
+  const error = urlParams.get('discord_error');
+  const message = urlParams.get('discord_message');
+  
+  if (verified === 'true') {
+    // Remove params from URL
+    urlParams.delete('discord_verified');
+    urlParams.delete('discord_guild');
+    window.history.replaceState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
+    
+    // Show success toast
+    showToast('Discord server verified successfully!', 'success');
+    
+    // Reload to show verified state
+    setTimeout(() => window.location.reload(), 1500);
+  } else if (error) {
+    // Remove error params
+    urlParams.delete('discord_error');
+    urlParams.delete('discord_message');
+    window.history.replaceState({}, '', `${window.location.pathname}?${urlParams.toString()}`);
+    
+    // Show error toast
+    showToast(message || 'Discord verification failed', 'error');
+  }
+  
+  function showToast(message: string, type: 'success' | 'error') {
+    // Use existing toast system or create simple one
+    const toast = document.createElement('div');
+    toast.className = `fixed top-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 ${
+      type === 'success' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'
+    }`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.remove();
+    }, 5000);
+  }
+</script>
