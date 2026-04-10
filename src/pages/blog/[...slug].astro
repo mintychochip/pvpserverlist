@@ -1,0 +1,345 @@
+---
+// Blog Post Detail Page with Rich SEO
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+// Generate static paths for all blog posts
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+// Build related posts (same category or tags)
+const allPosts = await getCollection('blog', ({ data }) => !data.draft && data.slug !== post.slug);
+const relatedPosts = allPosts
+  .filter(p => 
+    p.data.category === post.data.category || 
+    p.data.tags.some(tag => post.data.tags.includes(tag))
+  )
+  .slice(0, 3);
+
+// Format keywords for meta
+const keywords = [
+  ...post.data.tags,
+  'minecraft servers',
+  'minecraft multiplayer',
+  'guildpost',
+  post.data.category
+].join(', ');
+
+// Article schema for rich snippets
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": post.data.title,
+  "description": post.data.description,
+  "image": post.data.image ? `https://guildpost.tech${post.data.image}` : 'https://guildpost.tech/og-image-new.png',
+  "datePublished": post.data.pubDate.toISOString(),
+  "dateModified": post.data.updatedDate?.toISOString() || post.data.pubDate.toISOString(),
+  "author": {
+    "@type": "Person",
+    "name": post.data.author
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "GuildPost",
+    "url": "https://guildpost.tech",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://guildpost.tech/logo-icon-512.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": `https://guildpost.tech/blog/${post.slug}`
+  }
+};
+
+// Breadcrumb schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://guildpost.tech"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://guildpost.tech/blog"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": post.data.title,
+      "item": `https://guildpost.tech/blog/${post.slug}`
+    }
+  ]
+};
+---
+
+<Layout 
+  title={post.data.title}
+  description={post.data.description}
+  image={post.data.image ? `https://guildpost.tech${post.data.image}` : 'https://guildpost.tech/og-image-new.png'}
+  url={`https://guildpost.tech/blog/${post.slug}`}
+  type="article"
+  keywords={keywords}
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(breadcrumbSchema)} />
+  
+  <div class="min-h-screen" style="background-color: var(--bg-primary);">
+    <Header />
+    
+    <main class="max-w-4xl mx-auto px-4 py-8">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm mb-6" style="color: var(--text-secondary);">
+        <a href="/" class="hover:underline">Home</a>
+        <span>/</span>
+        <a href="/blog" class="hover:underline">Blog</a>
+        <span>/</span>
+        <span style="color: var(--text-primary);">{post.data.category}</span>
+      </nav>
+      
+      <article class="blog-post">
+        <!-- Header -->
+        <header class="mb-8">
+          <!-- Category Badge -->
+          <div class="mb-4">
+            <a 
+              href={`/blog?category=${post.data.category}`}
+              class="inline-block px-3 py-1 text-sm font-medium rounded-full"
+              style="background-color: var(--accent-primary); color: var(--bg-primary);"
+            >
+              {post.data.category.charAt(0).toUpperCase() + post.data.category.slice(1)}
+            </a>
+          </div>
+          
+          <!-- Title -->
+          <h1 class="text-3xl md:text-4xl font-bold mb-4" style="color: var(--text-primary);">
+            {post.data.title}
+          </h1>
+          
+          <!-- Meta -->
+          <div class="flex flex-wrap items-center gap-4 text-sm" style="color: var(--text-secondary);">
+            <div class="flex items-center gap-2">
+              <span class="font-medium">{post.data.author}</span>
+            </div>
+            <span>•</span>
+            <FormattedDate date={post.data.pubDate} />
+            {post.data.updatedDate && (
+              <>
+                <span>•</span>
+                <span>Updated <FormattedDate date={post.data.updatedDate} /></span>
+              </>
+            )}
+          </div>
+          
+          <!-- Tags -->
+          <div class="flex flex-wrap gap-2 mt-4">
+            {post.data.tags.map(tag => (
+              <a 
+                href={`/blog?tag=${tag}`}
+                class="px-3 py-1 text-sm rounded-lg transition-colors"
+                style="background-color: var(--bg-tertiary); color: var(--text-secondary);"
+                onmouseover="this.style.backgroundColor='var(--border-hover)'"
+                onmouseout="this.style.backgroundColor='var(--bg-tertiary)'"
+              >
+                #{tag}
+              </a>
+            ))}
+          </div>
+        </header>
+        
+        <!-- Featured Image -->
+        {post.data.image && (
+          <div class="mb-8 rounded-lg overflow-hidden">
+            <img 
+              src={post.data.image} 
+              alt={post.data.title}
+              class="w-full h-64 md:h-80 object-cover"
+            />
+          </div>
+        )}
+        
+        <!-- Content -->
+        <div class="blog-content prose prose-invert max-w-none">
+          <Content />
+        </div>
+        
+        <!-- Share Section -->
+        <div class="mt-12 pt-8 border-t" style="border-color: var(--border-color);">
+          <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">Share this article</h3>
+          <div class="flex gap-3">
+            <a 
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(`https://guildpost.tech/blog/${post.slug}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors"
+              style="background-color: var(--bg-tertiary); color: var(--text-secondary);"
+              onmouseover="this.style.backgroundColor='var(--border-hover)'"
+              onmouseout="this.style.backgroundColor='var(--bg-tertiary)'"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              Twitter
+            </a>
+            <a 
+              href={`https://www.reddit.com/submit?url=${encodeURIComponent(`https://guildpost.tech/blog/${post.slug}`)}&title=${encodeURIComponent(post.data.title)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors"
+              style="background-color: var(--bg-tertiary); color: var(--text-secondary);"
+              onmouseover="this.style.backgroundColor='var(--border-hover)'"
+              onmouseout="this.style.backgroundColor='var(--bg-tertiary)'"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.532.224-.143.492-.23.78-.23.69 0 1.25.56 1.25 1.25 0 .599-.424 1.1-.996 1.227.277.52.436 1.116.436 1.75 0 2.103-1.838 3.827-4.64 4.11.134.206.21.45.21.71 0 .69-.56 1.25-1.25 1.25-.69 0-1.25-.56-1.25-1.25 0-.26.076-.504.21-.71-2.802-.283-4.64-2.007-4.64-4.11 0-.634.159-1.23.436-1.75-.572-.127-.996-.628-.996-1.227 0-.69.56-1.25 1.25-1.25.288 0 .556.087.78.23 1.194-.9 2.85-1.462 4.674-1.532l-.8-3.747-2.597.547a1.25 1.25 0 0 1-2.498-.056c0-.688.562-1.249 1.25-1.249.194 0 .374.048.537.133l3.858.812a.25.25 0 0 0 .287-.377l-1.053-1.634a1.249 1.249 0 1 1 2.1-1.358l2.043 3.163a.25.25 0 0 0 .288.09l2.368-.588c.163-.04.336-.063.516-.063z"/>
+              </svg>
+              Reddit
+            </a>
+          </div>
+        </div>
+      </article>
+      
+      <!-- Related Posts -->
+      {relatedPosts.length > 0 && (
+        <aside class="mt-16">
+          <h2 class="text-2xl font-bold mb-6" style="color: var(--text-primary);">Related Articles</h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {relatedPosts.map(related => (
+              <a 
+                href={`/blog/${related.slug}`}
+                class="group block p-6 rounded-lg transition-all"
+                style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);"
+                onmouseover="this.style.borderColor='var(--accent-primary)'"
+                onmouseout="this.style.borderColor='var(--border-color)'"
+              >
+                <div class="text-sm mb-2" style="color: var(--accent-primary);">{related.data.category}</div>
+                <h3 class="font-semibold mb-2 group-hover:underline" style="color: var(--text-primary);">
+                  {related.data.title}
+                </h3>
+                <p class="text-sm line-clamp-2" style="color: var(--text-secondary);">
+                  {related.data.description}
+                </p>
+              </a>
+            ))}
+          </div>
+        </aside>
+      )}
+    </main>
+    
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  .blog-content {
+    line-height: 1.8;
+  }
+  
+  .blog-content :global(h2) {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+  
+  .blog-content :global(h3) {
+    font-size: 1.375rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+  }
+  
+  .blog-content :global(p) {
+    margin-bottom: 1.25rem;
+    color: var(--text-secondary);
+  }
+  
+  .blog-content :global(ul), .blog-content :global(ol) {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+    color: var(--text-secondary);
+  }
+  
+  .blog-content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+  
+  .blog-content :global(strong) {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  
+  .blog-content :global(a) {
+    color: var(--accent-primary);
+    text-decoration: none;
+  }
+  
+  .blog-content :global(a:hover) {
+    text-decoration: underline;
+  }
+  
+  .blog-content :global(code) {
+    background-color: var(--bg-tertiary);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.875em;
+    color: var(--accent-primary);
+  }
+  
+  .blog-content :global(pre) {
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--border-color);
+  }
+  
+  .blog-content :global(pre code) {
+    background-color: transparent;
+    padding: 0;
+    color: var(--text-secondary);
+  }
+  
+  .blog-content :global(blockquote) {
+    border-left: 4px solid var(--accent-primary);
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+  
+  .blog-content :global(hr) {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 2rem 0;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

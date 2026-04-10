@@ -1,0 +1,248 @@
+---
+// Blog Index Page - SEO-optimized content hub
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+
+// Get all published blog posts
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+
+// Sort by date (newest first)
+const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Get featured posts
+const featuredPosts = posts.filter(post => post.data.featured).slice(0, 2);
+
+// Get recent posts (excluding featured)
+const recentPosts = posts.filter(post => !post.data.featured).slice(0, 6);
+
+// Get all unique categories and tags
+const categories = [...new Set(posts.map(p => p.data.category))];
+const allTags = posts.flatMap(p => p.data.tags);
+const popularTags = [...new Set(allTags)].slice(0, 10);
+
+// Create blog listing schema
+const blogListingSchema = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "GuildPost Blog - Minecraft Server Guides & Tips",
+  "description": "Discover guides, tips, and insights about Minecraft servers, multiplayer gaming, and finding the perfect server community.",
+  "url": "https://guildpost.tech/blog",
+  "publisher": {
+    "@type": "Organization",
+    "name": "GuildPost",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://guildpost.tech/logo-icon-512.png"
+    }
+  },
+  "blogPost": posts.slice(0, 10).map(post => ({
+    "@type": "BlogPosting",
+    "headline": post.data.title,
+    "url": `https://guildpost.tech/blog/${post.slug}`,
+    "datePublished": post.data.pubDate.toISOString(),
+    "author": {
+      "@type": "Person",
+      "name": post.data.author
+    }
+  }))
+};
+---
+
+<Layout 
+  title="GuildPost Blog - Minecraft Server Guides & Tips"
+  description="Discover guides, tips, and insights about Minecraft servers, multiplayer gaming, and finding the perfect server community."
+  url="https://guildpost.tech/blog"
+  keywords="minecraft blog, minecraft guides, minecraft servers, minecraft tips, server lists, multiplayer minecraft"
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(blogListingSchema)} />
+  
+  <div class="min-h-screen" style="background-color: var(--bg-primary);">
+    <Header />
+    
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <!-- Header Section -->
+      <div class="mb-12">
+        <h1 class="text-4xl font-bold mb-4" style="color: var(--text-primary);">
+          GuildPost Blog
+        </h1>
+        <p class="text-lg max-w-2xl" style="color: var(--text-secondary);">
+          Guides, tips, and insights to help you find the perfect Minecraft server and get the most out of your multiplayer experience.
+        </p>
+      </div>
+      
+      <!-- Categories & Tags -->
+      <div class="flex flex-wrap gap-2 mb-8">
+        <a 
+          href="/blog"
+          class="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+          style="background-color: var(--accent-primary); color: var(--bg-primary);"
+        >
+          All Posts
+        </a>
+        {categories.map(category => (
+          <a 
+            href={`/blog?category=${category}`}
+            class="px-4 py-2 text-sm font-medium rounded-lg transition-colors"
+            style="background-color: var(--bg-tertiary); color: var(--text-secondary);"
+            onmouseover="this.style.backgroundColor='var(--border-hover)'; this.style.color='var(--text-primary)'"
+            onmouseout="this.style.backgroundColor='var(--bg-tertiary)'; this.style.color='var(--text-secondary)'"
+          >
+            {category.charAt(0).toUpperCase() + category.slice(1)}
+          </a>
+        ))}
+      </div>
+      
+      <!-- Popular Tags -->
+      <div class="flex flex-wrap gap-2 mb-12">
+        {popularTags.map(tag => (
+          <a 
+            href={`/blog?tag=${tag}`}
+            class="px-3 py-1 text-xs rounded-full transition-colors"
+            style="background-color: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border-color);"
+            onmouseover="this.style.borderColor='var(--accent-primary)'"
+            onmouseout="this.style.borderColor='var(--border-color)'"
+          >
+            #{tag}
+          </a>
+        ))}
+      </div>
+      
+      <!-- Featured Posts -->
+      {featuredPosts.length > 0 && (
+        <section class="mb-12">
+          <h2 class="text-2xl font-bold mb-6" style="color: var(--text-primary);">Featured</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {featuredPosts.map(post => (
+              <article 
+                class="group relative overflow-hidden rounded-lg transition-all"
+                style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);"
+                onmouseover="this.style.borderColor='var(--accent-primary)'"
+                onmouseout="this.style.borderColor='var(--border-color)'"
+              >
+                {post.data.image && (
+                  <div class="h-48 overflow-hidden">
+                    <img 
+                      src={post.data.image} 
+                      alt={post.data.title}
+                      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                )}
+                <div class="p-6">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span 
+                      class="px-2 py-1 text-xs font-medium rounded"
+                      style="background-color: var(--accent-primary); color: var(--bg-primary);"
+                    >
+                      {post.data.category}
+                    </span>
+                    <span style="color: var(--text-secondary);">•</span>
+                    <span style="color: var(--text-secondary);"><FormattedDate date={post.data.pubDate} /></span>
+                  </div>
+                  <a href={`/blog/${post.slug}`} class="block">
+                    <h3 class="text-xl font-semibold mb-2 group-hover:underline" style="color: var(--text-primary);">
+                      {post.data.title}
+                    </h3>
+                    <p class="line-clamp-2" style="color: var(--text-secondary);">
+                      {post.data.description}
+                    </p>
+                  </a>
+                  <div class="flex flex-wrap gap-2 mt-4">
+                    {post.data.tags.slice(0, 3).map(tag => (
+                      <span class="text-xs" style="color: var(--accent-primary);">#{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+      
+      <!-- Recent Posts -->
+      <section>
+        <h2 class="text-2xl font-bold mb-6" style="color: var(--text-primary);">Latest Articles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {recentPosts.map(post => (
+            <article 
+              class="group p-6 rounded-lg transition-all"
+              style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);"
+              onmouseover="this.style.borderColor='var(--accent-primary)'"
+              onmouseout="this.style.borderColor='var(--border-color)'"
+            >
+              <div class="flex items-center gap-2 mb-3">
+                <span 
+                  class="px-2 py-0.5 text-xs rounded"
+                  style="background-color: var(--bg-tertiary); color: var(--text-secondary);"
+                >
+                  {post.data.category}
+                </span>
+                <span style="color: var(--text-secondary);"><FormattedDate date={post.data.pubDate} format="relative" /></span>
+              </div>
+              <a href={`/blog/${post.slug}`} class="block">
+                <h3 class="font-semibold mb-2 group-hover:underline" style="color: var(--text-primary);">
+                  {post.data.title}
+                </h3>
+                <p class="text-sm line-clamp-3" style="color: var(--text-secondary);">
+                  {post.data.description}
+                </p>
+              </a>
+              <div class="flex flex-wrap gap-2 mt-4">
+                {post.data.tags.slice(0, 2).map(tag => (
+                  <span class="text-xs" style="color: var(--text-secondary);">#{tag}</span>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+      
+      <!-- CTA Section -->
+      <section class="mt-16 p-8 rounded-lg text-center" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <h2 class="text-2xl font-bold mb-4" style="color: var(--text-primary);">Ready to find your server?</h2>
+        <p class="mb-6" style="color: var(--text-secondary);">
+          Browse thousands of Minecraft servers or use our AI wizard to find your perfect match.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a 
+            href="/minecraft"
+            class="px-6 py-3 rounded-lg font-medium transition-colors"
+            style="background-color: var(--accent-primary); color: var(--bg-primary);"
+          >
+            Browse Servers
+          </a>
+          <a 
+            href="/wizard"
+            class="px-6 py-3 rounded-lg font-medium transition-colors"
+            style="background-color: var(--bg-tertiary); color: var(--text-primary);"
+            onmouseover="this.style.backgroundColor='var(--border-hover)'"
+            onmouseout="this.style.backgroundColor='var(--bg-tertiary)'"
+          >
+            AI Server Finder
+          </a>
+        </div>
+      </section>
+    </main>
+    
+    <Footer />
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

@@ -150,8 +150,12 @@ const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- RSS Feeds -->
-    <link rel="alternate" type="application/rss+xml" title="GuildPost - New Minecraft Servers" href="https://guildpost.tech/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="GuildPost Blog" href="https://guildpost.tech/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="GuildPost - New Minecraft Servers" href="https://guildpost.tech/rss/new.xml" />
     <link rel="alternate" type="application/rss+xml" title="GuildPost - Trending Servers" href="https://guildpost.tech/rss/popular.xml" />
+    
+    <!-- Sitemap -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="https://guildpost.tech/sitemap.xml" />
   </head>
   <body class="font-sans antialiased" style="background-color: var(--bg-primary); color: var(--text-primary);">
     <slot />

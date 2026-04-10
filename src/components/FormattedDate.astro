@@ -1,0 +1,44 @@
+---
+interface Props {
+  date: Date;
+  format?: 'short' | 'long' | 'relative';
+}
+
+const { date, format = 'short' } = Astro.props;
+
+function formatDate(date: Date, format: string): string {
+  if (format === 'relative') {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    
+    if (hours < 1) return 'Just now';
+    if (hours < 24) return `${hours}h ago`;
+    if (days === 1) return 'Yesterday';
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+    if (days < 365) return `${Math.floor(days / 30)} months ago`;
+    return `${Math.floor(days / 365)} years ago`;
+  }
+  
+  if (format === 'long') {
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
+  
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
+const formattedDate = formatDate(date, format);
+const isoDate = date.toISOString();
+---
+
+<time datetime={isoDate} title={date.toLocaleString()}>{formattedDate}</time>
