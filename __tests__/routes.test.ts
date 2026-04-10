@@ -3,21 +3,19 @@ import fs from 'fs';
 import path from 'path';
 
 describe('Cloudflare Routes Configuration', () => {
-  it('should have empty exclude (Astro worker handles all routing)', () => {
+  it('should exclude /api/* so Functions handle API requests', () => {
     const routesPath = path.join(process.cwd(), 'public', '_routes.json');
     const routes = JSON.parse(fs.readFileSync(routesPath, 'utf-8'));
     
-    // With Astro SSR via _worker.js, all routes are handled by the worker
-    // No need for exclude patterns - the worker does its own routing
-    expect(routes.exclude).toEqual([]);
+    // API routes are handled by Cloudflare Functions, not static files
+    expect(routes.exclude).toContain('/api/*');
   });
 
-  it('should have correct include pattern and empty exclude', () => {
+  it('should have correct include pattern', () => {
     const routesPath = path.join(process.cwd(), 'public', '_routes.json');
     const routes = JSON.parse(fs.readFileSync(routesPath, 'utf-8'));
     
     expect(routes.include).toContain('/*');
     expect(routes.version).toBe(1);
-    expect(routes.exclude).toEqual([]);
   });
 });
