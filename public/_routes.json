@@ -1,24 +1,5 @@
 {
   "version": 1,
-  "include": [
-    "/*"
-  ],
-  "exclude": [
-    "/assets/*",
-    "/banner-discord.png",
-    "/discord-banner.png",
-    "/favicon.png",
-    "/favicon.svg",
-    "/header-twitter.png",
-    "/icon-1024.png",
-    "/icon-app.png",
-    "/loading-screen.png",
-    "/logo-new.png",
-    "/logo.png",
-    "/robots.txt",
-    "/sitemap.xml",
-    "/styles/*",
-    "/theme.css",
-    "/thumbnail-youtube.png"
-  ]
+  "include": ["/*"],
+  "exclude": ["/api/**"]
 }

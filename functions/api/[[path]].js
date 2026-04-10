@@ -38,6 +38,16 @@ export async function onRequest(context) {
         return await handleSemanticSearch(request, env);
       }
 
+      // Hybrid Search (keyword + semantic)
+      if (path === '/search/hybrid' && request.method === 'POST') {
+        return await handleHybridSearch(request, env);
+      }
+
+      // Wizard Chat AI
+      if (path === '/wizard/chat' && request.method === 'POST') {
+        return await handleWizardChat(request, env);
+      }
+
       // Search Suggestions
       if (path === '/search/suggestions' && request.method === 'GET') {
         return await handleSuggestions(request, env);
@@ -102,6 +112,301 @@ export async function onRequest(context) {
 }
 
 // End of onRequest function
+
+// Hybrid Search using Jina embeddings + Pinecone + keyword boost
+async function handleHybridSearch(request, env) {
+  const { query, limit = 12 } = await request.json();
+
+  if (!query || query.length < 2) {
+    return new Response(JSON.stringify({ error: 'Query too short' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  const jinaKey = env.JINA_API_KEY;
+  const pineconeKey = env.PINECONE_API_KEY;
+  const supabaseUrl = env.SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_SERVICE_KEY;
+
+  if (!jinaKey || !pineconeKey) {
+    return new Response(JSON.stringify({ error: 'API keys not configured' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+
+  try {
+    // Generate embedding for semantic search
+    const embedding = await generateEmbedding(query, env);
+
+    // Get Pinecone index host
+    const pineconeIndex = env.PINECONE_INDEX || 'guildpost';
+    const indexResponse = await fetch(`https://api.pinecone.io/indexes/${pineconeIndex}`, {
+      headers: {
+        'Api-Key': pineconeKey,
+        'X-Pinecone-API-Version': '2024-07'
+      }
+    });
+
+    if (!indexResponse.ok) {
+      throw new Error(`Pinecone index error: ${await indexResponse.text()}`);
+    }
+
+    const indexData = await indexResponse.json();
+    const indexHost = indexData.host;
+
+    // Query Pinecone for semantic matches
+    const queryResponse = await fetch(`https://${indexHost}/query`, {
+      method: 'POST',
+      headers: {
+        'Api-Key': pineconeKey,
+        'Content-Type': 'application/json',
+        'X-Pinecone-API-Version': '2024-07'
+      },
+      body: JSON.stringify({
+        vector: embedding,
+        topK: limit * 2,
+        includeMetadata: true
+      })
+    });
+
+    if (!queryResponse.ok) {
+      throw new Error(`Pinecone query error: ${await queryResponse.text()}`);
+    }
+
+    const queryData = await queryResponse.json();
+    const semanticMatches = queryData.matches || [];
+
+    // Keyword boost
+    const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 2);
+    
+    const scoredResults = semanticMatches.map((match) => {
+      let keywordScore = 0;
+      const metadata = match.metadata || {};
+      const textToSearch = [
+        metadata.name,
+        metadata.description,
+        metadata.gamemode,
+        ...(metadata.tags || [])
+      ].join(' ').toLowerCase();
+
+      for (const keyword of keywords) {
+        if (textToSearch.includes(keyword)) {
+          keywordScore += 0.15;
+        }
+      }
+
+      const hybridScore = match.score + keywordScore;
+      
+      return {
+        ...match,
+        hybridScore,
+        semanticScore: match.score,
+        keywordScore
+      };
+    });
+
+    scoredResults.sort((a, b) => b.hybridScore - a.hybridScore);
+    const topMatches = scoredResults.slice(0, limit);
+
+    // Fetch full server details from Supabase
+    let results = [];
+    if (topMatches.length > 0 && supabaseUrl && supabaseKey) {
+      const serverIds = topMatches.map((m) => m.id).filter(Boolean);
+      
+      if (serverIds.length > 0) {
+        const serversRes = await fetch(
+          `${supabaseUrl}/rest/v1/servers?id=in.(${serverIds.join(',')})&select=*`,
+          {
+            headers: {
+              'apikey': supabaseKey,
+              'Authorization': `Bearer ${supabaseKey}`
+            }
+          }
+        );
+
+        if (serversRes.ok) {
+          const servers = await serversRes.json();
+          results = topMatches.map((match) => {
+            const server = servers.find((s) => s.id === match.id);
+            if (server) {
+              return { 
+                ...server, 
+                similarity: match.semanticScore,
+                hybridScore: match.hybridScore,
+                keywordScore: match.keywordScore
+              };
+            }
+            return null;
+          }).filter(Boolean);
+        }
+      }
+    }
+
+    return new Response(JSON.stringify({
+      query,
+      results,
+      count: results.length,
+      searchType: 'hybrid'
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (err) {
+    console.error('Hybrid search error:', err);
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
+
+// AI Wizard Chat using Gemma
+async function handleWizardChat(request, env) {
+  try {
+    const { message, history = [], performSearch = false } = await request.json();
+
+    if (!message || message.length < 2) {
+      return new Response(JSON.stringify({ 
+        response: 'Hey there! Tell me what kind of Minecraft server you\'re looking for. For example: "survival with claims" or "pvp factions"',
+        readyToSearch: false 
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const geminiKey = env.GEMINI_API_KEY;
+    const jinaKey = env.JINA_API_KEY;
+    const pineconeKey = env.PINECONE_API_KEY;
+    
+    // If performSearch is true, skip AI and do hybrid search directly
+    if (performSearch && jinaKey && pineconeKey) {
+      try {
+        // Reuse the hybrid search logic
+        const searchReq = new Request(request.url, {
+          method: 'POST',
+          headers: request.headers,
+          body: JSON.stringify({ query: message, limit: 12 })
+        });
+        const searchResult = await handleHybridSearch(searchReq, env);
+        const searchData = await searchResult.json();
+        
+        return new Response(JSON.stringify({
+          response: `Found ${searchData.count} servers matching "${message}"`,
+          readyToSearch: true,
+          searchQuery: message,
+          results: searchData.results,
+          searchType: 'hybrid',
+          ai: false
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      } catch (searchErr) {
+        return new Response(JSON.stringify({ 
+          response: 'I had trouble searching. Please try again with different keywords.',
+          readyToSearch: false,
+          error: searchErr.message
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+    
+    if (!geminiKey) {
+      return new Response(JSON.stringify({ 
+        response: 'I understand you\'re looking for a server! Try being more specific about the gamemode (survival, pvp, skyblock, etc.) and any features you want.',
+        readyToSearch: false 
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    const prompt = `You are Gemma, an AI assistant for GuildPost - a game server discovery platform. Help users find their ideal Minecraft server.
+
+Available server types:
+- Gamemodes: survival, smp, pvp, factions, skyblock, creative, minigames, hardcore, prison, modded, roleplay, towny
+- Features: economy, claims, discord, events, bedrock, vanilla, quests, mmo, shops, crates, kits
+
+Conversation history:
+${history.map(h => `${h.role}: ${h.content}`).join('\n')}
+
+User: ${message}
+
+Respond naturally as a helpful assistant. If you have enough info to recommend servers (gamemode or specific features mentioned), include "SEARCH_READY: <query>" at the end where <query> is the search terms.
+
+Gemma:`;
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemma-3-4b-it:generateContent?key=${geminiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 300
+          }
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Gemma API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    
+    // Check if AI indicated search is ready
+    const searchMatch = aiResponse.match(/SEARCH_READY:\s*(.+)/i);
+    const readyToSearch = !!searchMatch;
+    const searchQuery = searchMatch ? searchMatch[1].trim() : null;
+    
+    // Clean up the response text
+    const cleanResponse = aiResponse.replace(/SEARCH_READY:.*/i, '').trim();
+
+    // If ready to search, perform hybrid search
+    let searchResults = null;
+    if (readyToSearch && searchQuery && jinaKey && pineconeKey) {
+      try {
+        const searchReq = new Request(request.url, {
+          method: 'POST',
+          headers: request.headers,
+          body: JSON.stringify({ query: searchQuery, limit: 12 })
+        });
+        const searchResult = await handleHybridSearch(searchReq, env);
+        const searchData = await searchResult.json();
+        searchResults = searchData.results;
+      } catch (e) {
+        console.error('Hybrid search error:', e);
+      }
+    }
+
+    return new Response(JSON.stringify({
+      response: cleanResponse || 'Tell me more about what kind of server you want!',
+      readyToSearch,
+      searchQuery,
+      results: searchResults,
+      searchType: 'hybrid',
+      ai: true
+    }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+
+  } catch (err) {
+    console.error('Wizard chat error:', err);
+    return new Response(JSON.stringify({ 
+      response: 'I\'m having trouble connecting to my AI brain right now. Try searching with keywords like "survival", "pvp", or "skyblock"!',
+      readyToSearch: false,
+      ai: false
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
+}
 
 // Generate embedding using Gemini gemini-embedding-001
 // Generate embeddings using Mixedbread (primary) with Gemini fallback

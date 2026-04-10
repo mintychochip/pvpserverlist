@@ -3,16 +3,16 @@ import fs from 'fs';
 import path from 'path';
 
 describe('Cloudflare Routes Configuration', () => {
-  it('should not exclude /api/** from routes', () => {
+  it('should exclude /api/** for Functions routing', () => {
     const routesPath = path.join(process.cwd(), 'public', '_routes.json');
     const routes = JSON.parse(fs.readFileSync(routesPath, 'utf-8'));
     
-    // API routes should NOT be in the exclude list
+    // API routes SHOULD be excluded so Cloudflare Functions handle them
     const hasApiExclude = routes.exclude?.some((pattern: string) => 
       pattern === '/api/**' || pattern.startsWith('/api/')
     );
     
-    expect(hasApiExclude).toBe(false);
+    expect(hasApiExclude).toBe(true);
   });
 
   it('should have correct include pattern', () => {
