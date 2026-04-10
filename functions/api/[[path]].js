@@ -922,7 +922,7 @@ async function handleServersList(request, env) {
   
   try {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/servers?select=id,host,port,game_mode&limit=${limit}`,
+      `${supabaseUrl}/rest/v1/servers?select=*&limit=${limit}`,
       {
         headers: {
           'apikey': supabaseKey,
@@ -937,9 +937,15 @@ async function handleServersList(request, env) {
     
     const servers = await response.json();
     
+    // Map host -> ip for frontend compatibility
+    const mappedServers = servers.map(s => ({
+      ...s,
+      ip: s.host || s.ip
+    }));
+    
     return new Response(JSON.stringify({ 
-      servers,
-      count: servers.length 
+      servers: mappedServers,
+      count: mappedServers.length 
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
