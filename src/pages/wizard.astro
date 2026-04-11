@@ -246,9 +246,9 @@ import Footer from '../components/Footer.astro';
     resultsDiv.innerHTML = servers.map(server => `
       <a href="/servers/${server.id}" class="block p-4 bg-[#12121a] border border-[#2a2a3a] hover:border-[#00f5d4] rounded-lg transition-all group">
         <div class="flex items-start gap-3">
-          <div class="w-12 h-12 bg-[#1a1a25] rounded-lg flex items-center justify-center flex-shrink-0">
+          <div class="w-12 h-12 bg-[#1a1a25] rounded-lg flex items-center justify-center flex-shrink-0 relative">
             ${server.icon ? 
-              `<img src="${server.icon}" alt="" class="w-full h-full object-cover rounded-lg">` : 
+              `<img src="${server.icon}" alt="" class="w-full h-full object-cover rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="text-[#00f5d4] text-xl hidden absolute inset-0 items-center justify-center">⛏</span>` : 
               `<span class="text-[#00f5d4] text-xl">⛏</span>`
             }
           </div>

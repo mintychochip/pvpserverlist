@@ -1,0 +1,1258 @@
+{
+  "scraped_at": "2026-04-11T17:52:59.464Z",
+  "total": 77,
+  "sources": [
+    {
+      "source": "topminecraftservers.org",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:08.460Z"
+    },
+    {
+      "source": "minecraft-server.net",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:12.106Z"
+    },
+    {
+      "source": "mineservers.com",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:17.654Z"
+    },
+    {
+      "source": "server-list.org",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:17.739Z"
+    },
+    {
+      "source": "minecraftservers.biz",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:21.046Z"
+    },
+    {
+      "source": "mcservers.top",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:24.546Z"
+    },
+    {
+      "source": "topminecraftservers.org",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:46.659Z"
+    },
+    {
+      "source": "minecraft-server.net",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:50.167Z"
+    },
+    {
+      "source": "mineservers.com",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:55.224Z"
+    },
+    {
+      "source": "server-list.org",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:55.279Z"
+    },
+    {
+      "source": "minecraftservers.biz",
+      "added": 0,
+      "timestamp": "2026-04-11T17:44:58.494Z"
+    },
+    {
+      "source": "mcservers.top",
+      "added": 0,
+      "timestamp": "2026-04-11T17:45:01.858Z"
+    },
+    {
+      "source": "topminecraftservers.org",
+      "added": 18,
+      "timestamp": "2026-04-11T17:45:29.215Z"
+    },
+    {
+      "source": "topminecraftservers.org",
+      "added": 18,
+      "timestamp": "2026-04-11T17:48:15.124Z"
+    },
+    {
+      "source": "minecraft-server.net",
+      "added": 20,
+      "timestamp": "2026-04-11T17:50:56.555Z"
+    },
+    {
+      "source": "mineservers.com",
+      "added": 19,
+      "timestamp": "2026-04-11T17:51:13.642Z"
+    },
+    {
+      "source": "server-list.org",
+      "added": 0,
+      "timestamp": "2026-04-11T17:51:13.685Z"
+    },
+    {
+      "source": "minecraftservers.biz",
+      "added": 0,
+      "timestamp": "2026-04-11T17:51:23.139Z"
+    },
+    {
+      "source": "mcservers.top",
+      "added": 20,
+      "timestamp": "2026-04-11T17:52:59.440Z"
+    }
+  ],
+  "servers": [
+    {
+      "name": "👽 top.opblocks.com | OPBlocks\n                \n                    \n                    \n                \n                \n                    IP:\n                    \n                    top.opblocks.com",
+      "ip": "top.opblocks.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "👽 top.opblocks.com | OPBlocks\n                \n                    \n                    \n                \n                \n                    IP:\n                    \n                    top.opblocks.com server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:04.644Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "top.minepiece.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.060Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "play.smilemorecraft.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.062Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "top.foxcraft.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.370Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "tm.mc-complex.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.588Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "topy.pika.host",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.593Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "top.extremecraft.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.596Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "opsucht.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.637Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "top.cobblegalaxy.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.662Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "top.hylexmc.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.688Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "topt.jartex.fun",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.690Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "top.mmorealms.gg",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.722Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "play.minemalia.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.814Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "top.twenture.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.857Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "play.talonmc.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.859Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "gg.snailcraftmc.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.862Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "ti.ultimis.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.902Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "top.chunklock.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "topminecraftservers.org",
+      "scraped_at": "2026-04-11T17:48:05.936Z"
+    },
+    {
+      "name": "OPBlocks",
+      "ip": "hub.opblocks.com",
+      "port": 25565,
+      "players_online": 5923,
+      "max_players": 6000,
+      "version": "1.20+",
+      "description": "OPBlocks server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.731Z"
+    },
+    {
+      "name": "InsanityCraft",
+      "ip": "join.insanitycraft.net",
+      "port": 25565,
+      "players_online": 7380,
+      "max_players": 8000,
+      "version": "1.20+",
+      "description": "InsanityCraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.732Z"
+    },
+    {
+      "name": "MinePiece",
+      "ip": "mc.minepiece.net",
+      "port": 25565,
+      "players_online": 340,
+      "max_players": 10000,
+      "version": "1.20+",
+      "description": "MinePiece server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.735Z"
+    },
+    {
+      "name": "Vulengate",
+      "ip": "ms.vulengate.com",
+      "port": 25565,
+      "players_online": 108,
+      "max_players": 300,
+      "version": "1.20+",
+      "description": "Vulengate server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.754Z"
+    },
+    {
+      "name": "McHub",
+      "ip": "ms.mchub.com",
+      "port": 25565,
+      "players_online": 1413,
+      "max_players": 1414,
+      "version": "1.20+",
+      "description": "McHub server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.778Z"
+    },
+    {
+      "name": "Complex Gaming",
+      "ip": "org.mc-complex.com",
+      "port": 25565,
+      "players_online": 6989,
+      "max_players": 7039,
+      "version": "1.20+",
+      "description": "Complex Gaming server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.798Z"
+    },
+    {
+      "name": "Cobblemon.gg",
+      "ip": "cobblemon.gg",
+      "port": 25565,
+      "players_online": 489,
+      "max_players": 500,
+      "version": "1.20+",
+      "description": "Cobblemon.gg server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.800Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "hub.cobblemon.gg",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.802Z"
+    },
+    {
+      "name": "Cobblemon Delta",
+      "ip": "play.cobblemondelta.com",
+      "port": 25565,
+      "players_online": 515,
+      "max_players": 1000,
+      "version": "1.20+",
+      "description": "Cobblemon Delta server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.808Z"
+    },
+    {
+      "name": "CobbleGalaxy",
+      "ip": "hub.cobblegalaxy.com",
+      "port": 25565,
+      "players_online": 534,
+      "max_players": 1000,
+      "version": "1.20+",
+      "description": "CobbleGalaxy server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.832Z"
+    },
+    {
+      "name": "AppleMC",
+      "ip": "play.applemc.fun",
+      "port": 25565,
+      "players_online": 1414,
+      "max_players": 3000,
+      "version": "1.20+",
+      "description": "AppleMC server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.864Z"
+    },
+    {
+      "name": "LemonCloud",
+      "ip": "one.lemoncloud.net",
+      "port": 25565,
+      "players_online": 8655,
+      "max_players": 8755,
+      "version": "1.20+",
+      "description": "LemonCloud server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:18.948Z"
+    },
+    {
+      "name": "MMO Realms",
+      "ip": "org.mmorealms.gg",
+      "port": 25565,
+      "players_online": 502,
+      "max_players": 2000,
+      "version": "1.20+",
+      "description": "MMO Realms server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:19.010Z"
+    },
+    {
+      "name": "Twenture Network",
+      "ip": "org.twenture.net",
+      "port": 25565,
+      "players_online": 241,
+      "max_players": 500,
+      "version": "1.20+",
+      "description": "Twenture Network server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:19.013Z"
+    },
+    {
+      "name": "ManaCube",
+      "ip": "hub.manacube.com",
+      "port": 25565,
+      "players_online": 2854,
+      "max_players": 3500,
+      "version": "1.20+",
+      "description": "ManaCube server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:19.020Z"
+    },
+    {
+      "name": "ConcordMC",
+      "ip": "play.concordmc.net",
+      "port": 25565,
+      "players_online": 340,
+      "max_players": 150,
+      "version": "1.20+",
+      "description": "ConcordMC server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:19.022Z"
+    },
+    {
+      "name": "SnailCraft",
+      "ip": "craft.snailcraftmc.com",
+      "port": 25565,
+      "players_online": 140,
+      "max_players": 500,
+      "version": "1.20+",
+      "description": "SnailCraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:19.026Z"
+    },
+    {
+      "name": "TalonMC",
+      "ip": "org.talonmc.net",
+      "port": 25565,
+      "players_online": 1779,
+      "max_players": 2025,
+      "version": "1.20+",
+      "description": "TalonMC server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:19.028Z"
+    },
+    {
+      "name": "RainyDay",
+      "ip": "ms.rainyday.gg",
+      "port": 25565,
+      "players_online": 288,
+      "max_players": 300,
+      "version": "1.20+",
+      "description": "RainyDay server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:19.062Z"
+    },
+    {
+      "name": "LifeSteal SMP",
+      "ip": "ms.lifestealsmp.com",
+      "port": 25565,
+      "players_online": 497,
+      "max_players": 500,
+      "version": "1.20+",
+      "description": "LifeSteal SMP server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "minecraft-server.net",
+      "scraped_at": "2026-04-11T17:48:19.092Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "massivecraft.com",
+      "port": 25565,
+      "players_online": 6,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:01.839Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "mc.myftb.de",
+      "port": 25565,
+      "players_online": 12,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:01.869Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "play.apocgaming.org",
+      "port": 25565,
+      "players_online": 6,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:01.951Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "185.83.155.48",
+      "port": 25583,
+      "players_online": 1,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:01.951Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "mc.piratemc.com",
+      "port": 25565,
+      "players_online": 4,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:01.970Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "lycodon.com",
+      "port": 25565,
+      "players_online": 5,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.145Z"
+    },
+    {
+      "name": "CedarCraft - 1.21.11 - Join Your Community!",
+      "ip": "mc.cedarcraft.org",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "CedarCraft - 1.21.11 - Join Your Community! server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.166Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "play.bashybashy.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": "/server/QQKzDKuN/icon.png",
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.187Z"
+    },
+    {
+      "name": "Dream Playz",
+      "ip": "play.dreamplayz.com",
+      "port": 25565,
+      "players_online": 6,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Dream Playz server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.211Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "faithavenue.host",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": "/server/3RCGCGUd/icon.png",
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.275Z"
+    },
+    {
+      "name": "Kindred Vale",
+      "ip": "kindredvale.join-mc.com",
+      "port": 25578,
+      "players_online": 1,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Kindred Vale server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": "/server/VAG1chqe/icon.png",
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.296Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "tekkit.mc-complex.com",
+      "port": 25565,
+      "players_online": 30,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.317Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "oldfacs.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": "/server/1vHwsokU/icon.png",
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.339Z"
+    },
+    {
+      "name": "PlanetBrunei Reborn",
+      "ip": "139.99.39.235",
+      "port": 25571,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "PlanetBrunei Reborn server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": "/server/e0PAFgUk/icon.png",
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.339Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "hu3.org",
+      "port": 25565,
+      "players_online": 1,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": "/server/uKHwfneK/icon.png",
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:02.362Z"
+    },
+    {
+      "name": "Minecraft Server",
+      "ip": "mc.farahsoftware.co.za",
+      "port": 25565,
+      "players_online": 1,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:03.490Z"
+    },
+    {
+      "name": "Minecraft Addicts",
+      "ip": "server.minecraftaddicts.ca",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Minecraft Addicts server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": "/server/ad8v5Cch/icon.png",
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:03.565Z"
+    },
+    {
+      "name": "United Gaming Community",
+      "ip": "server.ugc-mc.net",
+      "port": 25565,
+      "players_online": 1,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "United Gaming Community server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:03.592Z"
+    },
+    {
+      "name": "Craftopia Minecraft Survival Server",
+      "ip": "craftopia.revivemod.net",
+      "port": 8176,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Craftopia Minecraft Survival Server server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": "/server/2IwCbQ5R/icon.png",
+      "source": "mineservers.com",
+      "scraped_at": "2026-04-11T17:51:03.614Z"
+    },
+    {
+      "name": "CraftMC.PL",
+      "ip": "craftmc.pl",
+      "port": 25565,
+      "players_online": 2258,
+      "max_players": 3000,
+      "version": "1.20+",
+      "description": "CraftMC.PL server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:29.690Z"
+    },
+    {
+      "name": "TheNRK: 1.7 - 1.18",
+      "ip": "play.stardix.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 1,
+      "version": "1.20+",
+      "description": "TheNRK: 1.7 - 1.18 server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:32.850Z"
+    },
+    {
+      "name": "🐉 LOSTVALE 🍀 Атмосферные сервера",
+      "ip": "play.applemc.fun",
+      "port": 19132,
+      "players_online": 22,
+      "max_players": 200,
+      "version": "1.20+",
+      "description": "🐉 LOSTVALE 🍀 Атмосферные сервера server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:36.041Z"
+    },
+    {
+      "name": "MC-Ages",
+      "ip": "lifestealsmp.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "MC-Ages server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:39.196Z"
+    },
+    {
+      "name": "RexKraft Survival",
+      "ip": "bedrockcity.aternos.me",
+      "port": 31248,
+      "players_online": 17,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "RexKraft Survival server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:42.500Z"
+    },
+    {
+      "name": "Knockturn",
+      "ip": "purpleprison.org",
+      "port": 25565,
+      "players_online": 2,
+      "max_players": 500,
+      "version": "1.20+",
+      "description": "Knockturn server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:45.653Z"
+    },
+    {
+      "name": "MC.Performium.net",
+      "ip": "mc.performium.net",
+      "port": 25565,
+      "players_online": 81,
+      "max_players": 3999,
+      "version": "1.20+",
+      "description": "MC.Performium.net server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:48.827Z"
+    },
+    {
+      "name": "Ragnamod VI | 6.1.10",
+      "ip": "page.lemoncloud.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "Ragnamod VI | 6.1.10 server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:52.009Z"
+    },
+    {
+      "name": "vanillarealms.com",
+      "ip": "vanillarealms.com",
+      "port": 25565,
+      "players_online": 82,
+      "max_players": 300,
+      "version": "1.20+",
+      "description": "vanillarealms.com server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:55.175Z"
+    },
+    {
+      "name": "Blazelands",
+      "ip": "mc.hunterra.ca",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 200,
+      "version": "1.20+",
+      "description": "Blazelands server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:51:58.335Z"
+    },
+    {
+      "name": "PLAY.ADDICTED2.RO NETWORK",
+      "ip": "play.addicted2.ro",
+      "port": 25565,
+      "players_online": 18,
+      "max_players": 150,
+      "version": "1.20+",
+      "description": "PLAY.ADDICTED2.RO NETWORK server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:04.789Z"
+    },
+    {
+      "name": "mp.catcraft.net",
+      "ip": "mp.catcraft.net",
+      "port": 25565,
+      "players_online": 179,
+      "max_players": 500,
+      "version": "1.20+",
+      "description": "mp.catcraft.net server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:07.945Z"
+    },
+    {
+      "name": "play.stellar-mc.com",
+      "ip": "mcpedl.catcraft.net",
+      "port": 19132,
+      "players_online": 2,
+      "max_players": 1000,
+      "version": "1.20+",
+      "description": "play.stellar-mc.com server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:11.097Z"
+    },
+    {
+      "name": "fun.chillsmp.org",
+      "ip": "fun.chillsmp.org",
+      "port": 25565,
+      "players_online": 133,
+      "max_players": 1000,
+      "version": "1.20+",
+      "description": "fun.chillsmp.org server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:17.437Z"
+    },
+    {
+      "name": "DadaLand 😜 - Anarchy Server",
+      "ip": "zombie-craft.se",
+      "port": 25565,
+      "players_online": 17,
+      "max_players": 100,
+      "version": "1.20+",
+      "description": "DadaLand 😜 - Anarchy Server server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:20.909Z"
+    },
+    {
+      "name": "MegaMC",
+      "ip": "minecraftzocker.net",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 500,
+      "version": "1.20+",
+      "description": "MegaMC server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:24.074Z"
+    },
+    {
+      "name": "✪ HAPPY-HG NETWORK ✪",
+      "ip": "test.geysermc.org",
+      "port": 25565,
+      "players_online": 6,
+      "max_players": 500,
+      "version": "1.20+",
+      "description": "✪ HAPPY-HG NETWORK ✪ server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:27.222Z"
+    },
+    {
+      "name": "Stardix.com",
+      "ip": "stardix.com",
+      "port": 25565,
+      "players_online": 331,
+      "max_players": 500,
+      "version": "1.20+",
+      "description": "Stardix.com server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:30.396Z"
+    },
+    {
+      "name": "Magical Resonance",
+      "ip": "lostplacemc.eu",
+      "port": 19132,
+      "players_online": 0,
+      "max_players": 50,
+      "version": "1.20+",
+      "description": "Magical Resonance server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:33.860Z"
+    },
+    {
+      "name": "Shattered SMP",
+      "ip": "dbcchampions.com",
+      "port": 25565,
+      "players_online": 0,
+      "max_players": 20,
+      "version": "1.20+",
+      "description": "Shattered SMP server",
+      "tags": [
+        "Multiplayer"
+      ],
+      "icon": null,
+      "source": "mcservers.top",
+      "scraped_at": "2026-04-11T17:52:37.009Z"
+    }
+  ]
+}

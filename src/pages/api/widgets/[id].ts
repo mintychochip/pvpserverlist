@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { createClient } from '../../../lib/supabase';
+import { supabase } from '../../../lib/supabase';
 
 export const GET: APIRoute = async ({ params, request }) => {
   const { id } = params;
@@ -15,8 +15,6 @@ export const GET: APIRoute = async ({ params, request }) => {
       headers: { 'Content-Type': 'application/json' }
     });
   }
-
-  const supabase = createClient();
 
   // Fetch server data with status
   const { data: server, error } = await supabase

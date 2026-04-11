@@ -169,9 +169,12 @@ const stripHtml = (html) => {
                   <!-- Server Icon -->
                   {post.server && (
                     <a href={`/servers/${post.server_id}`} class="flex-shrink-0">
-                      <div class="w-14 h-14 bg-[#1a1a25] rounded-lg flex items-center justify-center overflow-hidden">
+                      <div class="w-14 h-14 bg-[#1a1a25] rounded-lg flex items-center justify-center overflow-hidden relative">
                         {post.server.icon ? (
-                          <img src={post.server.icon} alt="" class="w-full h-full object-cover" />
+                          <>
+                            <img src={post.server.icon} alt="" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                            <span class="text-[#00f5d4] text-xl hidden absolute inset-0 items-center justify-center">⛏</span>
+                          </>
                         ) : (
                           <span class="text-[#00f5d4] text-xl">⛏</span>
                         )}

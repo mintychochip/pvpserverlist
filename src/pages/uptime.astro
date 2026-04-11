@@ -216,11 +216,17 @@ function getRankIcon(index: number): string {
               <div class="col-span-5 md:col-span-4">
                 <a href={`/servers/${server.id}`} class="flex items-center gap-3 group/link">
                   {server.icon_url ? (
-                    <img
-                      src={server.icon_url}
-                      alt={server.name}
-                      class="w-10 h-10 rounded-lg bg-[#0a0a0f] object-cover"
-                    />
+                    <>
+                      <img
+                        src={server.icon_url}
+                        alt={server.name}
+                        class="w-10 h-10 rounded-lg bg-[#0a0a0f] object-cover"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                      />
+                      <div class="w-10 h-10 rounded-lg bg-[#0a0a0f] items-center justify-center text-lg hidden">
+                        ⛏️
+                      </div>
+                    </>
                   ) : (
                     <div class="w-10 h-10 rounded-lg bg-[#0a0a0f] flex items-center justify-center text-lg">
                       ⛏️
@@ -496,7 +502,8 @@ function getRankIcon(index: number): string {
                 src="${server.icon_url}"
                 alt="${server.name}"
                 class="w-10 h-10 rounded-lg bg-[#0a0a0f] object-cover"
-              />
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+              /><div class="w-10 h-10 rounded-lg bg-[#0a0a0f] items-center justify-center text-lg hidden">⛏️</div>
             ` : `
               <div class="w-10 h-10 rounded-lg bg-[#0a0a0f] flex items-center justify-center text-lg">
                 ⛏️

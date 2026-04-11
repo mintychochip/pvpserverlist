@@ -276,7 +276,7 @@ const gameCategories = [
       <a href="/servers/${server.id}" class="block p-4 transition-all group gp-card-interactive" 
          style="background: rgba(30,41,59,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
         <div class="flex items-start gap-3 mb-3">
-          ${server.icon ? `<img src="${server.icon}" alt="" class="w-12 h-12 rounded-lg" style="background-color: var(--bg-tertiary);" loading="lazy" />` : `<div class="w-12 h-12 rounded-lg flex items-center justify-center" style="background-color: var(--bg-tertiary);"><span style="color: var(--accent-primary);" class="text-xl">⛏</span></div>`}
+          ${server.icon ? `<img src="${server.icon}" alt="" class="w-12 h-12 rounded-lg" style="background-color: var(--bg-tertiary);" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="w-12 h-12 rounded-lg items-center justify-center hidden" style="background-color: var(--bg-tertiary);"><span style="color: var(--accent-primary);" class="text-xl">⛏</span></div>` : `<div class="w-12 h-12 rounded-lg flex items-center justify-center" style="background-color: var(--bg-tertiary);"><span style="color: var(--accent-primary);" class="text-xl">⛏</span></div>`}
           <div class="flex-1 min-w-0">
             <h3 class="font-medium truncate text-base group-hover:text-[var(--accent-primary)] transition-colors" style="color: var(--text-primary);">${server.name}</h3>
             <p class="text-xs font-mono truncate" style="color: var(--text-tertiary);">${server.ip}:${server.port}</p>

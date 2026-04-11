@@ -126,9 +126,12 @@ const isOnline = server.status === 'online';
           <!-- Server Header -->
           <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
             <div class="flex items-center gap-4 mb-4">
-              <div class="w-16 h-16 bg-[#1a1a25] rounded-lg flex items-center justify-center overflow-hidden">
+              <div class="w-16 h-16 bg-[#1a1a25] rounded-lg flex items-center justify-center overflow-hidden relative">
                 {server.icon ? (
-                  <img src={server.icon} alt="" class="w-full h-full object-cover" />
+                  <>
+                    <img src={server.icon} alt="" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <span class="text-[#00f5d4] text-2xl hidden absolute inset-0 items-center justify-center">⛏</span>
+                  </>
                 ) : (
                   <span class="text-[#00f5d4] text-2xl">⛏</span>
                 )}
@@ -335,9 +338,12 @@ const isOnline = server.status === 'online';
                     href={`/servers/${related.id}`}
                     class="flex items-center gap-3 p-3 bg-[#0a0a0f] hover:bg-[#1a1a25] rounded-lg transition-colors"
                   >
-                    <div class="w-10 h-10 bg-[#1a1a25] rounded-lg flex items-center justify-center">
+                    <div class="w-10 h-10 bg-[#1a1a25] rounded-lg flex items-center justify-center relative">
                       {related.icon ? (
-                        <img src={related.icon} alt="" class="w-full h-full object-cover rounded-lg" />
+                        <>
+                          <img src={related.icon} alt="" class="w-full h-full object-cover rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                          <span class="text-[#00f5d4] hidden absolute inset-0 items-center justify-center">⛏</span>
+                        </>
                       ) : (
                         <span class="text-[#00f5d4]">⛏</span>
                       )}

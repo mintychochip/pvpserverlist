@@ -203,7 +203,7 @@ function updateDisplay() {
           <div class="flex items-start gap-3">
             <div class="relative w-12 h-12 bg-[#1a1a25] rounded-lg flex items-center justify-center flex-shrink-0">
               ${server.icon ? 
-                `<img src="${server.icon}" alt="" class="w-full h-full object-cover rounded-lg">` : 
+                `<img src="${server.icon}" alt="" class="w-full h-full object-cover rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="text-[#00f5d4] text-xl hidden absolute inset-0 items-center justify-center">⛏</span>` : 
                 `<span class="text-[#00f5d4] text-xl">⛏</span>`
               }
               ${server.status === 'online' ? 

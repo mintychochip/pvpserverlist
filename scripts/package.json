@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@pinecone-database/pinecone": "^5.1.1",
-    "@supabase/supabase-js": "^2.101.1",
+    "@supabase/supabase-js": "^2.103.0",
     "playwright": "^1.59.1"
   }
 }
