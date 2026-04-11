@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && cp public/_routes.json dist/_routes.json && cp public/_routes.json _routes.json && cp -r functions dist/",
+    "build": "astro build && cp public/_routes.json dist/_routes.json && cp public/_routes.json _routes.json",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run --passWithNoTests",
