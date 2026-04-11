@@ -15,13 +15,13 @@ export const GET: APIRoute = async ({ params, request, locals }) => {
   
   const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
   
-  // Access env vars from Cloudflare Pages runtime via locals
-  const env = (locals as any)?.runtime?.env || {};
-  const supabaseKey = env.SUPABASE_SERVICE_KEY;
+  // Access env vars from Cloudflare Pages runtime - same pattern as working /api/servers
+  const env = (locals as any)?.runtime?.env || (globalThis as any).process?.env || {};
+  const supabaseKey = env.SUPABASE_SERVICE_KEY || env.PUBLIC_SUPABASE_ANON_KEY;
   
   if (!supabaseKey) {
     return new Response(
-      JSON.stringify({ error: 'Server configuration error - missing SUPABASE_SERVICE_KEY' }),
+      JSON.stringify({ error: 'Server configuration error - missing key' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
