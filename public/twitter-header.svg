@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 500" fill="none">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0f1c;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#111827;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1500" height="500" fill="url(#headerGrad)"/>
+  
+  <!-- Grid pattern -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+  </pattern>
+  <rect width="1500" height="500" fill="url(#grid)" opacity="0.3"/>
+  
+  <!-- Logo -->
+  <g transform="translate(100, 220) scale(2.5)">
+    <circle cx="8" cy="8" r="4" fill="#00d9ff"/>
+    <circle cx="24" cy="4" r="4" fill="#00d9ff"/>
+    <circle cx="24" cy="20" r="4" fill="#00d9ff"/>
+    <circle cx="8" cy="16" r="4" fill="#00d9ff"/>
+    <circle cx="16" cy="12" r="5" fill="#ff006e"/>
+    <path d="M8 8L16 12M24 4L16 12M24 20L16 12M8 16L16 12" 
+          stroke="#00d9ff" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="220" y="270" font-family="Space Grotesk, Inter, sans-serif" 
+        font-size="56" font-weight="700" fill="#ffffff" letter-spacing="-1">GuildPost</text>
+  
+  <text x="220" y="310" font-family="Inter, sans-serif" 
+        font-size="24" fill="#94a3b8">Discover game servers • Minecraft, Rust & More</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="1400" cy="100" r="150" fill="rgba(0,217,255,0.05)"/>
+  <circle cx="1350" cy="400" r="100" fill="rgba(255,0,110,0.05)"/>
+</svg>

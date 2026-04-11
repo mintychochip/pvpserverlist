@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" fill="none">
+  <!-- Icon: Network nodes representing guild/community -->
+  <g transform="translate(0, 4)">
+    <!-- Outer nodes -->
+    <circle cx="8" cy="8" r="4" fill="#00d9ff"/>
+    <circle cx="24" cy="4" r="4" fill="#00d9ff"/>
+    <circle cx="24" cy="20" r="4" fill="#00d9ff"/>
+    <circle cx="8" cy="16" r="4" fill="#00d9ff"/>
+    <!-- Center node -->
+    <circle cx="16" cy="12" r="5" fill="#ff006e"/>
+    <!-- Connections -->
+    <path d="M8 8L16 12M24 4L16 12M24 20L16 12M8 16L16 12" 
+          stroke="#00d9ff" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  </g>
+  
+  <!-- Wordmark: GuildPost -->
+  <text x="40" y="28" font-family="Space Grotesk, Inter, sans-serif" font-size="22" 
+        font-weight="700" fill="#ffffff" letter-spacing="-0.5">GuildPost</text>
+</svg>

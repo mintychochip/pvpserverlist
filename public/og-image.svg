@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="ogGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0f1c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="glowCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00d9ff;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#8338ec;stop-opacity:0.1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#ogGradient)"/>
+  
+  <!-- Glow effects -->
+  <circle cx="200" cy="200" r="300" fill="url(#glowCyan)" opacity="0.5"/>
+  <circle cx="1000" cy="500" r="250" fill="rgba(255,0,110,0.1)"/>
+  
+  <!-- Logo Icon -->
+  <g transform="translate(540, 180) scale(3)">
+    <circle cx="8" cy="8" r="4" fill="#00d9ff"/>
+    <circle cx="24" cy="4" r="4" fill="#00d9ff"/>
+    <circle cx="24" cy="20" r="4" fill="#00d9ff"/>
+    <circle cx="8" cy="16" r="4" fill="#00d9ff"/>
+    <circle cx="16" cy="12" r="5" fill="#ff006e"/>
+    <path d="M8 8L16 12M24 4L16 12M24 20L16 12M8 16L16 12" 
+          stroke="#00d9ff" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="600" y="420" text-anchor="middle" font-family="Space Grotesk, Inter, sans-serif" 
+        font-size="72" font-weight="700" fill="#ffffff" letter-spacing="-2">GuildPost</text>
+  
+  <text x="600" y="480" text-anchor="middle" font-family="Inter, sans-serif" 
+        font-size="28" fill="#94a3b8">Find your next multiplayer home</text>
+  
+  <!-- URL -->
+  <text x="600" y="570" text-anchor="middle" font-family="Inter, sans-serif" 
+        font-size="20" fill="#00d9ff">guildpost.tech</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+  <!-- GuildPost Logo Specifications -->
+  
+  <!-- Background -->
+  <rect width="400" height="200" fill="#0d0d12"/>
+  
+  <!-- Logo Icon: Connected Nodes forming abstract G -->
+  <g transform="translate(60, 100)">
+    <!-- Top node -->
+    <circle cx="0" cy="-30" r="8" fill="#6366f1"/>
+    
+    <!-- Left node -->
+    <circle cx="-25" cy="15" r="8" fill="#6366f1"/>
+    
+    <!-- Right node -->
+    <circle cx="25" cy="15" r="8" fill="#6366f1"/>
+    
+    <!-- Connecting lines -->
+    <line x1="0" y1="-30" x2="-25" y2="15" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+    <line x1="0" y1="-30" x2="25" y2="15" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+    <line x1="-25" y1="15" x2="25" y2="15" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- Center accent -->
+    <circle cx="0" cy="0" r="4" fill="#ec4899"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="140" y="115" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="600" fill="#f4f4f5">
+    GuildPost
+  </text>
+  
+  <!-- Tagline -->
+  <text x="140" y="140" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="400" fill="#a1a1aa">
+    Find your next multiplayer home
+  </text>
+  
+  <!-- Brand specs label -->
+  <text x="20" y="180" font-family="system-ui, -apple-system, sans-serif" font-size="10" fill="#52525b">
+    Primary Logo • Dark Background • 400×200px
+  </text>
+</svg>

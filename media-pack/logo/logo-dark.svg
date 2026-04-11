@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+  <!-- GuildPost Logo - Dark Background -->
+  <rect width="400" height="120" fill="#0d0d12"/>
+  
+  <!-- Icon: Connected Nodes -->
+  <g transform="translate(60, 60)">
+    <circle cx="0" cy="-25" r="10" fill="#6366f1"/>
+    <circle cx="-22" cy="12" r="10" fill="#6366f1"/>
+    <circle cx="22" cy="12" r="10" fill="#6366f1"/>
+    <line x1="0" y1="-25" x2="-22" y2="12" stroke="#6366f1" stroke-width="4" stroke-linecap="round"/>
+    <line x1="0" y1="-25" x2="22" y2="12" stroke="#6366f1" stroke-width="4" stroke-linecap="round"/>
+    <line x1="-22" y1="12" x2="22" y2="12" stroke="#6366f1" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="5" fill="#ec4899"/>
+  </g>
+  
+  <!-- Wordmark -->
+  <text x="120" y="75" font-family="system-ui, -apple-system, sans-serif" font-size="42" font-weight="600" fill="#f4f4f5">GuildPost</text>
+</svg>

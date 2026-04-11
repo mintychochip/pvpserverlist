@@ -6,7 +6,6 @@ name = "guildpost"
 pages_build_output_dir = "dist"
 compatibility_date = "2024-04-06"
 compatibility_flags = ["nodejs_compat"]
-account_id = "74c3a136217326e88564790be3373469"
 
 [vars]
 SUPABASE_URL = "https://wpxutsdbiampnxfgkjwq.supabase.co"

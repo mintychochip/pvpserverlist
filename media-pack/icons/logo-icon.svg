@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- GuildPost Icon Only -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#151519"/>
+      <stop offset="100%" stop-color="#0d0d12"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <g transform="translate(256, 256)">
+    <circle cx="0" cy="-60" r="16" fill="#6366f1"/>
+    <circle cx="-52" cy="30" r="16" fill="#6366f1"/>
+    <circle cx="52" cy="30" r="16" fill="#6366f1"/>
+    <line x1="0" y1="-60" x2="-52" y2="30" stroke="#6366f1" stroke-width="6" stroke-linecap="round"/>
+    <line x1="0" y1="-60" x2="52" y2="30" stroke="#6366f1" stroke-width="6" stroke-linecap="round"/>
+    <line x1="-52" y1="30" x2="52" y2="30" stroke="#6366f1" stroke-width="6" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="8" fill="#ec4899"/>
+    <circle cx="0" cy="0" r="4" fill="#f4f4f5"/>
+  </g>
+</svg>
