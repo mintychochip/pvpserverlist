@@ -9,12 +9,24 @@ const corsHeaders = {
 };
 
 export const GET: APIRoute = async ({ locals }) => {
-  const env = locals?.runtime?.env || {};
-  const supabaseUrl = env.PUBLIC_SUPABASE_URL || env.SUPABASE_URL;
-  const supabaseKey = env.PUBLIC_SUPABASE_ANON_KEY || env.SUPABASE_SERVICE_KEY;
+  // Access env vars from Cloudflare Pages runtime
+  const env = (locals as any)?.runtime?.env || (globalThis as any).process?.env || {};
+  const supabaseUrl = env.SUPABASE_URL || env.PUBLIC_SUPABASE_URL;
+  const supabaseKey = env.SUPABASE_SERVICE_KEY || env.PUBLIC_SUPABASE_ANON_KEY;
+
+  // Debug: Log what's available (remove in production)
+  console.log('Env check:', {
+    hasUrl: !!supabaseUrl,
+    hasKey: !!supabaseKey,
+    envKeys: Object.keys(env).filter(k => !k.includes('SECRET') && !k.includes('KEY'))
+  });
 
   if (!supabaseUrl || !supabaseKey) {
-    return new Response(JSON.stringify({ error: 'Supabase not configured' }), {
+    return new Response(JSON.stringify({ 
+      error: 'Supabase not configured',
+      hasUrl: !!supabaseUrl,
+      hasKey: !!supabaseKey
+    }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });
