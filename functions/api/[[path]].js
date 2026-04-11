@@ -34,12 +34,26 @@ export async function onRequest(context) {
   }
 
   try {
+    // Debug endpoint
+    if (path === '/debug' && request.method === 'GET') {
+      return new Response(JSON.stringify({
+        path: path,
+        hasSupabaseUrl: !!env.SUPABASE_URL,
+        hasSupabaseKey: !!env.SUPABASE_SERVICE_KEY,
+        envKeys: Object.keys(env).filter(k => !k.includes('SECRET') && !k.includes('KEY'))
+      }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     // Check required env vars
     if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_KEY) {
       console.error('[API] Missing required env vars: SUPABASE_URL or SUPABASE_SERVICE_KEY');
       return new Response(JSON.stringify({ 
         error: 'Server configuration error',
-        detail: 'Missing required environment variables'
+        detail: 'Missing required environment variables',
+        hasUrl: !!env.SUPABASE_URL,
+        hasKey: !!env.SUPABASE_SERVICE_KEY
       }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
