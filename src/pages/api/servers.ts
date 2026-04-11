@@ -33,25 +33,45 @@ export const GET: APIRoute = async ({ locals }) => {
   }
 
   try {
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/servers?select=*&limit=10000`,
-      {
-        headers: {
-          'apikey': supabaseKey,
-          'Authorization': `Bearer ${supabaseKey}`
+    // Fetch all servers using pagination (Supabase has 1000 row limit per request)
+    const allServers: any[] = [];
+    let offset = 0;
+    const batchSize = 1000;
+    let hasMore = true;
+    
+    while (hasMore && offset < 50000) { // Safety cap at 50k
+      const response = await fetch(
+        `${supabaseUrl}/rest/v1/servers?select=*&limit=${batchSize}&offset=${offset}`,
+        {
+          headers: {
+            'apikey': supabaseKey,
+            'Authorization': `Bearer ${supabaseKey}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Supabase error: ${response.status}`);
+      }
+
+      const batch = await response.json();
+      
+      if (batch.length === 0) {
+        hasMore = false;
+      } else {
+        allServers.push(...batch);
+        offset += batchSize;
+        
+        // If we got less than batch size, we're done
+        if (batch.length < batchSize) {
+          hasMore = false;
         }
       }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Supabase error: ${response.status}`);
     }
 
-    const servers = await response.json();
-
     return new Response(JSON.stringify({
-      servers,
-      count: servers.length
+      servers: allServers,
+      count: allServers.length
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     });

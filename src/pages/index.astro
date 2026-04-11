@@ -7,6 +7,36 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import AnimatedStat from '../components/AnimatedStat.astro';
 import GemmaWizard from '../components/GemmaWizard.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
+
+// Fetch real server count from Supabase
+const supabaseUrl = import.meta.env.SUPABASE_URL || import.meta.env.PUBLIC_SUPABASE_URL || 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+const supabaseKey = import.meta.env.SUPABASE_SERVICE_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+let serverCount = 9911; // Fallback to known count
+
+try {
+  if (supabaseUrl && supabaseKey) {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/servers?select=count`,
+      {
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`
+        }
+      }
+    );
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data[0] && typeof data[0].count === 'number') {
+        serverCount = data[0].count;
+      }
+    }
+  }
+} catch (e) {
+  console.error('Failed to fetch server count:', e);
+}
 
 // Game categories data
 const gameCategories = [
@@ -14,7 +44,7 @@ const gameCategories = [
     id: "minecraft",
     name: "Minecraft",
     description: "Survival, SMP, Skyblock, Factions & more",
-    serverCount: 1064,
+    serverCount: serverCount,
     href: "/minecraft",
     featured: true,
   },
@@ -43,6 +73,43 @@ const gameCategories = [
   url="https://guildpost.tech"
   keywords="minecraft servers, minecraft multiplayer, game servers, survival servers, skyblock, factions, smp, rust servers, cs2 servers, server discovery, multiplayer games"
 >
+  <!-- Schema.org Structured Data for Homepage -->
+  <SchemaOrg 
+    type="WebSite" 
+    data={{
+      name: "GuildPost - Discover Game Servers",
+      description: "The modern directory for game servers. From Minecraft to Rust, discover communities that match your play style.",
+      url: "https://guildpost.tech",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: "https://guildpost.tech/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }} 
+  />
+  <SchemaOrg 
+    type="Organization" 
+    data={{
+      name: "GuildPost",
+      url: "https://guildpost.tech",
+      logo: "https://guildpost.tech/logo-icon-512.png",
+      sameAs: [
+        "https://discord.gg/guildpost"
+      ],
+      description: "Game server discovery platform for Minecraft, Rust, CS2 and more multiplayer games."
+    }} 
+  />
+  <SchemaOrg 
+    type="ItemList" 
+    data={{
+      items: gameCategories.map(game => ({
+        name: game.name,
+        url: `https://guildpost.tech${game.href}`,
+        playersOnline: game.serverCount
+      }))
+    }} 
+  />
+
   <div class="min-h-screen" style="background-color: var(--bg-primary);">
     <Header />
 
@@ -59,7 +126,7 @@ const gameCategories = [
         <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 border" 
              style="background: rgba(0,217,255,0.1); border-color: rgba(0,217,255,0.3); color: var(--accent-primary);">
           <span class="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-pulse"></span>
-          <span class="text-sm font-medium">1,064+ Servers Available</span>
+          <span class="text-sm font-medium">{serverCount.toLocaleString()}+ Servers Available</span>
         </div>
 
         <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
@@ -75,7 +142,7 @@ const gameCategories = [
           class="flex justify-center gap-8 md:gap-12 mb-10 py-5 px-8 max-w-xl mx-auto"
           style="background: rgba(30,41,59,0.5); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); backdrop-filter: blur(10px);"
         >
-          <AnimatedStat value={1064} label="Servers" color="var(--accent-primary)" />
+          <AnimatedStat value={serverCount} label="Servers" color="var(--accent-primary)" />
           <AnimatedStat value={50} suffix="+" label="Game Modes" color="var(--accent-secondary)" />
           <AnimatedStat value={0} label="Fake Reviews" color="var(--accent-tertiary)" />
         </div>
@@ -276,7 +343,7 @@ const gameCategories = [
       <a href="/servers/${server.id}" class="block p-4 transition-all group gp-card-interactive" 
          style="background: rgba(30,41,59,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
         <div class="flex items-start gap-3 mb-3">
-          ${server.icon ? `<img src="${server.icon}" alt="" class="w-12 h-12 rounded-lg" style="background-color: var(--bg-tertiary);" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="w-12 h-12 rounded-lg items-center justify-center hidden" style="background-color: var(--bg-tertiary);"><span style="color: var(--accent-primary);" class="text-xl">⛏</span></div>` : `<div class="w-12 h-12 rounded-lg flex items-center justify-center" style="background-color: var(--bg-tertiary);"><span style="color: var(--accent-primary);" class="text-xl">⛏</span></div>`}
+          ${server.icon ? `<img src="${server.icon}" alt="${server.name} Minecraft server icon logo" class="w-12 h-12 rounded-lg" style="background-color: var(--bg-tertiary);" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="w-12 h-12 rounded-lg items-center justify-center hidden" style="background-color: var(--bg-tertiary);"><span style="color: var(--accent-primary);" class="text-xl">⛏</span></div>` : `<div class="w-12 h-12 rounded-lg flex items-center justify-center" style="background-color: var(--bg-tertiary);"><span style="color: var(--accent-primary);" class="text-xl">⛏</span></div>`}
           <div class="flex-1 min-w-0">
             <h3 class="font-medium truncate text-base group-hover:text-[var(--accent-primary)] transition-colors" style="color: var(--text-primary);">${server.name}</h3>
             <p class="text-xs font-mono truncate" style="color: var(--text-tertiary);">${server.ip}:${server.port}</p>
