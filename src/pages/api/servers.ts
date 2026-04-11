@@ -34,7 +34,7 @@ export const GET: APIRoute = async ({ locals }) => {
 
   try {
     const response = await fetch(
-      `${supabaseUrl}/rest/v1/servers?select=*&limit=1000`,
+      `${supabaseUrl}/rest/v1/servers?select=*&limit=10000`,
       {
         headers: {
           'apikey': supabaseKey,
