@@ -137,8 +137,116 @@ interface VoteResponse {
   };
 }
 
-// Votifier support temporarily disabled - needs Deno-compatible RSA implementation
-// TODO: Implement Votifier using Web Crypto API or Deno std libraries
+// Votifier RSA Encryption using Web Crypto API
+// Implements Votifier 2 protocol for Minecraft server voting
+
+interface VotifierPayload {
+  serviceName: string;
+  username: string;
+  address: string;
+  timestamp: number;
+}
+
+// RSA public key PEM to CryptoKey
+async function importRSAPublicKey(pem: string): Promise<CryptoKey> {
+  // Remove PEM headers and whitespace
+  const base64 = pem
+    .replace('-----BEGIN PUBLIC KEY-----', '')
+    .replace('-----END PUBLIC KEY-----', '')
+    .replace(/\s/g, '');
+  
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  
+  return await crypto.subtle.importKey(
+    'spki',
+    bytes,
+    { name: 'RSA-OAEP', hash: 'SHA-256' },
+    false,
+    ['encrypt']
+  );
+}
+
+// Send Votifier vote to Minecraft server
+async function sendVotifierVote(
+  serverIp: string,
+  serverPort: number,
+  publicKeyPem: string,
+  username: string,
+  serviceName: string = 'GuildPost'
+): Promise<boolean> {
+  try {
+    // Import the RSA public key
+    const publicKey = await importRSAPublicKey(publicKeyPem);
+    
+    // Build Votifier 2 payload
+    const payload: VotifierPayload = {
+      serviceName,
+      username: username.toLowerCase(),
+      address: serverIp,
+      timestamp: Date.now()
+    };
+    
+    // Serialize payload to JSON
+    const payloadJson = JSON.stringify(payload);
+    const payloadBytes = new TextEncoder().encode(payloadJson);
+    
+    // Encrypt payload using RSA-OAEP
+    const encrypted = await crypto.subtle.encrypt(
+      { name: 'RSA-OAEP' },
+      publicKey,
+      payloadBytes
+    );
+    
+    // Create Votifier 2 packet:
+    // [2 bytes: block ID 0x733A] [2 bytes: version 0x0002] [4 bytes: payload length] [encrypted payload]
+    const blockId = new Uint8Array([0x73, 0x3A]); // "s:"
+    const version = new Uint8Array([0x00, 0x02]); // Version 2
+    const lengthBytes = new Uint8Array(4);
+    const view = new DataView(lengthBytes.buffer);
+    view.setUint32(0, encrypted.byteLength, false); // Big-endian
+    
+    // Combine packet parts
+    const encryptedBytes = new Uint8Array(encrypted);
+    const packet = new Uint8Array(2 + 2 + 4 + encryptedBytes.length);
+    packet.set(blockId, 0);
+    packet.set(version, 2);
+    packet.set(lengthBytes, 4);
+    packet.set(encryptedBytes, 8);
+    
+    // Connect to server and send
+    const connection = await Deno.connect({
+      hostname: serverIp,
+      port: serverPort
+    });
+    
+    try {
+      // Send the packet
+      await connection.write(packet);
+      
+      // Wait for acknowledgment (optional, with timeout)
+      const buffer = new Uint8Array(256);
+      connection.setReadTimeout?.(5000); // 5 second timeout if available
+      
+      const bytesRead = await connection.read(buffer);
+      if (bytesRead) {
+        const response = new TextDecoder().decode(buffer.subarray(0, bytesRead));
+        console.log('Votifier response:', response);
+        return response.includes('OK') || response.includes('success');
+      }
+      
+      return true; // Assume success if no error
+    } finally {
+      connection.close();
+    }
+  } catch (err) {
+    console.error('Votifier send failed:', err);
+    return false;
+  }
+}
 
 export async function handleVote(request: Request): Promise<Response> {
   // CORS headers
@@ -355,9 +463,32 @@ export async function handleVote(request: Request): Promise<Response> {
       }
     }
     
-    // Votifier temporarily disabled - needs Deno-compatible implementation
-    // TODO: Re-enable when RSA encryption works in Deno
-    const votifierSent = false;
+    // Send Votifier vote if server has votifier configured
+    let votifierSent = false;
+    if (server.votifier_key && server.ip) {
+      // Extract port from server.ip if it includes port, otherwise use default 8192
+      let votifierPort = 8192;
+      let serverAddress = server.ip;
+      if (server.ip.includes(':')) {
+        const [addr, portStr] = server.ip.split(':');
+        serverAddress = addr;
+        votifierPort = parseInt(portStr, 10) || 8192;
+      }
+      
+      votifierSent = await sendVotifierVote(
+        serverAddress,
+        votifierPort,
+        server.votifier_key,
+        username,
+        'GuildPost'
+      );
+      
+      if (votifierSent) {
+        console.log(`Votifier vote sent to ${server.name} for ${username}`);
+      } else {
+        console.warn(`Votifier vote failed for ${server.name}`);
+      }
+    }
     
     return new Response(
       JSON.stringify({
