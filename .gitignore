@@ -19,3 +19,13 @@ supabase/migrations/
 
 # Cloudflare wrangler cache
 .wrangler/cache/
+
+# Temporary debug scripts (one-off audit/debug tools)
+scripts/analyze-*.mjs
+scripts/audit-*.mjs
+scripts/check-*.mjs
+scripts/delete-*.mjs
+scripts/detailed-*.mjs
+scripts/final-*.mjs
+scripts/fix-*.mjs
+scripts/test-*.mjs
