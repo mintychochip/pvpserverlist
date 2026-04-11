@@ -3,6 +3,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
 
 
 
@@ -16,10 +17,33 @@ const VALID_CATEGORIES = [
 
 <Layout 
   title="Minecraft Servers - Find PvP, Survival, Skyblock & More | GuildPost"
-  description="Browse 2,000+ Minecraft servers on GuildPost. Find PvP, Survival, Skyblock, Factions, SMP, Minigames & more. Live player counts, voting, and detailed server info."
+  description="Browse 1,000+ Minecraft servers on GuildPost. Find PvP, Survival, Skyblock, Factions, SMP, Minigames & more. Live player counts, voting, and detailed server info. Updated hourly."
   url="https://guildpost.tech/minecraft"
   keywords="minecraft servers, minecraft server list, pvp servers, survival servers, skyblock, factions, smp, minecraft multiplayer, best minecraft servers"
 >
+  <!-- Schema.org for VideoGame (Minecraft) and ItemList -->
+  <SchemaOrg 
+    type="VideoGame" 
+    data={{
+      name: "Minecraft",
+      description: "A sandbox video game developed by Mojang Studios. Build, explore, and survive in infinite worlds.",
+      genres: ["Sandbox", "Survival", "Adventure", "Multiplayer"],
+      platforms: ["PC", "Mac", "Linux", "Xbox", "PlayStation", "Nintendo Switch", "Mobile"],
+      gamePlatform: ["Java Edition", "Bedrock Edition"]
+    }} 
+  />
+  <SchemaOrg 
+    type="ItemList" 
+    data={{
+      name: "Minecraft Servers",
+      description: "Browse popular Minecraft multiplayer servers",
+      items: VALID_CATEGORIES.slice(0, 6).map((cat, i) => ({
+        name: `${cat} Minecraft Servers`,
+        url: `https://guildpost.tech/category/${cat.toLowerCase()}`
+      }))
+    }} 
+  />
+
   <div class="min-h-screen" style="background-color: var(--bg-primary);">
     <Header />
     

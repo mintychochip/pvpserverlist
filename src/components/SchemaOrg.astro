@@ -1,0 +1,147 @@
+---
+// Schema.org Structured Data Component
+// Supports multiple schema types for rich snippets
+
+interface Props {
+  type: 'WebSite' | 'WebPage' | 'GameServer' | 'VideoGame' | 'Organization' | 'BreadcrumbList' | 'FAQPage' | 'ItemList';
+  data: Record<string, any>;
+}
+
+const { type, data } = Astro.props;
+
+// Base context
+const baseSchema = {
+  "@context": "https://schema.org",
+  "@type": type,
+  ...data
+};
+
+// Type-specific schema generators
+function generateSchema(type: string, data: any) {
+  switch (type) {
+    case 'GameServer':
+      return {
+        "@context": "https://schema.org",
+        "@type": "GameServer",
+        "name": data.name,
+        "description": data.description,
+        "url": data.url,
+        "game": {
+          "@type": "VideoGame",
+          "name": data.gameName || "Minecraft"
+        },
+        "playerCount": {
+          "@type": "QuantitativeValue",
+          "value": data.playersOnline || 0,
+          "maxValue": data.maxPlayers || 0
+        },
+        "serverStatus": data.status === 'online' ? "Online" : "Offline",
+        "image": data.image,
+        "aggregateRating": data.rating ? {
+          "@type": "AggregateRating",
+          "ratingValue": data.rating.value,
+          "reviewCount": data.rating.count,
+          "bestRating": 5,
+          "worstRating": 1
+        } : undefined,
+        "provider": {
+          "@type": "Organization",
+          "name": data.owner || "GuildPost"
+        }
+      };
+
+    case 'VideoGame':
+      return {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": data.name || "Minecraft",
+        "description": data.description,
+        "genre": data.genres || ["Sandbox", "Survival", "Multiplayer"],
+        "gamePlatform": data.platforms || ["PC", "Mac", "Linux", "Console", "Mobile"],
+        "applicationCategory": "Game",
+        "operatingSystem": ["Windows", "macOS", "Linux"],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
+        }
+      };
+
+    case 'BreadcrumbList':
+      return {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": data.items.map((item: any, index: number) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "name": item.name,
+          "item": item.url
+        }))
+      };
+
+    case 'ItemList':
+      return {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": data.items.map((item: any, index: number) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "GameServer",
+            "name": item.name,
+            "url": item.url,
+            "game": {
+              "@type": "VideoGame",
+              "name": "Minecraft"
+            },
+            "playerCount": {
+              "@type": "QuantitativeValue",
+              "value": item.playersOnline || 0
+            }
+          }
+        }))
+      };
+
+    case 'FAQPage':
+      return {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": data.questions.map((q: any) => ({
+          "@type": "Question",
+          "name": q.question,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": q.answer
+          }
+        }))
+      };
+
+    default:
+      return baseSchema;
+  }
+}
+
+const schema = generateSchema(type, data);
+
+// Clean undefined values
+function cleanUndefined(obj: any): any {
+  if (Array.isArray(obj)) {
+    return obj.map(cleanUndefined).filter(v => v !== undefined);
+  }
+  if (obj && typeof obj === 'object') {
+    const cleaned: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value !== undefined) {
+        cleaned[key] = cleanUndefined(value);
+      }
+    }
+    return cleaned;
+  }
+  return obj;
+}
+
+const cleanSchema = cleanUndefined(schema);
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(cleanSchema)} />

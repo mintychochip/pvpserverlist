@@ -4,6 +4,8 @@ import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Reviews from '../../components/Reviews.astro';
 import MarkdownRenderer from '../../components/MarkdownRenderer.astro';
+import SchemaOrg from '../../components/SchemaOrg.astro';
+import RelatedServers from '../../components/RelatedServers.astro';
 
 // Server-side render this page (don't pre-generate at build time)
 export const prerender = false;
@@ -96,10 +98,43 @@ const isOnline = server.status === 'online';
 ---
 
 <Layout 
-  title={`${server.name} | GuildPost`}
-  description={server.description || `Join ${server.name} Minecraft server. ${server.players_online || 0} players online, ${server.vote_count || 0} votes. View server details, vote, and connect.`}
+  title={`${server.name} Minecraft Server - IP, Stats & Reviews | GuildPost`}
+  description={server.description 
+    ? `${server.description.substring(0, 120)}... Join ${server.name} at ${server.ip}:${server.port}. ${server.players_online || 0} players online, ${server.vote_count || 0} votes.`
+    : `Join ${server.name} Minecraft server at ${server.ip}:${server.port}. ${server.players_online || 0}/${server.max_players || '?'} players online. Live stats, reviews, and voting. Find your next multiplayer home.`}
   url={`https://guildpost.tech/servers/${id}`}
+  keywords={`${server.name}, minecraft server, ${(server.tags || []).join(', ')}, ${server.ip}, multiplayer, ${server.status === 'online' ? 'online' : 'offline'}`}
 >
+  <!-- Schema.org Structured Data for GameServer -->
+  <SchemaOrg 
+    type="GameServer" 
+    data={{
+      name: server.name,
+      description: server.description || `Minecraft server ${server.name}`,
+      url: `https://guildpost.tech/servers/${id}`,
+      gameName: "Minecraft",
+      playersOnline: server.players_online || 0,
+      maxPlayers: server.max_players || 0,
+      status: server.status || 'offline',
+      image: server.icon || server.banner || 'https://guildpost.tech/logo-icon-512.png',
+      rating: server.rating ? {
+        value: server.rating,
+        count: server.review_count || reviews.length || 0
+      } : undefined,
+      owner: server.owner_name || undefined
+    }} 
+  />
+  <SchemaOrg 
+    type="BreadcrumbList" 
+    data={{
+      items: [
+        { name: "Home", url: "https://guildpost.tech" },
+        { name: "Minecraft", url: "https://guildpost.tech/minecraft" },
+        { name: server.name, url: `https://guildpost.tech/servers/${id}` }
+      ]
+    }} 
+  />
+
   <div class="min-h-screen bg-[#0a0a0f]">
     <Header />
     
@@ -116,7 +151,12 @@ const isOnline = server.status === 'online';
       <!-- Banner -->
       {server.banner && (
         <div class="mb-6 rounded-lg overflow-hidden border border-[#2a2a3a]">
-          <img src={server.banner} alt={`${server.name} banner`} class="w-full h-48 md:h-64 object-cover" />
+          <img 
+            src={server.banner} 
+            alt={`${server.name} Minecraft server banner - ${server.tags?.slice(0, 3).join(', ')} game server`}
+            class="w-full h-48 md:h-64 object-cover" 
+            loading="eager"
+          />
         </div>
       )}
       
@@ -129,11 +169,17 @@ const isOnline = server.status === 'online';
               <div class="w-16 h-16 bg-[#1a1a25] rounded-lg flex items-center justify-center overflow-hidden relative">
                 {server.icon ? (
                   <>
-                    <img src={server.icon} alt="" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <img 
+                      src={server.icon} 
+                      alt={`${server.name} Minecraft server icon and logo`} 
+                      class="w-full h-full object-cover" 
+                      loading="eager"
+                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" 
+                    />
                     <span class="text-[#00f5d4] text-2xl hidden absolute inset-0 items-center justify-center">⛏</span>
                   </>
                 ) : (
-                  <span class="text-[#00f5d4] text-2xl">⛏</span>
+                  <span class="text-[#00f5d4] text-2xl" aria-label="Default Minecraft server icon">⛏</span>
                 )}
               </div>
               <div class="flex-1">
@@ -328,35 +374,13 @@ const isOnline = server.status === 'online';
             </p>
           </div>
 
-          <!-- Related Servers -->
-          {relatedServers.length > 0 && (
-            <div class="p-6 bg-[#12121a] border border-[#2a2a3a] rounded-lg">
-              <h2 class="text-xl font-bold text-white mb-4">Similar Servers</h2>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {relatedServers.map(related => (
-                  <a 
-                    href={`/servers/${related.id}`}
-                    class="flex items-center gap-3 p-3 bg-[#0a0a0f] hover:bg-[#1a1a25] rounded-lg transition-colors"
-                  >
-                    <div class="w-10 h-10 bg-[#1a1a25] rounded-lg flex items-center justify-center relative">
-                      {related.icon ? (
-                        <>
-                          <img src={related.icon} alt="" class="w-full h-full object-cover rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                          <span class="text-[#00f5d4] hidden absolute inset-0 items-center justify-center">⛏</span>
-                        </>
-                      ) : (
-                        <span class="text-[#00f5d4]">⛏</span>
-                      )}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="font-bold text-white truncate">{related.name}</p>
-                      <p class="text-xs text-[#8892b0]">{related.players_online || 0} players • {related.vote_count || 0} votes</p>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
+          <!-- Related Servers with Schema.org -->
+          <RelatedServers 
+            currentServerId={server.id}
+            tags={server.tags || []}
+            servers={relatedServers}
+            title="Similar Servers You Might Like"
+          />
         </div>
         
         <!-- Sidebar -->

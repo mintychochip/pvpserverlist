@@ -144,10 +144,16 @@ const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
     
     <title>{fullTitle}</title>
     
-    <!-- Fonts -->
+    <!-- Fonts with font-display: swap for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Preconnect to Supabase for faster API calls -->
+    <link rel="preconnect" href="https://wpxutsdbiampnxfgkjwq.supabase.co">
+    <link rel="dns-prefetch" href="https://wpxutsdbiampnxfgkjwq.supabase.co">
     
     <!-- RSS Feeds -->
     <link rel="alternate" type="application/rss+xml" title="GuildPost Blog" href="https://guildpost.tech/rss.xml" />

@@ -1,7 +1,9 @@
 ---
-// Redirect old /category/[tag] URLs to new /minecraft/[tag] URLs
+// Category page with SEO-optimized content and Schema.org structured data
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
+import SchemaOrg from '../../components/SchemaOrg.astro';
+import { categoryDescriptions } from '../../lib/seo';
 
 export async function getStaticPaths() {
   const categories = [
@@ -17,19 +19,41 @@ export async function getStaticPaths() {
 
 const { tag } = Astro.params;
 const formattedTag = tag.charAt(0).toUpperCase() + tag.slice(1);
+
+// Get SEO-optimized description from the lib or generate one
+const description = categoryDescriptions[tag.toLowerCase()] || 
+  `Find the best ${formattedTag} Minecraft servers. Browse top-rated ${tag} servers with live status, player counts, and community reviews on GuildPost.`;
 ---
 
-<meta http-equiv="refresh" content={`0;url=/minecraft/${tag}`} />
-<script define:vars={{ tag }}>
-  window.location.href = `/minecraft/${tag}`;
-</script>
-
 <Layout 
-  title={`${formattedTag} Minecraft Servers`}
-  description={`Find the best ${formattedTag} Minecraft servers. Browse top-rated ${tag} servers with live status and player counts on GuildPost.`}
-  url={`https://guildpost.tech/minecraft/${tag}`}
-  keywords={`${tag} minecraft servers, ${tag} server list, minecraft ${tag}, best ${tag} servers, minecraft multiplayer`}
+  title={`${formattedTag} Minecraft Servers - Best ${formattedTag} Server List | GuildPost`}
+  description={description}
+  url={`https://guildpost.tech/category/${tag}`}
+  keywords={`${tag} minecraft servers, ${tag} server list, minecraft ${tag}, best ${tag} servers, minecraft multiplayer, ${tag} minecraft`}
 >
+  <!-- Schema.org for BreadcrumbList -->
+  <SchemaOrg 
+    type="BreadcrumbList" 
+    data={{
+      items: [
+        { name: "Home", url: "https://guildpost.tech" },
+        { name: "Minecraft", url: "https://guildpost.tech/minecraft" },
+        { name: `${formattedTag} Servers`, url: `https://guildpost.tech/category/${tag}` }
+      ]
+    }} 
+  />
+  <SchemaOrg 
+    type="WebPage" 
+    data={{
+      name: `${formattedTag} Minecraft Servers`,
+      description: description,
+      url: `https://guildpost.tech/category/${tag}`,
+      mainEntity: {
+        "@type": "ItemList",
+        name: `${formattedTag} Minecraft Server List`
+      }
+    }} 
+  />
   <div class="min-h-screen bg-[#0a0a0f]">
     <Header />
     
@@ -156,13 +180,13 @@ const formattedTag = tag.charAt(0).toUpperCase() + tag.slice(1);
         <div class="flex items-start gap-4 mb-4">
           ${server.icon ? `
             <div class="relative">
-              <img src="${server.icon}" alt="" class="w-14 h-14 rounded bg-[#1a1a25]" loading="lazy" />
+              <img src="${server.icon}" alt="${server.name} Minecraft server icon logo" class="w-14 h-14 rounded bg-[#1a1a25]" loading="lazy" />
               <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} border-2 border-[#12121a]"></span>
             </div>
           ` : `
             <div class="relative">
               <div class="w-14 h-14 rounded bg-[#1a1a25] flex items-center justify-center">
-                <span class="text-[#00f5d4] text-2xl">⛏</span>
+                <span class="text-[#00f5d4] text-2xl" aria-label="Default Minecraft server icon">⛏</span>
               </div>
               <span class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500'} border-2 border-[#12121a]"></span>
             </div>
