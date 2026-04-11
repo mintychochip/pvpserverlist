@@ -5,18 +5,60 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
-// Check for auth token in URL
-const authToken = Astro.url.searchParams.get('token');
-const isAuthenticated = !!authToken;
-
-// Get server ID from query param if provided
+// Get auth parameters from URL (same pattern as dashboard)
+const ownerEmail = Astro.url.searchParams.get('email');
+const claimToken = Astro.url.searchParams.get('token');
 const serverId = Astro.url.searchParams.get('server') || '';
 
-// Mock data - would fetch from API in production
-const ownedServers = [
-  { id: '1', name: 'Test Server', ip: 'play.example.com', port: 25565, vote_count: 42, players_online: 15, status: 'online', description: 'A fun Minecraft server!' },
-  { id: '2', name: 'PvP Arena', ip: 'pvp.guildpost.net', port: 25565, vote_count: 128, players_online: 45, status: 'online', description: 'Best PvP experience' },
+// Check authentication (email or valid token)
+const isAuthenticated = !!ownerEmail || (!!claimToken && !!serverId);
+
+// Server-side fetch claimed servers if authenticated
+let ownedServers: any[] = [];
+let authError = null;
+
+if (isAuthenticated) {
+  const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+  const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
+  
+  try {
+    let queryUrl = `${supabaseUrl}/rest/v1/servers?claimed=eq.true&select=*`;
+    
+    if (ownerEmail) {
+      queryUrl += `&claimed_by=eq.${encodeURIComponent(ownerEmail)}`;
+    } else if (serverId && claimToken) {
+      // Single server access via token
+      queryUrl += `&id=eq.${encodeURIComponent(serverId)}`;
+    }
+    
+    queryUrl += '&order=claimed_at.desc';
+    
+    const response = await fetch(queryUrl, {
+      headers: { 
+        'apikey': supabaseKey, 
+        'Authorization': `Bearer ${supabaseKey}` 
+      }
+    });
+    
+    if (response.ok) {
+      ownedServers = await response.json();
+    } else {
+      authError = 'Failed to fetch your servers';
+    }
+  } catch (e) {
+    authError = 'Error loading your servers';
+  }
+}
+
+// Fallback demo data for non-authenticated users (so they can see the widget preview)
+const demoServers = [
+  { id: 'demo-1', name: 'Example Survival Server', ip: 'demo.guildpost.net', port: 25565, vote_count: 42, players_online: 15, max_players: 100, status: 'online', description: 'A fun Minecraft server!', claimed: true },
+  { id: 'demo-2', name: 'Example PvP Arena', ip: 'pvp.guildpost.net', port: 25565, vote_count: 128, players_online: 45, max_players: 200, status: 'online', description: 'Best PvP experience', claimed: true },
 ];
+
+// Use demo data when not authenticated or when no servers found
+const displayServers = ownedServers.length > 0 ? ownedServers : (isAuthenticated ? [] : demoServers);
+const effectiveServerId = serverId || (displayServers[0]?.id || '');
 ---
 
 <Layout 
@@ -41,32 +83,51 @@ const ownedServers = [
             <h2 class="text-lg font-bold text-white mb-4">1. Select Your Server</h2>
             
             {isAuthenticated ? (
-              <div class="space-y-3" id="server-list">
-                {ownedServers.map(server => (
-                  <label class="flex items-center gap-4 p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg cursor-pointer hover:border-[#00f5d4] transition-colors server-option" data-server-id={server.id}>
-                    <input 
-                      type="radio" 
-                      name="server" 
-                      value={server.id}
-                      class="w-5 h-5 accent-[#00f5d4]"
-                      checked={serverId === server.id || ownedServers[0].id === server.id}
-                    />
-                    <div class="flex-1">
-                      <div class="flex items-center gap-2">
-                        <span class="font-bold text-white">{server.name}</span>
-                        <span class={`px-2 py-0.5 text-xs rounded ${server.status === 'online' ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'}`}>
-                          {server.status}
-                        </span>
+              ownedServers.length > 0 ? (
+                <div class="space-y-3" id="server-list">
+                  {ownedServers.map(server => (
+                    <label class="flex items-center gap-4 p-4 bg-[#0a0a0f] border border-[#2a2a3a] rounded-lg cursor-pointer hover:border-[#00f5d4] transition-colors server-option" data-server-id={server.id}>
+                      <input 
+                        type="radio" 
+                        name="server" 
+                        value={server.id}
+                        class="w-5 h-5 accent-[#00f5d4]"
+                        checked={effectiveServerId === server.id || ownedServers[0].id === server.id}
+                      />
+                      <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                          <span class="font-bold text-white">{server.name}</span>
+                          <span class={`px-2 py-0.5 text-xs rounded ${server.status === 'online' ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'}`}>
+                            {server.status}
+                          </span>
+                          {server.verified && (
+                            <span class="px-2 py-0.5 text-xs rounded bg-[#00f5d4]/20 text-[#00f5d4]">✓ Verified</span>
+                          )}
+                        </div>
+                        <p class="text-sm text-[#8892b0]">{server.ip}{server.port && server.port !== 25565 ? `:${server.port}` : ''}</p>
                       </div>
-                      <p class="text-sm text-[#8892b0]">{server.ip}:{server.port}</p>
-                    </div>
-                    <div class="text-right text-sm">
-                      <p class="text-[#00f5d4] font-bold">{server.players_online} players</p>
-                      <p class="text-[#8892b0]">{server.vote_count} votes</p>
-                    </div>
-                  </label>
-                ))}
-              </div>
+                      <div class="text-right text-sm">
+                        <p class="text-[#00f5d4] font-bold">{server.players_online || 0} / {server.max_players || '?'} players</p>
+                        <p class="text-[#8892b0]">{server.vote_count || 0} votes</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              ) : (
+                <div class="p-8 bg-[#0a0a0f] rounded-lg text-center">
+                  <div class="w-16 h-16 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-3xl">📭</span>
+                  </div>
+                  <h3 class="text-white font-bold mb-2">No claimed servers found</h3>
+                  <p class="text-[#8892b0] mb-4">You don't have any claimed servers yet. Claim a server to create widgets for it.</p>
+                  <a 
+                    href="/claim"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-[#8b5cf6]/20 text-[#8b5cf6] font-bold rounded-lg hover:bg-[#8b5cf6]/30 transition-colors"
+                  >
+                    👑 Claim a Server
+                  </a>
+                </div>
+              )
             ) : (
               <div class="p-8 bg-[#0a0a0f] rounded-lg text-center">
                 <div class="w-16 h-16 bg-[#1a1a25] rounded-full flex items-center justify-center mx-auto mb-4">
@@ -76,17 +137,30 @@ const ownedServers = [
                   </svg>
                 </div>
                 <h3 class="text-white font-bold mb-2">Sign in to create widgets</h3>
-                <p class="text-[#8892b0] mb-4">You need to verify ownership to generate widgets for your servers.</p>
-                <a 
-                  href="/dashboard"
-                  class="inline-flex items-center gap-2 px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#00d4b8] transition-colors"
-                >
-                  Go to Dashboard
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
-                </a>
+                <p class="text-[#8892b0] mb-4">Enter the email you used to claim your server:</p>
+                <div class="space-y-3 max-w-sm mx-auto">
+                  <input 
+                    type="email" 
+                    id="login-email"
+                    placeholder="your@email.com"
+                    class="w-full px-4 py-3 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-white placeholder-[#8892b0] focus:border-[#00f5d4] focus:outline-none"
+                  />
+                  <button 
+                    id="login-btn"
+                    class="w-full px-4 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#00d4b8] transition-colors"
+                  >
+                    Access Widgets
+                  </button>
+                </div>
+                <div class="mt-4 pt-4 border-t border-[#2a2a3a]">
+                  <p class="text-[#8892b0] text-sm mb-3">Don't have a claimed server yet?</p>
+                  <a 
+                    href="/claim"
+                    class="inline-flex items-center gap-2 px-4 py-2 bg-[#8b5cf6]/20 text-[#8b5cf6] text-sm rounded-lg hover:bg-[#8b5cf6]/30 transition-colors"
+                  >
+                    👑 Claim Your Server
+                  </a>
+                </div>
               </div>
             )}
           </div>
@@ -328,15 +402,36 @@ const ownedServers = [
   </div>
 </Layout>
 
-<script define:vars={{ serverId, ownedServers }}>
+<script define:vars={{ serverId, ownedServers, displayServers, isAuthenticated }}>
   // Widget configuration state
   let config = {
-    serverId: serverId || (ownedServers[0]?.id || '1'),
+    serverId: serverId || (displayServers[0]?.id || '1'),
     size: 'small',
     theme: 'dark',
     autoRefresh: true,
     showBranding: true
   };
+  
+  // Client-side auth handler for email login
+  document.addEventListener('DOMContentLoaded', () => {
+    const loginBtn = document.getElementById('login-btn');
+    const loginEmail = document.getElementById('login-email');
+    
+    loginBtn?.addEventListener('click', () => {
+      const email = loginEmail?.value?.trim();
+      if (email && email.includes('@')) {
+        window.location.href = `/widgets?email=${encodeURIComponent(email)}`;
+      } else {
+        alert('Please enter a valid email address');
+      }
+    });
+    
+    loginEmail?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        loginBtn?.click();
+      }
+    });
+  });
 
   // Initialize
   document.addEventListener('DOMContentLoaded', () => {
@@ -416,7 +511,8 @@ const ownedServers = [
   }
 
   function updateWidget() {
-    const server = ownedServers.find(s => s.id === config.serverId) || ownedServers[0];
+    const servers = displayServers || ownedServers || [];
+    const server = servers.find(s => s.id === config.serverId) || servers[0];
     if (!server) return;
 
     const baseUrl = window.location.origin;
