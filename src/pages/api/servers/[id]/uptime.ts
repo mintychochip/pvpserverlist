@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { getRuntime } from '@astrojs/cloudflare';
 
 export const prerender = false;
 
@@ -8,17 +9,26 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-export const GET: APIRoute = async ({ params, request }) => {
+export const GET: APIRoute = async ({ params, request, context }) => {
   const { id } = params;
   const url = new URL(request.url);
   const days = parseInt(url.searchParams.get('days') || '1', 10);
   
-  const supabaseUrl = import.meta.env.SUPABASE_URL || 'https://wpxutsdbiampnxfgkjwq.supabase.co';
-  const supabaseKey = import.meta.env.SUPABASE_SERVICE_KEY;
+  const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+  
+  // Use Cloudflare runtime for env vars on Cloudflare Pages
+  let supabaseKey = '';
+  try {
+    const runtime = getRuntime(context);
+    supabaseKey = runtime?.env?.SUPABASE_SERVICE_KEY || '';
+  } catch {
+    // Fallback for local dev
+    supabaseKey = (import.meta as any).env?.SUPABASE_SERVICE_KEY || '';
+  }
   
   if (!supabaseKey) {
     return new Response(
-      JSON.stringify({ error: 'Server configuration error' }),
+      JSON.stringify({ error: 'Server configuration error - missing SUPABASE_SERVICE_KEY' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
