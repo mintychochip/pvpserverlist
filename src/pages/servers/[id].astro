@@ -220,11 +220,21 @@ const isOnline = server.status === 'online';
               <p class="text-2xl font-bold text-[#ff3864]">{server.vote_count || 0}</p>
               <p class="text-xs text-[#8892b0]">Total Votes</p>
             </div>
-            <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center">
+            <div class="p-4 bg-[#12121a] border border-[#2a2a3a] rounded-lg text-center" title={server.last_seen ? `Last seen: ${new Date(server.last_seen).toLocaleString()}` : 'Never seen online'}>
               <p class="text-2xl font-bold {isOnline ? 'text-green-500' : 'text-gray-500'}">
                 {isOnline ? '●' : '○'}
               </p>
-              <p class="text-xs text-[#8892b0]">{isOnline ? 'Online' : 'Offline'}</p>
+              <p class="text-xs text-[#8892b0]">{isOnline ? 'Online' : server.last_seen ? `Last seen ${(() => {
+                const lastSeen = new Date(server.last_seen);
+                const now = new Date();
+                const diffMs = now - lastSeen;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+                if (diffMins < 60) return `${diffMins}m ago`;
+                if (diffHours < 24) return `${diffHours}h ago`;
+                return `${diffDays}d ago`;
+              })()}` : 'Offline'}</p>
             </div>
           </div>
 
