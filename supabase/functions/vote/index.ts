@@ -1,6 +1,5 @@
-// Vote Service with Anti-Abuse
-// Features: IP tracking, proxy/VPN detection, rate limiting, fingerprinting
-// Note: Votifier support temporarily disabled (needs Deno-compatible crypto)
+// Vote Service with Anti-Abuse + Votifier Integration
+// Features: IP tracking, proxy/VPN detection, rate limiting, fingerprinting, Votifier RSA voting
 
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
