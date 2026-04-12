@@ -22,7 +22,7 @@ if (isAuthenticated) {
   const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
   
   try {
-    let queryUrl = `${supabaseUrl}/rest/v1/servers?claimed=eq.true&select=*`;
+    let queryUrl = `${supabaseUrl}/rest/v1/servers?claimed=eq.true&select=id,name,ip,port,status,players_online,max_players,vote_count,avg_rating,review_count,description,website,tags,version,claimed,claimed_by,claimed_at,claim_verification_method,verified,created_at,uptime_stats,tier,stripe_customer_id,stripe_subscription_id,featured_until,premium_since`;
     
     if (ownerEmail) {
       queryUrl += `&claimed_by=eq.${encodeURIComponent(ownerEmail)}`;
@@ -161,11 +161,41 @@ const categories = [
                               ✓ VERIFIED
                             </span>
                           )}
+                          {server.tier === 'elite' && (
+                            <span class="px-2 py-0.5 bg-gradient-to-r from-[#ff3864] to-[#a855f7] text-white text-xs font-bold rounded">
+                              ⭐ ELITE
+                            </span>
+                          )}
+                          {server.tier === 'premium' && (
+                            <span class="px-2 py-0.5 bg-gradient-to-r from-[#ffd700] to-[#ffaa00] text-[#0a0a0f] text-xs font-bold rounded">
+                              💎 PREMIUM
+                            </span>
+                          )}
+                          {(!server.tier || server.tier === 'free') && (
+                            <span class="px-2 py-0.5 bg-[#2a2a3a] text-[#8892b0] text-xs font-bold rounded">
+                              FREE
+                            </span>
+                          )}
                         </div>
                         <p class="text-[#8892b0] text-sm">{server.ip}:{server.port}</p>
                       </div>
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 flex-wrap">
+                      {(!server.tier || server.tier === 'free') ? (
+                        <a 
+                          href={`/premium?server=${server.id}`}
+                          class="px-4 py-2 bg-gradient-to-r from-[#ffd700] to-[#ffaa00] text-[#0a0a0f] rounded-lg hover:opacity-90 transition-opacity text-sm font-bold"
+                        >
+                          ⬆️ Upgrade
+                        </a>
+                      ) : (
+                        <a 
+                          href={`/premium?server=${server.id}`}
+                          class="px-4 py-2 bg-[#1a1a25] text-[#00f5d4] border border-[#00f5d4]/30 rounded-lg hover:bg-[#00f5d4]/10 transition-colors text-sm"
+                        >
+                          Manage Plan
+                        </a>
+                      )}
                       <a 
                         href={`/servers/${server.id}`}
                         class="px-4 py-2 bg-[#1a1a25] text-[#8892b0] rounded-lg hover:bg-[#2a2a3a] transition-colors text-sm"
