@@ -96,6 +96,7 @@ const VALID_CATEGORIES = [
           >
             <option value="votes">Most Votes</option>
             <option value="players">Most Players</option>
+            <option value="rating">Highest Rated</option>
             <option value="newest">Newest First</option>
             <option value="name">Name A-Z</option>
           </select>
@@ -381,6 +382,8 @@ const VALID_CATEGORIES = [
           return (b.vote_count || 0) - (a.vote_count || 0);
         case 'players':
           return (b.players_online || 0) - (a.players_online || 0);
+        case 'rating':
+          return (b.rating_average || 0) - (a.rating_average || 0) || (b.rating_count || 0) - (a.rating_count || 0);
         case 'newest':
           return new Date(b.created_at) - new Date(a.created_at);
         case 'name':
@@ -456,6 +459,14 @@ const VALID_CATEGORIES = [
         parts.push('<span class="text-[#00f5d4]" title="Verified Server">✓</span>');
       }
       parts.push('</div>');
+      // Star rating display
+      if (server.rating_average && server.rating_count > 0) {
+        const stars = '★'.repeat(Math.round(server.rating_average)) + '☆'.repeat(5 - Math.round(server.rating_average));
+        parts.push('<div class="flex items-center gap-1 text-xs mb-1">');
+        parts.push('<span class="text-yellow-400">' + stars + '</span>');
+        parts.push('<span class="text-[#8892b0]">(' + server.rating_count + ')</span>');
+        parts.push('</div>');
+      }
       parts.push('<p class="text-[#8892b0] text-sm truncate">' + server.ip + ':' + server.port + '</p>');
       parts.push('<div class="flex items-center gap-3 mt-2 text-xs flex-wrap">');
       parts.push('<span class="' + (server.status === 'online' ? 'text-green-500' : 'text-gray-500') + '">' + (server.status === 'online' ? '● Online' : '○ Offline') + '</span>');

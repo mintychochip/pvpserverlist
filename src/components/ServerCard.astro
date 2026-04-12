@@ -12,6 +12,8 @@ interface Props {
   country?: string;
   description?: string;
   bannerUrl?: string;
+  ratingAverage?: number;
+  ratingCount?: number;
 }
 
 const {
@@ -27,7 +29,13 @@ const {
   country = 'US',
   description,
   bannerUrl,
+  ratingAverage,
+  ratingCount,
 } = Astro.props;
+
+const stars = ratingAverage && ratingCount && ratingCount > 0
+  ? '★'.repeat(Math.round(ratingAverage)) + '☆'.repeat(5 - Math.round(ratingAverage))
+  : null;
 
 const playerPercentage = Math.round((players / maxPlayers) * 100);
 const isFull = players >= maxPlayers;
@@ -61,6 +69,13 @@ const isEmpty = players === 0;
       <h3 class="font-bold text-gp-white text-lg leading-tight">{name}</h3>
       <span class="text-2xl" title={country}>🇺🇸</span>
     </div>
+
+    {stars && (
+      <div class="flex items-center gap-1 text-xs">
+        <span class="text-yellow-400">{stars}</span>
+        <span class="text-gp-muted">({ratingCount})</span>
+      </div>
+    )}
 
     {description && (
       <p class="text-gp-muted text-sm line-clamp-2">{description}</p>
