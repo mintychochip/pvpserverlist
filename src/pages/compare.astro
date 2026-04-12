@@ -1,202 +1,486 @@
 ---
-// Server Comparison Page
+// Server Comparison Page - Compare up to 4 servers side-by-side
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
 
-// Get server IDs from query params
-const params = new URL(Astro.request.url).searchParams;
-const serverIds = params.get('servers')?.split(',') || [];
-
-// Fetch server data server-side
-const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
-const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
-
-let servers = [];
-let error = null;
-
-if (serverIds.length > 0) {
-  try {
-    const response = await fetch(
-      `${supabaseUrl}/rest/v1/servers?id=in.(${serverIds.join(',')})&select=*`,
-      {
-        headers: {
-          'apikey': supabaseKey,
-          'Authorization': `Bearer ${supabaseKey}`
-        }
-      }
-    );
-    
-    if (response.ok) {
-      servers = await response.json();
-    } else {
-      error = 'Failed to fetch servers';
-    }
-  } catch (e) {
-    error = e.message;
-  }
-}
+const pageTitle = "Compare Minecraft Servers | Side-by-Side Stats";
+const pageDesc = "Compare up to 4 Minecraft servers side-by-side. View player counts, votes, ratings, versions, and features to find the perfect server for you.";
 ---
 
 <Layout 
-  title={`Compare ${servers.length} Servers | GuildPost`}
-  description="Compare Minecraft servers side-by-side. View player counts, votes, versions, and more."
+  title={pageTitle}
+  description={pageDesc}
   url="https://guildpost.tech/compare"
+  keywords="minecraft server compare, server comparison, minecraft server stats, compare servers, minecraft multiplayer"
 >
+  <SchemaOrg 
+    type="WebPage" 
+    data={{
+      name: pageTitle,
+      description: pageDesc,
+      url: "https://guildpost.tech/compare"
+    }} 
+  />
+
   <div class="min-h-screen" style="background-color: var(--bg-primary);">
     <Header />
     
-    <main class="max-w-6xl mx-auto px-4 py-8">
-      <h1 class="text-4xl font-black text-white mb-4">Compare Servers</h1>
-      
-      {servers.length === 0 ? (
-        <div class="text-center py-12">
-          <p class="text-[#8892b0] mb-4">Select servers to compare from the directory.</p>
-          <a href="/minecraft" class="inline-block px-6 py-3 bg-[#00f5d4] text-[#0a0a0f] font-bold rounded-lg hover:bg-[#00d4b8] transition-colors">
-            Browse Servers
-          </a>
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-sm mb-6" style="color: var(--text-secondary);">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-white">Compare Servers</span>
+      </nav>
+
+      <div class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3" style="color: var(--text-primary);">
+          Compare Servers
+        </h1>
+        <p class="max-w-xl mx-auto" style="color: var(--text-secondary);">
+          Select up to 4 servers to compare side-by-side. Compare player counts, ratings, votes, and features to find your perfect match.
+        </p>
+      </div>
+
+      <!-- Comparison List Management -->
+      <div id="compare-manager" class="mb-8 p-4 rounded-lg border" style="background: rgba(30,41,59,0.5); border-color: var(--border-subtle);">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-semibold" style="color: var(--text-primary);">
+            Servers to Compare 
+            <span id="compare-count" class="text-sm font-normal" style="color: var(--text-secondary);">(0/4)</span>
+          </h2>
+          <button 
+            id="clear-compare-btn" 
+            class="text-sm px-3 py-1.5 rounded transition-colors"
+            style="color: var(--accent-secondary); background: rgba(255,0,110,0.1);"
+          >
+            Clear All
+          </button>
         </div>
-      ) : (
-        <>
-          <p class="text-[#8892b0] mb-8">Comparing {servers.length} server{servers.length !== 1 ? 's' : ''}</p>
-          
-          <!-- Comparison Table -->
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="border-b border-[#2a2a3a]">
-                  <th class="text-left p-4 text-[#8892b0] font-medium">Feature</th>
-                  {servers.map(server => (
-                    <th class="text-left p-4 text-white font-bold min-w-[200px]">
-                      <a href={`/servers/${server.id}`} class="hover:text-[#00f5d4] transition-colors">
-                        {server.name}
-                      </a>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Icon -->
-                <tr class="border-b border-[#2a2a3a]">
-                  <td class="p-4 text-[#8892b0]">Icon</td>
-                  {servers.map(server => (
-                    <td class="p-4">
-                      <div class="w-16 h-16 bg-[#1a1a25] rounded-lg flex items-center justify-center relative">
-                        {server.icon ? (
-                          <>
-                            <img src={server.icon} alt="" class="w-full h-full object-cover rounded-lg" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                            <span class="text-[#00f5d4] text-2xl hidden absolute inset-0 items-center justify-center">⛏</span>
-                          </>
-                        ) : (
-                          <span class="text-[#00f5d4] text-2xl">⛏</span>
-                        )}
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-                
-                <!-- Status -->
-                <tr class="border-b border-[#2a2a3a]">
-                  <td class="p-4 text-[#8892b0]">Status</td>
-                  {servers.map(server => (
-                    <td class="p-4">
-                      <span class={server.status === 'online' ? 'text-green-500' : 'text-gray-500'}>
-                        {server.status === 'online' ? '● Online' : '○ Offline'}
-                      </span>
-                    </td>
-                  ))}
-                </tr>
-                
-                <!-- Players -->
-                <tr class="border-b border-[#2a2a3a]">
-                  <td class="p-4 text-[#8892b0]">Players</td>
-                  {servers.map(server => (
-                    <td class="p-4 text-white">
-                      <span class="text-[#00f5d4] font-bold">{server.players_online || 0}</span>
-                      <span class="text-[#8892b0]"> / {server.max_players || '?'}</span>
-                    </td>
-                  ))}
-                </tr>
-                
-                <!-- Votes -->
-                <tr class="border-b border-[#2a2a3a]">
-                  <td class="p-4 text-[#8892b0]">Votes</td>
-                  {servers.map(server => (
-                    <td class="p-4">
-                      <span class="text-[#ff3864] font-bold">▲ {server.vote_count || 0}</span>
-                    </td>
-                  ))}
-                </tr>
-                
-                <!-- Version -->
-                <tr class="border-b border-[#2a2a3a]">
-                  <td class="p-4 text-[#8892b0]">Version</td>
-                  {servers.map(server => (
-                    <td class="p-4 text-white">{server.version || 'Any'}</td>
-                  ))}
-                </tr>
-                
-                <!-- IP -->
-                <tr class="border-b border-[#2a2a3a]">
-                  <td class="p-4 text-[#8892b0]">Address</td>
-                  {servers.map(server => (
-                    <td class="p-4">
-                      <code class="text-[#8892b0] text-sm">{server.ip}:{server.port}</code>
-                    </td>
-                  ))}
-                </tr>
-                
-                <!-- Tags -->
-                <tr class="border-b border-[#2a2a3a]">
-                  <td class="p-4 text-[#8892b0]">Tags</td>
-                  {servers.map(server => (
-                    <td class="p-4">
-                      <div class="flex flex-wrap gap-1">
-                        {server.tags?.map(tag => (
-                          <span class="px-2 py-1 bg-[#1a1a25] text-[#8892b0] rounded text-xs">{tag}</span>
-                        ))}
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-                
-                <!-- Actions -->
-                <tr>
-                  <td class="p-4 text-[#8892b0]">Actions</td>
-                  {servers.map(server => (
-                    <td class="p-4">
-                      <div class="space-y-2">
-                        <a 
-                          href={`/servers/${server.id}`}
-                          class="block px-4 py-2 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white text-center rounded-lg text-sm transition-colors"
-                        >
-                          View Details
-                        </a>
-                        <a 
-                          href={`minecraft://${server.ip}:${server.port}`}
-                          class="block px-4 py-2 bg-[#00f5d4] hover:bg-[#00d4b8] text-[#0a0a0f] font-bold text-center rounded-lg text-sm transition-colors"
-                        >
-                          Join Server
-                        </a>
-                      </div>
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          
-          <!-- Add More Button -->
-          {servers.length < 4 && (
-            <div class="mt-8 text-center">
-              <a href="/minecraft" class="inline-block px-6 py-3 bg-[#1a1a25] hover:bg-[#2a2a3a] text-white font-bold rounded-lg transition-colors">
-                + Add Server to Compare
-              </a>
-            </div>
-          )}
-        </>
-      )}
+        
+        <div id="compare-list" class="flex flex-wrap gap-3 mb-4">
+          <p class="text-sm italic" style="color: var(--text-tertiary);">
+            No servers selected. Go to <a href="/minecraft" class="underline hover:text-white">Minecraft Servers</a> and click "Compare" on servers you're interested in.
+          </p>
+        </div>
+
+        <button 
+          id="load-compare-btn"
+          class="w-full md:w-auto px-6 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2"
+          style="background: var(--gradient-primary); color: white;"
+          disabled
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>
+          </svg>
+          Load Comparison
+        </button>
+      </div>
+
+      <!-- Comparison Table -->
+      <div id="comparison-container" class="hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[800px]" style="border-collapse: separate; border-spacing: 0;">
+            <thead>
+              <tr id="compare-header">
+                <th class="p-4 text-left font-semibold sticky left-0 z-10" style="background: var(--bg-primary); color: var(--text-primary); min-width: 160px;">
+                  Feature
+                </th>
+                <!-- Server headers will be inserted here -->
+              </tr>
+            </thead>
+            <tbody id="compare-body">
+              <!-- Rows will be inserted here -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Cards View (shown on small screens) -->
+        <div id="mobile-compare" class="md:hidden mt-6 space-y-4">
+          <!-- Mobile cards will be inserted here -->
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="text-center py-16">
+        <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style="background: rgba(0,217,255,0.1);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold mb-2" style="color: var(--text-primary);">No servers to compare</h3>
+        <p class="mb-6 max-w-md mx-auto" style="color: var(--text-secondary);">
+          Visit the Minecraft servers page and click the compare button on servers you're interested in. You can compare up to 4 servers at once.
+        </p>
+        <a 
+          href="/minecraft" 
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all"
+          style="background: var(--gradient-primary); color: white;"
+        >
+          Browse Servers
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="hidden py-16 text-center">
+        <div class="inline-flex items-center gap-3 px-6 py-4 rounded-lg" style="background: rgba(30,41,59,0.5);">
+          <svg class="animate-spin" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+          <span style="color: var(--text-secondary);">Loading server data...</span>
+        </div>
+      </div>
     </main>
+
     <Footer />
   </div>
 </Layout>
+
+<script>
+  // Client-side only
+  if (typeof window !== 'undefined') {
+    const compareList = document.getElementById('compare-list');
+    const compareCount = document.getElementById('compare-count');
+    const clearBtn = document.getElementById('clear-compare-btn');
+    const loadBtn = document.getElementById('load-compare-btn');
+    const comparisonContainer = document.getElementById('comparison-container');
+    const emptyState = document.getElementById('empty-state');
+    const loadingState = document.getElementById('loading-state');
+    const compareHeader = document.getElementById('compare-header');
+    const compareBody = document.getElementById('compare-body');
+    const mobileCompare = document.getElementById('mobile-compare');
+
+    let currentServers = [];
+
+    function getCompareList() {
+      try {
+        return JSON.parse(localStorage.getItem('guildpost_compare') || '[]');
+      } catch {
+        return [];
+      }
+    }
+
+    function saveCompareList(list) {
+      localStorage.setItem('guildpost_compare', JSON.stringify(list.slice(0, 4)));
+    }
+
+    function removeFromCompare(id) {
+      const list = getCompareList().filter(sid => sid !== id);
+      saveCompareList(list);
+      renderCompareList();
+      // Clear comparison if we removed a loaded server
+      if (currentServers.some(s => s.id === id)) {
+        clearComparison();
+      }
+    }
+
+    function clearComparison() {
+      currentServers = [];
+      comparisonContainer.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+    }
+
+    function renderCompareList() {
+      const list = getCompareList();
+      compareCount.textContent = `(${list.length}/4)`;
+      
+      if (list.length === 0) {
+        compareList.innerHTML = `
+          <p class="text-sm italic" style="color: var(--text-tertiary);">
+            No servers selected. Go to <a href="/minecraft" class="underline hover:text-white">Minecraft Servers</a> and click "Compare" on servers you're interested in.
+          </p>
+        `;
+        loadBtn.disabled = true;
+        loadBtn.style.opacity = '0.5';
+        loadBtn.style.cursor = 'not-allowed';
+        clearComparison();
+        return;
+      }
+
+      loadBtn.disabled = false;
+      loadBtn.style.opacity = '1';
+      loadBtn.style.cursor = 'pointer';
+
+      compareList.innerHTML = list.map(id => `
+        <div class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm" style="background: rgba(0,217,255,0.1); border: 1px solid rgba(0,217,255,0.3);">
+          <span style="color: var(--text-primary);">Server ID: ${id.slice(0, 8)}...</span>
+          <button onclick="removeFromCompare('${id}')" class="ml-2 hover:text-red-400 transition-colors" title="Remove">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function getCountryFlag(code) {
+      if (!code) return '';
+      const codePoints = code.toUpperCase().split('').map(c => 127397 + c.charCodeAt(0));
+      return String.fromCodePoint(...codePoints);
+    }
+
+    function getEditionBadge(edition) {
+      const ed = (edition || 'java').toLowerCase();
+      if (ed === 'bedrock') {
+        return `<span class="px-2 py-0.5 rounded text-xs font-bold" style="background: rgba(139,92,246,0.2); color: #8b5cf6;">⛏️ BEDROCK</span>`;
+      } else if (ed === 'crossplay' || ed === 'both') {
+        return `<span class="px-2 py-0.5 rounded text-xs font-bold" style="background: rgba(245,158,11,0.2); color: #f59e0b;">🌐 CROSS-PLAY</span>`;
+      }
+      return `<span class="px-2 py-0.5 rounded text-xs font-bold" style="background: rgba(245,158,11,0.2); color: #f59e0b;">☕ JAVA</span>`;
+    }
+
+    function getTierBadge(tier) {
+      if (tier === 'elite') {
+        return `<span class="px-2 py-0.5 rounded text-xs font-bold" style="background: rgba(168,85,247,0.2); color: #a855f7;">👑 ELITE</span>`;
+      } else if (tier === 'premium') {
+        return `<span class="px-2 py-0.5 rounded text-xs font-bold" style="background: rgba(0,217,255,0.2); color: #00d9ff;">⭐ PREMIUM</span>`;
+      }
+      return `<span class="px-2 py-0.5 rounded text-xs font-bold" style="background: rgba(136,146,176,0.2); color: #8892b0;">FREE</span>`;
+    }
+
+    function renderStars(rating) {
+      const filled = Math.round(rating || 0);
+      const empty = 5 - filled;
+      return '★'.repeat(filled) + '☆'.repeat(empty);
+    }
+
+    function renderComparison(servers) {
+      currentServers = servers;
+      
+      if (servers.length === 0) {
+        comparisonContainer.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      comparisonContainer.classList.remove('hidden');
+
+      // Render table headers (server cards)
+      let headerHTML = `<th class="p-4 text-left font-semibold sticky left-0 z-10" style="background: var(--bg-primary); color: var(--text-primary); min-width: 160px;">Feature</th>`;
+      
+      for (const server of servers) {
+        const iconHtml = server.icon 
+          ? `<img src="${server.icon}" alt="" class="w-12 h-12 rounded-lg object-cover mb-3" onerror="this.style.display='none'">`
+          : `<div class="w-12 h-12 rounded-lg flex items-center justify-center mb-3 text-2xl" style="background: rgba(0,217,255,0.1); color: var(--accent-primary);">⛏</div>`;
+        
+        headerHTML += `
+          <th class="p-4 text-center min-w-[200px]" style="background: var(--bg-primary);">
+            <a href="/servers/${server.id}" class="block group">
+              ${iconHtml}
+              <h3 class="font-bold text-lg mb-1 group-hover:text-[var(--accent-primary)] transition-colors" style="color: var(--text-primary);">${server.name || 'Unnamed'}</h3>
+              <p class="text-xs mb-2" style="color: var(--text-secondary);">${server.ip}:${server.port}</p>
+              <div class="flex flex-wrap justify-center gap-1">
+                ${getTierBadge(server.tier)}
+                ${getEditionBadge(server.edition)}
+              </div>
+            </a>
+          </th>
+        `;
+      }
+      compareHeader.innerHTML = headerHTML;
+
+      // Define comparison rows
+      const rows = [
+        { 
+          label: 'Status', 
+          getValue: s => `<span class="${s.status === 'online' ? 'text-green-500' : 'text-gray-500'}">${s.status === 'online' ? '● Online' : '○ Offline'}</span>` 
+        },
+        { 
+          label: 'Players', 
+          getValue: s => `${s.players_online || 0} / ${s.max_players || '?'}` 
+        },
+        { 
+          label: 'Votes', 
+          getValue: s => `▲ ${s.vote_count || 0}` 
+        },
+        { 
+          label: 'Rating', 
+          getValue: s => s.rating_count > 0 
+            ? `<span class="text-yellow-400">${renderStars(s.rating_average)}</span> <span style="color: var(--text-secondary);">(${s.rating_count})</span>` 
+            : '<span style="color: var(--text-tertiary);">No reviews</span>' 
+        },
+        { 
+          label: 'Version', 
+          getValue: s => s.version || 'Unknown' 
+        },
+        { 
+          label: 'Country', 
+          getValue: s => s.country_code ? `${getCountryFlag(s.country_code)} ${s.country_code}` : 'Unknown' 
+        },
+        { 
+          label: 'Tags', 
+          getValue: s => s.tags?.length 
+            ? s.tags.slice(0, 4).map(t => `<span class="px-2 py-0.5 rounded text-xs mr-1" style="background: rgba(136,146,176,0.2); color: var(--text-secondary);">${t}</span>`).join('') 
+            : '<span style="color: var(--text-tertiary);">-</span>' 
+        },
+        { 
+          label: 'Description', 
+          getValue: s => s.description 
+            ? `<span class="text-sm line-clamp-3">${s.description.slice(0, 100)}${s.description.length > 100 ? '...' : ''}</span>` 
+            : '<span style="color: var(--text-tertiary);">No description</span>' 
+        },
+        { 
+          label: 'Actions', 
+          getValue: s => `
+            <div class="flex flex-col gap-2">
+              <a href="/servers/${s.id}" class="px-3 py-1.5 rounded text-sm font-medium text-center transition-colors" style="background: var(--accent-primary); color: white;">
+                View Server
+              </a>
+              <button onclick="copyToClipboard('${s.ip}:${s.port}')" class="px-3 py-1.5 rounded text-sm text-center transition-colors" style="background: rgba(136,146,176,0.2); color: var(--text-secondary);">
+                Copy IP
+              </button>
+            </div>
+          ` 
+        },
+      ];
+
+      // Render table body
+      let bodyHTML = '';
+      for (const row of rows) {
+        bodyHTML += `<tr style="border-top: 1px solid var(--border-subtle);">`;
+        bodyHTML += `<td class="p-4 font-medium sticky left-0 z-10" style="background: var(--bg-primary); color: var(--text-secondary);">${row.label}</td>`;
+        for (const server of servers) {
+          bodyHTML += `<td class="p-4 text-center" style="color: var(--text-primary); border-left: 1px solid var(--border-subtle);">${row.getValue(server)}</td>`;
+        }
+        bodyHTML += `</tr>`;
+      }
+      compareBody.innerHTML = bodyHTML;
+
+      // Render mobile cards
+      let mobileHTML = '';
+      for (const server of servers) {
+        const iconHtml = server.icon 
+          ? `<img src="${server.icon}" alt="" class="w-16 h-16 rounded-lg object-cover" onerror="this.style.display='none'">`
+          : `<div class="w-16 h-16 rounded-lg flex items-center justify-center text-3xl" style="background: rgba(0,217,255,0.1); color: var(--accent-primary);">⛏</div>`;
+        
+        mobileHTML += `
+          <div class="p-4 rounded-lg" style="background: rgba(30,41,59,0.5); border: 1px solid var(--border-subtle);">
+            <div class="flex items-start gap-4 mb-4">
+              ${iconHtml}
+              <div>
+                <a href="/servers/${server.id}" class="font-bold text-lg hover:text-[var(--accent-primary)] transition-colors" style="color: var(--text-primary);">${server.name || 'Unnamed'}</a>
+                <p class="text-sm" style="color: var(--text-secondary);">${server.ip}:${server.port}</p>
+                <div class="flex flex-wrap gap-1 mt-2">
+                  ${getTierBadge(server.tier)}
+                  ${getEditionBadge(server.edition)}
+                </div>
+              </div>
+            </div>
+            
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--border-subtle);">
+                <span style="color: var(--text-secondary);">Status</span>
+                <span class="${server.status === 'online' ? 'text-green-500' : 'text-gray-500'}">${server.status === 'online' ? '● Online' : '○ Offline'}</span>
+              </div>
+              <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--border-subtle);">
+                <span style="color: var(--text-secondary);">Players</span>
+                <span style="color: var(--text-primary);">${server.players_online || 0} / ${server.max_players || '?'}</span>
+              </div>
+              <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--border-subtle);">
+                <span style="color: var(--text-secondary);">Votes</span>
+                <span style="color: var(--accent-secondary);">▲ ${server.vote_count || 0}</span>
+              </div>
+              <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--border-subtle);">
+                <span style="color: var(--text-secondary);">Rating</span>
+                <span>${server.rating_count > 0 ? `<span class="text-yellow-400">${renderStars(server.rating_average)}</span> (${server.rating_count})` : '<span style="color: var(--text-tertiary);">No reviews</span>'}</span>
+              </div>
+              <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--border-subtle);">
+                <span style="color: var(--text-secondary);">Version</span>
+                <span style="color: var(--accent-primary);">${server.version || 'Unknown'}</span>
+              </div>
+              <div class="flex justify-between py-2" style="border-bottom: 1px solid var(--border-subtle);">
+                <span style="color: var(--text-secondary);">Country</span>
+                <span>${server.country_code ? `${getCountryFlag(server.country_code)} ${server.country_code}` : 'Unknown'}</span>
+              </div>
+              <div class="py-2">
+                <span style="color: var(--text-secondary);">Tags</span>
+                <div class="flex flex-wrap gap-1 mt-1">
+                  ${server.tags?.length ? server.tags.map(t => `<span class="px-2 py-0.5 rounded text-xs" style="background: rgba(136,146,176,0.2); color: var(--text-secondary);">${t}</span>`).join('') : '<span style="color: var(--text-tertiary);">-</span>'}
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex gap-2 mt-4">
+              <a href="/servers/${server.id}" class="flex-1 px-3 py-2 rounded text-sm font-medium text-center transition-colors" style="background: var(--accent-primary); color: white;">
+                View Server
+              </a>
+              <button onclick="copyToClipboard('${server.ip}:${server.port}')" class="px-3 py-2 rounded text-sm transition-colors" style="background: rgba(136,146,176,0.2); color: var(--text-secondary);">
+                Copy IP
+              </button>
+            </div>
+          </div>
+        `;
+      }
+      mobileCompare.innerHTML = mobileHTML;
+    }
+
+    async function loadComparison() {
+      const list = getCompareList();
+      if (list.length === 0) return;
+
+      loadingState.classList.remove('hidden');
+      comparisonContainer.classList.add('hidden');
+      emptyState.classList.add('hidden');
+
+      try {
+        const response = await fetch('/api/servers/compare', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ids: list })
+        });
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        renderComparison(data.servers || []);
+      } catch (err) {
+        console.error('Failed to load comparison:', err);
+        alert('Failed to load server data. Please try again.');
+        clearComparison();
+      } finally {
+        loadingState.classList.add('hidden');
+      }
+    }
+
+    // Global functions for inline onclick handlers
+    window.removeFromCompare = removeFromCompare;
+    window.copyToClipboard = function(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Could show a toast here
+      });
+    };
+
+    // Event listeners
+    clearBtn.addEventListener('click', () => {
+      saveCompareList([]);
+      renderCompareList();
+    });
+
+    loadBtn.addEventListener('click', loadComparison);
+
+    // Initial render
+    renderCompareList();
+    
+    // Auto-load if servers are already selected
+    if (getCompareList().length > 0) {
+      loadComparison();
+    }
+  }
+</script>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
