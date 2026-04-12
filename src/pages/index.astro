@@ -270,14 +270,18 @@ const gameCategories = [
     <section class="px-4 py-16 border-t" style="border-color: var(--border-subtle);">
       <div class="max-w-6xl mx-auto">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-semibold" style="color: var(--text-primary);">Featured Minecraft Servers</h2>
+          <div class="flex items-center gap-3">
+            <h2 class="text-2xl font-semibold" style="color: var(--text-primary);">Featured Servers</h2>
+            <span class="px-2 py-1 text-xs rounded-full" style="background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%); color: #000; font-weight: 600;">★ Premium</span>
+          </div>
           <a href="/minecraft" class="flex items-center gap-1 text-sm hover:underline" style="color: var(--accent-primary);">
             View all
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
+        <p class="text-sm mb-6" style="color: var(--text-secondary);">Elite and premium tier servers highlighted by the community</p>
         <div id="featured-servers" class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <div class="col-span-full text-center py-12" style="color: var(--text-secondary);">Loading servers...</div>
+          <div class="col-span-full text-center py-12" style="color: var(--text-secondary);">Loading featured servers...</div>
         </div>
       </div>
     </section>
@@ -327,11 +331,11 @@ const gameCategories = [
   // Load featured servers from API
   async function loadServers() {
     try {
-      const response = await fetch('/api/servers?limit=6');
-      if (!response.ok) throw new Error('Failed to load servers');
+      const response = await fetch('/api/servers/featured?limit=6');
+      if (!response.ok) throw new Error('Failed to load featured servers');
       const data = await response.json();
-      // Handle both {servers: [...]} and flat array responses
-      const servers = Array.isArray(data) ? data : (data.servers || []);
+      const servers = data.servers || [];
+      const isFallback = data.is_fallback;
       
       const container = document.getElementById('featured-servers');
       if (!servers.length) {
@@ -339,13 +343,27 @@ const gameCategories = [
         return;
       }
       
+      // Tier badge styles
+      const getTierBadge = (tier) => {
+        if (tier === 'elite') {
+          return `<span class="px-1.5 py-0.5 text-xs rounded font-bold" style="background: linear-gradient(135deg, #ff3864 0%, #ff6b6b 100%); color: white;">ELITE</span>`;
+        } else if (tier === 'premium') {
+          return `<span class="px-1.5 py-0.5 text-xs rounded font-bold" style="background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%); color: #000;">PREMIUM</span>`;
+        }
+        return '';
+      };
+      
       container.innerHTML = servers.slice(0, 6).map(server => `
-      <a href="/servers/${server.id}" class="block p-4 transition-all group gp-card-interactive" 
-         style="background: rgba(30,41,59,0.3); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+      <a href="/servers/${server.id}" class="block p-4 transition-all group gp-card-interactive relative overflow-hidden" 
+         style="background: rgba(30,41,59,0.3); border: 1px solid ${server.tier === 'elite' ? 'rgba(255,56,100,0.5)' : server.tier === 'premium' ? 'rgba(255,215,0,0.4)' : 'var(--border-subtle)'}; border-radius: var(--radius-lg); ${server.tier === 'elite' ? 'box-shadow: 0 0 20px rgba(255,56,100,0.1);' : server.tier === 'premium' ? 'box-shadow: 0 0 15px rgba(255,215,0,0.08);' : ''}">
+        ${server.tier === 'elite' ? '<div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #ff3864, #ff6b6b, #ff3864);"></div>' : ''}
         <div class="flex items-start gap-3 mb-3">
           ${server.icon ? `<img src="${server.icon}" alt="${server.name} Minecraft server icon logo" class="w-12 h-12 rounded-lg" style="background-color: var(--bg-tertiary);" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" /><div class="w-12 h-12 rounded-lg items-center justify-center hidden" style="background-color: var(--bg-tertiary);"><span style="color: var(--accent-primary);" class="text-xl">⛏</span></div>` : `<div class="w-12 h-12 rounded-lg flex items-center justify-center" style="background-color: var(--bg-tertiary);"><span style="color: var(--accent-primary);" class="text-xl">⛏</span></div>`}
           <div class="flex-1 min-w-0">
-            <h3 class="font-medium truncate text-base group-hover:text-[var(--accent-primary)] transition-colors" style="color: var(--text-primary);">${server.name}</h3>
+            <div class="flex items-center gap-2">
+              <h3 class="font-medium truncate text-base group-hover:text-[var(--accent-primary)] transition-colors" style="color: var(--text-primary);">${server.name}</h3>
+              ${getTierBadge(server.tier)}
+            </div>
             <p class="text-xs font-mono truncate" style="color: var(--text-tertiary);">${server.ip}:${server.port}</p>
           </div>
         </div>
@@ -361,8 +379,18 @@ const gameCategories = [
         </div>
       </a>
     `).join('');
+    
+    // Show fallback notice if using fallback
+    if (isFallback) {
+      const section = document.querySelector('#featured-servers').closest('section');
+      const notice = document.createElement('p');
+      notice.className = 'text-xs mt-4 text-center';
+      notice.style.cssText = 'color: var(--text-tertiary);';
+      notice.innerHTML = '📌 Currently showing top voted servers. <a href="/premium" style="color: var(--accent-primary);">Upgrade to get featured here</a>';
+      section.appendChild(notice);
+    }
     } catch (err) {
-      console.error('Failed to load servers:', err);
+      console.error('Failed to load featured servers:', err);
       document.getElementById('featured-servers').innerHTML = '<div class="col-span-full text-center py-12" style="color: var(--text-secondary);">Failed to load servers.</div>';
     }
   }
