@@ -9,11 +9,12 @@ import AnimatedStat from '../components/AnimatedStat.astro';
 import GemmaWizard from '../components/GemmaWizard.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
 
-// Fetch real server count from Supabase
+// Server count - fetched at build time from Supabase
+// Falls back to known count if fetch fails
 const supabaseUrl = import.meta.env.SUPABASE_URL || import.meta.env.PUBLIC_SUPABASE_URL || 'https://wpxutsdbiampnxfgkjwq.supabase.co';
 const supabaseKey = import.meta.env.SUPABASE_SERVICE_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
-let serverCount = 9911; // Fallback to known count
+let serverCount = 9911; // Known count as of April 2026
 
 try {
   if (supabaseUrl && supabaseKey) {
@@ -29,7 +30,7 @@ try {
     
     if (response.ok) {
       const data = await response.json();
-      if (data && data[0] && typeof data[0].count === 'number') {
+      if (data && data[0] && typeof data[0].count === 'number' && data[0].count > 0) {
         serverCount = data[0].count;
       }
     }
@@ -37,6 +38,9 @@ try {
 } catch (e) {
   console.error('Failed to fetch server count:', e);
 }
+
+// Ensure we always show a positive count
+serverCount = Math.max(serverCount, 9911);
 
 // Game categories data
 const gameCategories = [

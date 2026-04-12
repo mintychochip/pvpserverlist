@@ -13,7 +13,7 @@ const { value, suffix = "", label, color } = Astro.props;
 
 <div class="animated-stat text-center" data-value={value} data-suffix={suffix}>
   <div class="stat-value text-2xl md:text-3xl font-semibold tabular-nums" style={`color: ${color}`}>
-    0{suffix}
+    {value.toLocaleString()}{suffix}
   </div>
   <div class="text-xs mt-1" style="color: var(--text-secondary);">
     {label}
