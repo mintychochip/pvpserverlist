@@ -72,7 +72,7 @@ describe('Discord Auth Callback API', () => {
       expect(data.error).toBe('Missing server ID in state');
     });
 
-    it('should return 500 on Discord API errors', async () => {
+it('should return 500 on Discord API errors', async () => {
       // Mock fetch to simulate Discord API failure
       global.fetch = vi.fn().mockImplementation((url) => {
         if (url.includes('discord.com/api/oauth2/token')) {
@@ -88,7 +88,7 @@ describe('Discord Auth Callback API', () => {
       });
       
       // Create valid state data
-      const stateData = { serverId: 'test123', redirectUrl: '/dashboard' };
+      const stateData = { serverId: 'test123', redirectUrl: 'http://localhost/dashboard' };
       const validState = Buffer.from(JSON.stringify(stateData)).toString('base64');
       
       const mockRequest = new Request(`http://localhost/api/auth/discord/callback?code=testcode&state=${validState}`);
@@ -135,6 +135,12 @@ describe('Discord Auth Callback API', () => {
             json: () => Promise.resolve([{ id: 'guild1', name: 'Test Guild', permissions: '32' }]),
           });
         }
+        if (url.includes('supabase.co/rest/v1')) {
+          return Promise.resolve({
+            ok: true,
+            text: () => Promise.resolve(''),
+          });
+        }
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({}),
@@ -142,7 +148,7 @@ describe('Discord Auth Callback API', () => {
       });
       
       // Create valid state data
-      const stateData = { serverId: 'test123', redirectUrl: '/dashboard' };
+      const stateData = { serverId: 'test123', redirectUrl: 'http://localhost/dashboard' };
       const validState = Buffer.from(JSON.stringify(stateData)).toString('base64');
       
       const mockRequest = new Request(`http://localhost/api/auth/discord/callback?code=testcode&state=${validState}`);
@@ -174,6 +180,12 @@ describe('Discord Auth Callback API', () => {
             json: () => Promise.resolve([{ id: 'guild1', name: 'Test Guild', permissions: '32' }]),
           });
         }
+        if (url.includes('supabase.co/rest/v1')) {
+          return Promise.resolve({
+            ok: true,
+            text: () => Promise.resolve(''),
+          });
+        }
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({}),
@@ -181,7 +193,7 @@ describe('Discord Auth Callback API', () => {
       });
       
       // Create valid state data
-      const stateData = { serverId: 'test123', redirectUrl: '/dashboard' };
+      const stateData = { serverId: 'test123', redirectUrl: 'http://localhost/dashboard' };
       const validState = Buffer.from(JSON.stringify(stateData)).toString('base64');
       
       const mockRequest = new Request(`http://localhost/api/auth/discord/callback?code=testcode&state=${validState}`);
@@ -221,6 +233,12 @@ describe('Discord Auth Callback API', () => {
             json: () => Promise.resolve({ user: { id: 'user1' } }),
           });
         }
+        if (url.includes('supabase.co/rest/v1')) {
+          return Promise.resolve({
+            ok: true,
+            text: () => Promise.resolve(''),
+          });
+        }
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({}),
@@ -228,7 +246,7 @@ describe('Discord Auth Callback API', () => {
       });
       
       // Create valid state data
-      const stateData = { serverId: 'test123', redirectUrl: '/dashboard' };
+      const stateData = { serverId: 'test123', redirectUrl: 'http://localhost/dashboard' };
       const validState = Buffer.from(JSON.stringify(stateData)).toString('base64');
       
       const mockRequest = new Request(`http://localhost/api/auth/discord/callback?code=testcode&state=${validState}`);
@@ -261,6 +279,12 @@ describe('Discord Auth Callback API', () => {
             json: () => Promise.resolve([{ id: 'guild1', name: 'Test Guild', permissions: '8' }]),
           });
         }
+        if (url.includes('supabase.co/rest/v1')) {
+          return Promise.resolve({
+            ok: true,
+            text: () => Promise.resolve(''),
+          });
+        }
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({}),
@@ -268,7 +292,7 @@ describe('Discord Auth Callback API', () => {
       });
       
       // Create valid state data
-      const stateData = { serverId: 'test123', redirectUrl: '/dashboard' };
+      const stateData = { serverId: 'test123', redirectUrl: 'http://localhost/dashboard' };
       const validState = Buffer.from(JSON.stringify(stateData)).toString('base64');
       
       const mockRequest = new Request(`http://localhost/api/auth/discord/callback?code=testcode&state=${validState}`);
@@ -314,7 +338,7 @@ describe('Discord Auth Callback API', () => {
       });
       
       // Create valid state data
-      const stateData = { serverId: 'test123', redirectUrl: '/dashboard' };
+      const stateData = { serverId: 'test123', redirectUrl: 'http://localhost/dashboard' };
       const validState = Buffer.from(JSON.stringify(stateData)).toString('base64');
       
       const mockRequest = new Request(`http://localhost/api/auth/discord/callback?code=testcode&state=${validState}`);
@@ -360,7 +384,7 @@ describe('Discord Auth Callback API', () => {
       });
       
       // Create valid state data
-      const stateData = { serverId: 'test123', redirectUrl: '/dashboard' };
+      const stateData = { serverId: 'test123', redirectUrl: 'http://localhost/dashboard' };
       const validState = Buffer.from(JSON.stringify(stateData)).toString('base64');
       
       const mockRequest = new Request(`http://localhost/api/auth/discord/callback?code=testcode&state=${validState}`);
@@ -394,6 +418,12 @@ describe('Discord Auth Callback API', () => {
             json: () => Promise.resolve([]), // Return empty array to simulate no guilds
           });
         }
+        if (url.includes('supabase.co/rest/v1')) {
+          return Promise.resolve({
+            ok: true,
+            text: () => Promise.resolve(''),
+          });
+        }
         return Promise.resolve({
           ok: true,
           json: () => Promise.resolve({}),
@@ -401,7 +431,7 @@ describe('Discord Auth Callback API', () => {
       });
       
       // Create valid state data
-      const stateData = { serverId: 'test123', redirectUrl: '/dashboard' };
+      const stateData = { serverId: 'test123', redirectUrl: 'http://localhost/dashboard' };
       const validState = Buffer.from(JSON.stringify(stateData)).toString('base64');
       
       const mockRequest = new Request(`http://localhost/api/auth/discord/callback?code=testcode&state=${validState}`);
