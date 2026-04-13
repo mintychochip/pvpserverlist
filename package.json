@@ -14,7 +14,9 @@
     "i18n:upload": "crowdin upload sources",
     "i18n:download": "crowdin download",
     "i18n:sync": "npm run i18n:upload && npm run i18n:download",
-    "i18n:status": "crowdin status"
+    "i18n:status": "crowdin status",
+    "discord:register": "node scripts/register-discord-commands.mjs",
+    "discord:unregister": "node scripts/register-discord-commands.mjs --delete"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",
