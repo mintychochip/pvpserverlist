@@ -41,6 +41,22 @@ const commands = [
     integration_types: [0, 1],
     contexts: [0, 1, 2],
   },
+  {
+    name: 'votes',
+    description: 'Show vote stats for a server',
+    options: [
+      {
+        name: 'server',
+        description: 'Server name to show vote stats for',
+        type: 3, // STRING
+        required: true,
+        min_length: 3,
+        max_length: 50,
+      }
+    ],
+    integration_types: [0, 1], // Guild and user installs
+    contexts: [0, 1, 2], // Guild, DM, and group DM contexts
+  },
 ];
 
 async function registerCommands() {

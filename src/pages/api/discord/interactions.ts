@@ -164,7 +164,7 @@ async function handleStatusCommand(): Promise<any> {
         },
         {
           name: 'Commands',
-          value: '`/search` - Find servers\n`/status` - Check health',
+          value: '`/search` - Find servers\n`/status` - Check health\n`/votes` - Show server vote stats',
           inline: true,
         },
         {
@@ -188,6 +188,93 @@ async function handleStatusCommand(): Promise<any> {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         content: '⚠️ Unable to check status at this moment. Please try again later.',
+        flags: 64,
+      },
+    };
+  }
+}
+
+// Handle /votes command
+async function handleVotesCommand(interaction: any): Promise<any> {
+  const options = interaction.data?.options || [];
+  const serverOption = options.find((o: any) => o.name === 'server');
+  const serverName = serverOption?.value?.trim();
+
+  if (!serverName || serverName.length < 3) {
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        content: '❌ Server name must be at least 3 characters long.',
+        flags: 64, // EPHEMERAL
+      },
+    };
+  }
+
+  try {
+    // Search for the server using hybrid search
+    const searchResults = await searchServers(serverName, 1);
+    
+    if (searchResults.length === 0) {
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: '❌ No server found with that name. Please check the spelling and try again.',
+          flags: 64, // EPHEMERAL
+        },
+      };
+    }
+
+    const server = searchResults[0];
+    
+    // Fetch vote analytics
+    const votesResponse = await fetch(`https://guildpost.tech/api/servers/${server.id}/votes`, {
+      headers: { 'Origin': 'discord.com' },
+    });
+    
+    if (!votesResponse.ok) {
+      throw new Error(`Votes API error: ${votesResponse.status}`);
+    }
+    
+    const voteStats = await votesResponse.json();
+
+    const embed = {
+      title: `🗳️ Vote Stats for ${server.name}`,
+      thumbnail: server.icon ? { url: server.icon } : undefined,
+      fields: [
+        {
+          name: 'Votes (24h)',
+          value: String(voteStats.votes_24h || 0),
+          inline: true
+        },
+        {
+          name: 'Trend',
+          value: voteStats.vote_trend !== undefined 
+            ? `${voteStats.vote_trend >= 0 ? '↗️' : '↘️'} ${voteStats.vote_trend.toFixed(1)}%`
+            : 'N/A',
+          inline: true
+        },
+        {
+          name: 'Peak Hour',
+          value: String(voteStats.top_hourly_votes || 0),
+          inline: true
+        }
+      ],
+      url: `https://guildpost.tech/servers/${server.id}`,
+      color: 0x00f5d4, // GuildPost cyan
+    };
+
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        embeds: [embed],
+      },
+    };
+  } catch (err) {
+    console.error('Votes command error:', err);
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        content: '⚠️ Unable to fetch vote stats at this moment. Please try again later.',
         flags: 64,
       },
     };
@@ -296,6 +383,14 @@ export const POST: APIRoute = async ({ request, locals }: { request: Request; lo
 
     if (commandName === 'status') {
       const response = await handleStatusCommand();
+      return new Response(
+        JSON.stringify(response),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (commandName === 'votes') {
+      const response = await handleVotesCommand(interaction);
       return new Response(
         JSON.stringify(response),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
