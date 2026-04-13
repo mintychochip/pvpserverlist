@@ -128,7 +128,7 @@ Recent test coverage commits:
 ## Next Phase Opportunities
 
 ### Immediate (Small Tasks)
-- [ ] **Discord Bot** - Vote notifications, status alerts, /search slash command
+- [x] **Discord Bot** - `/search` and `/status` slash commands implemented, vote notifications pending
 - [ ] **Web Push Notifications** - Browser alerts for votes, server status changes
 - [ ] **Advanced Analytics** - Player retention curves, peak hours analysis
 

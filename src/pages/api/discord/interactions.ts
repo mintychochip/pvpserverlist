@@ -139,6 +139,61 @@ function createServerEmbed(server: any): any {
   };
 }
 
+// Handle /status command
+async function handleStatusCommand(): Promise<any> {
+  try {
+    // Check API health
+    const healthCheck = await fetch('https://guildpost.tech/api/health', {
+      method: 'GET',
+      headers: { 'Origin': 'discord.com' },
+    }).catch(() => null);
+
+    const isHealthy = healthCheck?.ok ?? false;
+
+    const embed = {
+      title: '🤖 GuildPost Bot Status',
+      description: isHealthy
+        ? 'All systems operational! The bot is online and ready to help you discover Minecraft servers.'
+        : '⚠️ Some services may be experiencing issues. The search functionality might be limited.',
+      color: isHealthy ? 0x00f5d4 : 0xff3864, // Cyan for healthy, pink for issues
+      fields: [
+        {
+          name: 'Status',
+          value: isHealthy ? '🟢 Online' : '🟡 Degraded',
+          inline: true,
+        },
+        {
+          name: 'Commands',
+          value: '`/search` - Find servers\n`/status` - Check health',
+          inline: true,
+        },
+        {
+          name: 'Website',
+          value: '[guildpost.tech](https://guildpost.tech)',
+          inline: true,
+        },
+      ],
+      timestamp: new Date().toISOString(),
+    };
+
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        embeds: [embed],
+      },
+    };
+  } catch (err) {
+    console.error('Status check error:', err);
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        content: '⚠️ Unable to check status at this moment. Please try again later.',
+        flags: 64,
+      },
+    };
+  }
+}
+
 // Handle /search command
 async function handleSearchCommand(interaction: any): Promise<any> {
   const options = interaction.data?.options || [];
@@ -233,6 +288,14 @@ export const POST: APIRoute = async ({ request, locals }: { request: Request; lo
 
     if (commandName === 'search') {
       const response = await handleSearchCommand(interaction);
+      return new Response(
+        JSON.stringify(response),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (commandName === 'status') {
+      const response = await handleStatusCommand();
       return new Response(
         JSON.stringify(response),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
