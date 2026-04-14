@@ -164,7 +164,7 @@ async function handleStatusCommand(): Promise<any> {
         },
         {
           name: 'Commands',
-          value: '`/search` - Find servers\n`/status` - Check health\n`/votes` - Show server vote stats',
+          value: '`/search` - Find servers\n`/top` - Top voted servers\n`/votes` - Vote stats\n`/status` - Bot health',
           inline: true,
         },
         {
@@ -188,6 +188,115 @@ async function handleStatusCommand(): Promise<any> {
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       data: {
         content: '⚠️ Unable to check status at this moment. Please try again later.',
+        flags: 64,
+      },
+    };
+  }
+}
+
+// Fetch top servers by vote count
+async function fetchTopServers(category?: string, limit: number = 5): Promise<any[]> {
+  try {
+    const supabaseUrl = 'https://wpxutsdbiampnxfgkjwq.supabase.co';
+    const supabaseKey = process.env.PUBLIC_SUPABASE_ANON_KEY || '';
+    
+    // Build query URL
+    let url = `${supabaseUrl}/rest/v1/servers?select=id,name,ip,port,description,vote_count,players_online,max_players,version,icon,tags&status=eq.online&order=vote_count.desc&limit=${limit}`;
+    
+    if (category) {
+      url += `&tags=cs.{${category}}`;
+    }
+    
+    const response = await fetch(url, {
+      headers: {
+        'apikey': supabaseKey,
+        'Authorization': `Bearer ${supabaseKey}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Supabase error: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error('Fetch top servers error:', err);
+    return [];
+  }
+}
+
+// Handle /top command
+async function handleTopCommand(interaction: any): Promise<any> {
+  const options = interaction.data?.options || [];
+  const categoryOption = options.find((o: any) => o.name === 'category');
+  const limitOption = options.find((o: any) => o.name === 'limit');
+
+  const category = categoryOption?.value?.trim();
+  const limit = Math.min(Math.max(parseInt(limitOption?.value) || 5, 1), 5);
+
+  try {
+    const servers = await fetchTopServers(category, limit);
+
+    if (servers.length === 0) {
+      const categoryMsg = category ? ` in category "${category}"` : '';
+      return {
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `🔍 No servers found${categoryMsg}. Try a different category or check back later!`,
+          flags: 64, // EPHEMERAL
+        },
+      };
+    }
+
+    const trophyEmojis = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+    
+    const embeds = servers.map((server, index) => {
+      const emoji = trophyEmojis[index] || `${index + 1}.`;
+      const description = server.description 
+        ? server.description.substring(0, 150) + (server.description.length > 150 ? '...' : '')
+        : 'No description available';
+
+      return {
+        title: `${emoji} ${server.name}`,
+        description,
+        thumbnail: server.icon ? { url: server.icon } : undefined,
+        fields: [
+          { 
+            name: 'Votes', 
+            value: (server.vote_count || 0).toLocaleString(), 
+            inline: true 
+          },
+          { 
+            name: 'Players', 
+            value: `${server.players_online || 0}/${server.max_players || '?'}`, 
+            inline: true 
+          },
+          { 
+            name: 'Version', 
+            value: server.version || 'Unknown', 
+            inline: true 
+          },
+        ],
+        url: `https://guildpost.tech/servers/${server.id}`,
+        color: index === 0 ? 0xFFD700 : index === 1 ? 0xC0C0C0 : index === 2 ? 0xCD7F32 : 0x00f5d4,
+      };
+    });
+
+    const categoryMsg = category ? ` in **${category}**` : '';
+
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        content: `🏆 Top ${servers.length} Server${servers.length > 1 ? 's' : ''}${categoryMsg} on GuildPost:`,
+        embeds,
+      },
+    };
+  } catch (err) {
+    console.error('Top command error:', err);
+    return {
+      type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      data: {
+        content: '⚠️ Unable to fetch top servers at this moment. Please try again later.',
         flags: 64,
       },
     };
@@ -391,6 +500,14 @@ export const POST: APIRoute = async ({ request, locals }: { request: Request; lo
 
     if (commandName === 'votes') {
       const response = await handleVotesCommand(interaction);
+      return new Response(
+        JSON.stringify(response),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (commandName === 'top') {
+      const response = await handleTopCommand(interaction);
       return new Response(
         JSON.stringify(response),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

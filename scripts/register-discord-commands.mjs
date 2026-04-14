@@ -57,6 +57,30 @@ const commands = [
     integration_types: [0, 1], // Guild and user installs
     contexts: [0, 1, 2], // Guild, DM, and group DM contexts
   },
+  {
+    name: 'top',
+    description: 'Show top-voted Minecraft servers',
+    options: [
+      {
+        name: 'category',
+        description: 'Filter by category (e.g., "survival", "pvp", "minigames")',
+        type: 3, // STRING
+        required: false,
+        min_length: 2,
+        max_length: 30,
+      },
+      {
+        name: 'limit',
+        description: 'Number of servers to show (1-5, default: 5)',
+        type: 4, // INTEGER
+        required: false,
+        min_value: 1,
+        max_value: 5,
+      }
+    ],
+    integration_types: [0, 1], // Guild and user installs
+    contexts: [0, 1, 2], // Guild, DM, and group DM contexts
+  },
 ];
 
 async function registerCommands() {
