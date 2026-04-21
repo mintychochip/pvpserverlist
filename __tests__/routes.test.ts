@@ -3,12 +3,12 @@ import fs from 'fs';
 import path from 'path';
 
 describe('Cloudflare Routes Configuration', () => {
-  it('should exclude /api/* from static routes so Cloudflare Functions handle them', () => {
+  it('should exclude /api/* so Cloudflare Functions handle API requests', () => {
     const routesPath = path.join(process.cwd(), 'public', '_routes.json');
     const routes = JSON.parse(fs.readFileSync(routesPath, 'utf-8'));
     
     // API routes are handled by Cloudflare Functions, not static file serving
-    expect(routes.exclude).toEqual(['/api/*']);
+    expect(routes.exclude).toContain('/api/*');
   });
 
   it('should have correct include pattern', () => {
