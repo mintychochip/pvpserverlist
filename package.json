@@ -21,7 +21,7 @@
   "dependencies": {
     "@astrojs/cloudflare": "^13.3.0",
     "@supabase/supabase-js": "^2.105.1",
-    "astro": "^6.2.0",
+    "astro": "^6.2.1",
     "chart.js": "^4.5.1",
     "crypto-js": "^4.2.0",
     "minecraft-server-util": "^5.4.4",
