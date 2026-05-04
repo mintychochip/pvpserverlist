@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.3.1",
-    "@supabase/supabase-js": "^2.105.2",
+    "@supabase/supabase-js": "^2.105.3",
     "astro": "^6.2.2",
     "chart.js": "^4.5.1",
     "crypto-js": "^4.2.0",
