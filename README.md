@@ -1,9 +1,11 @@
 # GuildPost
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Astro-5.0-black?style=flat-square&logo=astro&color=BC52EE" alt="Astro">
+  <img src="https://img.shields.io/badge/Astro-6.2-black?style=flat-square&logo=astro&color=BC52EE" alt="Astro">
+  <img src="https://img.shields.io/badge/Cloudflare-SSR-orange?style=flat-square&logo=cloudflare&color=F38020" alt="Cloudflare">
   <img src="https://img.shields.io/badge/Tailwind-3.4-blue?style=flat-square&logo=tailwindcss&color=06B6D4" alt="Tailwind">
   <img src="https://img.shields.io/badge/Supabase-Database-green?style=flat-square&logo=supabase&color=3ECF8E" alt="Supabase">
+  <img src="https://img.shields.io/badge/Gemini-AI-purple?style=flat-square&logo=google&color=4285F4" alt="Gemini AI">
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="License">
 </p>
 
@@ -36,11 +38,12 @@
 
 | Category | Technology |
 |----------|------------|
-| **Framework** | [Astro](https://astro.build) 5.0+ — Static site generation with Islands architecture |
+| **Framework** | [Astro](https://astro.build) 6.2+ — SSR with Cloudflare adapter |
+| **AI** | [Gemini](https://ai.google.dev) + Gemma 4B — Semantic search & chat |
 | **Styling** | [Tailwind CSS](https://tailwindcss.com) 3.4+ — Utility-first CSS |
 | **Database** | [Supabase](https://supabase.com) — PostgreSQL + Realtime |
 | **Icons** | Lucide React |
-| **Deployment** | GitHub Pages / Static export |
+| **Deployment** | [Cloudflare Pages](https://pages.cloudflare.com) — Edge SSR with Wrangler |
 
 ---
 
@@ -79,7 +82,7 @@ npm run build
 npm run preview
 ```
 
-The site is built for static export to GitHub Pages.
+The site is deployed to Cloudflare Pages with server-side rendering at the edge.
 
 ---
 
